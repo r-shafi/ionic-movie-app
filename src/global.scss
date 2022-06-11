@@ -9,7 +9,8 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
-:root {
+:root,
+.dark {
   --ion-background-color: #212529;
   --ion-text-color: #ced4da;
   --ion-tab-bar-color: #ced4da;
@@ -17,4 +18,14 @@
   --ion-tab-bar-background: #343a40;
   --ion-tab-bar-color-selected: #cf3c4f;
   --ion-item-border-color: #343a40;
+}
+
+.light {
+  --ion-background-color: #ced4da;
+  --ion-text-color: #212529;
+  --ion-tab-bar-color: #212529;
+  --ion-toolbar-background: #ced4da;
+  --ion-tab-bar-background: #ced4da;
+  --ion-tab-bar-color-selected: #cf3c4f;
+  --ion-item-border-color: #ced4da;
 }
