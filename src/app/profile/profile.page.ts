@@ -8,6 +8,8 @@ import { ProfileService } from '../services/profile.service';
   styleUrls: ['./profile.page.scss'],
 })
 export class ProfilePage {
+  public theme = localStorage.getItem('theme') || 'dark';
+
   watched$ = this.profileService.watchedMovies$;
   favorite$ = this.profileService.favoriteMovies$;
   watchlist$ = this.profileService.watchlist$;
