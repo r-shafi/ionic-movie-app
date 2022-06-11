@@ -17,6 +17,12 @@
         <ion-icon name="person-outline"></ion-icon>
         <ion-label>Profile</ion-label>
       </ion-tab-button>
+
+      <ion-tab-button (click)="toggleTheme()">
+        <ion-icon name="sunny-outline" *ngIf="theme === 'dark'"></ion-icon>
+        <ion-icon name="moon-outline" *ngIf="theme === 'light'"></ion-icon>
+        <ion-label>Theme</ion-label>
+      </ion-tab-button>
     </ion-tab-bar>
   </ion-tabs>
 </ion-app>
