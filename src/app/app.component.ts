@@ -6,4 +6,8 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   public theme = localStorage.getItem('theme') || 'dark';
+  public toggleTheme() {
+    this.theme = this.theme === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('theme', this.theme);
+  }
 }
