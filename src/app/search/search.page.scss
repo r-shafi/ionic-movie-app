@@ -1,6 +1,17 @@
-/* ── Section layout ─────────────────────────────────────────── */
+.search-header {
+  ion-toolbar {
+    --padding-top: 0;
+    --padding-bottom: 0;
+    --min-height: 56px;
+  }
+
+  ion-searchbar {
+    padding: 8px 16px;
+  }
+}
+
 .section {
-  padding: 0 16px 24px;
+  padding: 16px 24px;
 }
 
 .section-header {
@@ -27,7 +38,6 @@
   cursor: pointer;
 }
 
-/* ── Recent chips ──────────────────────────────────────────── */
 .recent-chips {
   display: flex;
   flex-wrap: wrap;
@@ -58,7 +68,6 @@
   flex-shrink: 0;
 }
 
-/* ── Popular carousel ──────────────────────────────────────── */
 .popular-scroll {
   display: flex;
   gap: 14px;
@@ -148,7 +157,6 @@
   flex: 0 0 130px;
 }
 
-/* ── Genre grid ────────────────────────────────────────────── */
 .genre-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -164,7 +172,9 @@
   padding: 18px 16px;
   cursor: pointer;
   overflow: hidden;
-  transition: transform 0.15s, opacity 0.15s;
+  transition:
+    transform 0.15s,
+    opacity 0.15s;
   min-height: 64px;
 
   &:active {
@@ -186,7 +196,6 @@
   letter-spacing: 0.02em;
 }
 
-/* ── Trending list ─────────────────────────────────────────── */
 .trending-list {
   display: flex;
   flex-direction: column;
@@ -256,7 +265,6 @@
   flex-shrink: 0;
 }
 
-/* ── People carousel ───────────────────────────────────────── */
 .people-scroll {
   display: flex;
   gap: 18px;
@@ -310,7 +318,6 @@
   line-height: 1.2;
 }
 
-/* ── Search result thumbnail ────────────────────────────────── */
 .result-thumb {
   width: 52px;
   height: 78px;
@@ -325,7 +332,6 @@
   }
 }
 
-/* ── Empty state ───────────────────────────────────────────── */
 .empty-state {
   display: flex;
   flex-direction: column;
