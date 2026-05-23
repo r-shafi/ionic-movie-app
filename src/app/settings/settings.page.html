@@ -1,0 +1,61 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Settings</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-list-header>Appearance</ion-list-header>
+    <ion-item>
+      <ion-label>Theme</ion-label>
+      <ion-select
+        slot="end"
+        [value]="settings.theme"
+        (ionChange)="setTheme($event.detail.value)"
+      >
+        <ion-select-option value="system">System</ion-select-option>
+        <ion-select-option value="light">Light</ion-select-option>
+        <ion-select-option value="dark">Dark</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-list-header>Content</ion-list-header>
+    <ion-item>
+      <ion-label>Include Adult Content</ion-label>
+      <ion-toggle
+        slot="end"
+        [checked]="settings.includeAdult"
+        (ionChange)="setAdult($event.detail.checked)"
+      ></ion-toggle>
+    </ion-item>
+
+    <ion-list-header>Exclude Languages</ion-list-header>
+    <ion-note
+      class="ion-padding-horizontal"
+      style="display: block; padding-bottom: 8px; font-size: 0.82rem"
+    >
+      Toggle on to hide content in these languages from Browse results.
+    </ion-note>
+    <ion-item *ngFor="let lang of languages">
+      <ion-label>{{ lang.name }}</ion-label>
+      <ion-toggle
+        slot="end"
+        [checked]="isLanguageExcluded(lang.code)"
+        (ionChange)="toggleLanguage(lang.code)"
+      ></ion-toggle>
+    </ion-item>
+
+    <ion-list-header>Profile</ion-list-header>
+    <ion-item>
+      <ion-label position="stacked">Display Name</ion-label>
+      <ion-input
+        [value]="settings.displayName"
+        (ionBlur)="setDisplayName($event.target.value)"
+      ></ion-input>
+    </ion-item>
+  </ion-list>
+</ion-content>
