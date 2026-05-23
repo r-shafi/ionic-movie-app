@@ -14,6 +14,11 @@ export class FilmPage implements OnInit {
   credits: any;
   videos: any[] = [];
   images: any[] = [];
+  // slideshow state
+  private _slideshowIndex = 0;
+  private _slideshowTimer: any = null;
+  private _slideshowInterval = 5000; // ms
+  private _currentBackdrop: string | null = null;
   similar: any[] = [];
   recommendations: any[] = [];
   reviews: any[] = [];
@@ -43,6 +48,14 @@ export class FilmPage implements OnInit {
           (v: any) => v.site === 'YouTube',
         );
         this.images = (data.images?.backdrops || []).slice(0, 20);
+        // initialize slideshow backdrop
+        if (this.images.length) {
+          this._currentBackdrop = this._buildImageUrl(
+            this.images[0]?.file_path,
+            'w1280',
+          );
+          this.startBackdropSlideshow();
+        }
         this.similar = (data.similar?.results || []).map((i: any) => ({
           ...i,
           media_type: 'movie',
@@ -59,10 +72,39 @@ export class FilmPage implements OnInit {
     });
   }
 
+  ngOnDestroy() {
+    this.stopBackdropSlideshow();
+  }
+
   get backdropUrl(): string {
+    if (this._currentBackdrop) return this._currentBackdrop;
     return this.movie?.backdrop_path
       ? `https://image.tmdb.org/t/p/w1280${this.movie.backdrop_path}`
       : '';
+  }
+
+  private _buildImageUrl(path: string | undefined, size = 'w1280') {
+    return path ? `https://image.tmdb.org/t/p/${size}${path}` : '';
+  }
+
+  startBackdropSlideshow() {
+    this.stopBackdropSlideshow();
+    if (!this.images || !this.images.length) return;
+    this._slideshowIndex = 0;
+    this._slideshowTimer = setInterval(() => {
+      this._slideshowIndex = (this._slideshowIndex + 1) % this.images.length;
+      this._currentBackdrop = this._buildImageUrl(
+        this.images[this._slideshowIndex]?.file_path,
+        'w1280',
+      );
+    }, this._slideshowInterval);
+  }
+
+  stopBackdropSlideshow() {
+    if (this._slideshowTimer) {
+      clearInterval(this._slideshowTimer);
+      this._slideshowTimer = null;
+    }
   }
 
   get posterUrl(): string {

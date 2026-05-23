@@ -178,18 +178,7 @@
         </div>
       </div>
 
-      <!-- Gallery -->
-      <div class="section" *ngIf="images.length">
-        <h2 class="section-title">Photos</h2>
-        <div class="image-scroll">
-          <img
-            *ngFor="let img of images"
-            [src]="'https://image.tmdb.org/t/p/w300' + img.file_path"
-            class="gallery-img"
-            [alt]="movie.title"
-          />
-        </div>
-      </div>
+      <!-- Gallery removed: photos are now used as slideshow in header background -->
 
       <!-- Reviews -->
       <div class="section" *ngIf="reviews.length">

@@ -4,6 +4,11 @@
       <ion-back-button defaultHref="/home"></ion-back-button>
     </ion-buttons>
     <ion-title>{{ show?.name || '' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="share()">
+        <ion-icon slot="icon-only" name="share-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -12,7 +17,7 @@
   <div *ngIf="isLoading" class="ion-padding">
     <ion-skeleton-text
       animated
-      style="width: 100%; height: 220px; border-radius: 0; margin-bottom: 12px"
+      style="width: 100%; height: 300px; border-radius: 0; margin-bottom: 12px"
     ></ion-skeleton-text>
     <ion-skeleton-text
       animated
@@ -29,17 +34,13 @@
   </div>
 
   <ng-container *ngIf="!isLoading && show">
-    <!-- Backdrop -->
+    <!-- Hero: backdrop with content overlaid -->
     <div
-      class="tv-backdrop"
+      class="tv-hero"
       [style.backgroundImage]="backdropUrl ? 'url(' + backdropUrl + ')' : 'none'"
     >
-      <div class="tv-backdrop__gradient"></div>
-    </div>
-
-    <div class="tv-body">
-      <!-- Poster + Meta -->
-      <div class="tv-meta">
+      <div class="tv-hero__overlay"></div>
+      <div class="tv-hero__content">
         <ion-img
           [src]="posterUrl"
           [alt]="show.name"
@@ -50,24 +51,32 @@
           <p class="tv-tagline" *ngIf="show.tagline">
             <i>{{ show.tagline }}</i>
           </p>
-          <p class="tv-meta-row">
-            {{ firstAirYear }}
-            <span *ngIf="show.number_of_seasons"
-              >&nbsp;· {{ show.number_of_seasons }} Season{{
-              show.number_of_seasons > 1 ? 's' : '' }}</span
+          <div class="tv-badges-row">
+            <span class="tv-rating-badge" *ngIf="show.vote_average"
+              >{{ show.vote_average | number:'1.1-1' }}</span
             >
-            <span *ngIf="show.vote_average"
-              >&nbsp;· ⭐ {{ show.vote_average | number:'1.1-1' }}</span
+            <span class="tv-content-rating" *ngIf="contentRating"
+              >{{ contentRating }}</span
             >
-          </p>
-          <p class="tv-genres">{{ genres }}</p>
-          <p class="tv-creator" *ngIf="creators">By {{ creators }}</p>
-          <span class="tv-user-rating" *ngIf="userRating"
-            >Your rating: ★{{ userRating }}</span
-          >
+            <span class="tv-year" *ngIf="firstAirYear">{{ firstAirYear }}</span>
+            <span *ngIf="show.number_of_seasons" class="tv-year"
+              >{{ show.number_of_seasons }} Season{{ show.number_of_seasons > 1
+              ? 's' : '' }}</span
+            >
+            <span class="tv-user-rating" *ngIf="userRating"
+              >★{{ userRating }}</span
+            >
+          </div>
+          <div class="tv-genre-pills" *ngIf="show.genres?.length">
+            <span class="tv-genre-pill" *ngFor="let g of show.genres"
+              >{{ g.name }}</span
+            >
+          </div>
         </div>
       </div>
+    </div>
 
+    <div class="tv-body">
       <!-- Action bar -->
       <div class="action-bar">
         <ion-button
@@ -83,63 +92,160 @@
           {{ isWatched() ? 'Watched' : 'Watch' }}
         </ion-button>
         <ion-button
+          *ngIf="trailerKey"
           size="small"
-          [fill]="isFavorite() ? 'solid' : 'outline'"
-          color="danger"
-          (click)="toggleFavorite()"
+          fill="outline"
+          color="medium"
+          (click)="openTrailer()"
         >
-          <ion-icon
-            slot="start"
-            [name]="isFavorite() ? 'heart' : 'heart-outline'"
-          ></ion-icon>
-          Fav
+          <ion-icon slot="start" name="play-circle-outline"></ion-icon>
+          Trailer
         </ion-button>
-        <ion-button
-          size="small"
-          [fill]="isWatchlist() ? 'solid' : 'outline'"
-          color="warning"
-          (click)="toggleWatchlist()"
-        >
-          <ion-icon
-            slot="start"
-            [name]="isWatchlist() ? 'bookmark' : 'bookmark-outline'"
-          ></ion-icon>
-          List
-        </ion-button>
+        <div class="action-icons">
+          <ion-button
+            fill="clear"
+            size="small"
+            [color]="isFavorite() ? 'danger' : 'medium'"
+            (click)="toggleFavorite()"
+          >
+            <ion-icon
+              slot="icon-only"
+              [name]="isFavorite() ? 'heart' : 'heart-outline'"
+            ></ion-icon>
+          </ion-button>
+          <ion-button
+            fill="clear"
+            size="small"
+            [color]="isWatchlist() ? 'warning' : 'medium'"
+            (click)="toggleWatchlist()"
+          >
+            <ion-icon
+              slot="icon-only"
+              [name]="isWatchlist() ? 'bookmark' : 'bookmark-outline'"
+            ></ion-icon>
+          </ion-button>
+        </div>
       </div>
 
-      <!-- Overview -->
+      <!-- Overview (moved: show synopsis right after CTA buttons) -->
       <div class="section" *ngIf="show.overview">
         <p class="tv-overview">{{ show.overview }}</p>
       </div>
 
-      <!-- Details -->
+      <!-- Networks -->
+      <div class="network-section" *ngIf="show.networks?.length">
+        <div class="network-row">
+          <span class="network-label">AVAILABLE ON</span>
+          <div class="network-item" *ngFor="let net of show.networks">
+            <div class="network-pill">
+              <img
+                *ngIf="net.logo_path"
+                [src]="'https://image.tmdb.org/t/p/w92' + net.logo_path"
+                [alt]="net.name"
+                class="network-logo"
+              />
+              <span *ngIf="!net.logo_path">{{ net.name }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats grid -->
       <div class="section">
-        <h2 class="section-title">Details</h2>
-        <ion-list lines="none" class="tv-details-list">
-          <ion-item *ngIf="show.first_air_date">
-            <ion-label><b>First Air</b></ion-label>
-            <ion-note slot="end">{{ show.first_air_date | date }}</ion-note>
-          </ion-item>
-          <ion-item *ngIf="show.status">
-            <ion-label><b>Status</b></ion-label>
-            <ion-note slot="end">{{ show.status }}</ion-note>
-          </ion-item>
-          <ion-item *ngIf="show.number_of_episodes">
-            <ion-label><b>Episodes</b></ion-label>
-            <ion-note slot="end">{{ show.number_of_episodes }}</ion-note>
-          </ion-item>
-          <ion-item *ngIf="show.original_language">
-            <ion-label><b>Language</b></ion-label>
-            <ion-note slot="end"
-              >{{ show.original_language | uppercase }}</ion-note
-            >
-          </ion-item>
-        </ion-list>
+        <div class="stats-grid">
+          <div class="stat-card" *ngIf="show.number_of_episodes">
+            <p class="stat-value">{{ show.number_of_episodes }}</p>
+            <p class="stat-label">
+              Episode{{ show.number_of_episodes > 1 ? 's' : '' }}<span
+                *ngIf="episodeRuntime"
+              >
+                · {{ episodeRuntime }}m</span
+              >
+            </p>
+          </div>
+          <div class="stat-card" *ngIf="show.vote_average">
+            <p class="stat-value">
+              {{ show.vote_average | number:'1.1-1' }}<span class="stat-sub">
+                / 10</span
+              >
+            </p>
+            <p class="stat-label">{{ show.vote_count | number }} votes</p>
+          </div>
+          <div class="stat-card" *ngIf="show.first_air_date">
+            <p class="stat-value stat-value--sm">
+              {{ show.first_air_date | date:'mediumDate' }}
+            </p>
+            <p class="stat-label">First Aired</p>
+          </div>
+          <div class="stat-card" *ngIf="show.last_air_date">
+            <p class="stat-value stat-value--sm">
+              {{ show.last_air_date | date:'mediumDate' }}
+            </p>
+            <p class="stat-label">Last Aired</p>
+          </div>
+          <div class="stat-card" *ngIf="show.status">
+            <p class="stat-value stat-value--sm">
+              <span class="status-badge" [ngClass]="statusBadgeClass"
+                >{{ show.status }}</span
+              >
+            </p>
+            <p class="stat-label">Status</p>
+          </div>
+          <div class="stat-card" *ngIf="show.origin_country?.length">
+            <p class="stat-value stat-value--sm">
+              {{ show.origin_country.join(', ') }}
+            </p>
+            <p class="stat-label">Country</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Created by -->
+      <div class="section" *ngIf="creatorsWithPhotos.length">
+        <h2 class="section-title">Created By</h2>
+        <div class="cast-scroll">
+          <div class="cast-item" *ngFor="let c of creatorsWithPhotos">
+            <div class="cast-avatar">
+              <img
+                [src]="c.profile_path
+                  ? 'https://image.tmdb.org/t/p/w185' + c.profile_path
+                  : 'assets/icon/favicon.png'"
+                [alt]="c.name"
+                class="cast-avatar__img"
+              />
+            </div>
+            <p class="cast-name">{{ c.name }}</p>
+            <p class="cast-character">Creator</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cast -->
+      <div class="section" *ngIf="cast.length">
+        <h2 class="section-title">Cast</h2>
+        <div class="cast-scroll">
+          <div
+            class="cast-item"
+            *ngFor="let person of cast"
+            [routerLink]="['/person', person.id]"
+          >
+            <div class="cast-avatar">
+              <img
+                [src]="person.profile_path
+                  ? 'https://image.tmdb.org/t/p/w185' + person.profile_path
+                  : 'assets/icon/favicon.png'"
+                [alt]="person.name"
+                class="cast-avatar__img"
+              />
+            </div>
+            <p class="cast-name">{{ person.name }}</p>
+            <p class="cast-character">{{ person.character }}</p>
+          </div>
+        </div>
       </div>
 
       <!-- Seasons -->
-      <div class="section" *ngIf="show.seasons?.length">
+      <div class="section seasons-section" *ngIf="show.seasons?.length">
         <h2 class="section-title">Seasons</h2>
         <ion-list>
           <ion-item
@@ -174,30 +280,6 @@
         </ion-list>
       </div>
 
-      <!-- Cast -->
-      <div class="section" *ngIf="cast.length">
-        <h2 class="section-title">Cast</h2>
-        <div class="cast-scroll">
-          <div
-            class="cast-item"
-            *ngFor="let person of cast"
-            [routerLink]="['/person', person.id]"
-          >
-            <div class="cast-avatar">
-              <img
-                [src]="person.profile_path
-                  ? 'https://image.tmdb.org/t/p/w185' + person.profile_path
-                  : 'assets/icon/favicon.png'"
-                [alt]="person.name"
-                class="cast-avatar__img"
-              />
-            </div>
-            <p class="cast-name">{{ person.name }}</p>
-            <p class="cast-character">{{ person.character }}</p>
-          </div>
-        </div>
-      </div>
-
       <!-- Trailer -->
       <div class="section" *ngIf="trailerKey">
         <h2 class="section-title">Trailer</h2>
@@ -211,18 +293,7 @@
         </div>
       </div>
 
-      <!-- Photos -->
-      <div class="section" *ngIf="images.length">
-        <h2 class="section-title">Photos</h2>
-        <div class="image-scroll">
-          <img
-            *ngFor="let img of images"
-            [src]="'https://image.tmdb.org/t/p/w300' + img.file_path"
-            class="gallery-img"
-            [alt]="show.name"
-          />
-        </div>
-      </div>
+      <!-- Photos removed: now shown as slideshow in header background -->
 
       <!-- Reviews -->
       <div class="section" *ngIf="reviews.length">
