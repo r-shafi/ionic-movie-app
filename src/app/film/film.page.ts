@@ -14,10 +14,9 @@ export class FilmPage implements OnInit {
   credits: any;
   videos: any[] = [];
   images: any[] = [];
-  // slideshow state
   private _slideshowIndex = 0;
   private _slideshowTimer: any = null;
-  private _slideshowInterval = 5000; // ms
+  private _slideshowInterval = 5000;
   private _currentBackdrop: string | null = null;
   private _prevBackdrop: string | null = null;
   public _bgToggle = false;
@@ -50,7 +49,6 @@ export class FilmPage implements OnInit {
           (v: any) => v.site === 'YouTube',
         );
         this.images = (data.images?.backdrops || []).slice(0, 20);
-        // initialize slideshow backdrop
         if (this.images.length) {
           this._currentBackdrop = this._buildImageUrl(
             this.images[0]?.file_path,
@@ -159,6 +157,15 @@ export class FilmPage implements OnInit {
     return this._currentBackdrop;
   }
 
+  get runtimeDisplay(): string {
+    if (!this.movie?.runtime) return '';
+    const h = Math.floor(this.movie.runtime / 60);
+    const m = this.movie.runtime % 60;
+    if (h === 0) return `${m}m`;
+    if (m === 0) return `${h}h`;
+    return `${h}h ${m}m`;
+  }
+
   get year(): string {
     return this.movie?.release_date?.substring(0, 4) || '';
   }
@@ -172,20 +179,36 @@ export class FilmPage implements OnInit {
   }
 
   get cast(): any[] {
-    return (this.credits?.cast || []).slice(0, 30);
+    return (this.credits?.cast || []).slice(0, 20);
   }
 
-  get director(): string {
-    return (
-      (this.credits?.crew || [])
-        .filter((c: any) => c.job === 'Director')
-        .map((c: any) => c.name)
-        .join(', ') || ''
-    );
+  get crewDirectors(): any[] {
+    return (this.credits?.crew || []).filter((c: any) => c.job === 'Director');
   }
 
-  get genres(): string {
-    return (this.movie?.genres || []).map((g: any) => g.name).join(', ');
+  get contentRating(): string {
+    const results = this.movie?.release_dates?.results || [];
+    const us = results.find((r: any) => r.iso_3166_1 === 'US');
+    const releaseDates = us?.release_dates || [];
+    const rated = releaseDates.find((rd: any) => rd.certification);
+    return rated?.certification || '';
+  }
+
+  get statusBadgeClass(): string {
+    const s = (this.movie?.status || '').toLowerCase();
+    if (s.includes('released')) {
+      return 'status-released';
+    }
+    if (s.includes('production')) {
+      return 'status-production';
+    }
+    if (s.includes('planned')) {
+      return 'status-planned';
+    }
+    if (s.includes('cancel')) {
+      return 'status-cancelled';
+    }
+    return 'status-default';
   }
 
   get userRating(): number | null {
@@ -235,6 +258,28 @@ export class FilmPage implements OnInit {
         ...this.movie,
         media_type: 'movie',
       });
+    }
+  }
+
+  openTrailer() {
+    if (this.trailerKey) {
+      window.open(
+        `https://www.youtube.com/watch?v=${this.trailerKey}`,
+        '_blank',
+      );
+    }
+  }
+
+  share() {
+    const url = `https://www.themoviedb.org/movie/${this.movie?.id}`;
+    if (navigator.share) {
+      navigator.share({
+        title: this.movie?.title,
+        text: this.movie?.overview,
+        url,
+      });
+    } else {
+      window.open(url, '_blank');
     }
   }
 }

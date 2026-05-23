@@ -4,6 +4,11 @@
       <ion-back-button defaultHref="/home"></ion-back-button>
     </ion-buttons>
     <ion-title>{{ movie?.title || '' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="share()">
+        <ion-icon slot="icon-only" name="share-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -12,7 +17,7 @@
   <div *ngIf="isLoading" class="ion-padding">
     <ion-skeleton-text
       animated
-      style="width: 100%; height: 220px; border-radius: 0; margin-bottom: 12px"
+      style="width: 100%; height: 300px; border-radius: 0; margin-bottom: 12px"
     ></ion-skeleton-text>
     <ion-skeleton-text
       animated
@@ -29,24 +34,20 @@
   </div>
 
   <ng-container *ngIf="!isLoading && movie">
-    <!-- Backdrop (crossfading slideshow) -->
-    <div class="film-backdrop">
+    <!-- Hero: backdrop with content overlaid (crossfading slideshow) -->
+    <div class="film-hero">
       <div
-        class="film-backdrop__bg"
+        class="film-hero__bg"
         [class.active]="_bgToggle"
         [style.backgroundImage]="backdropA ? 'url(' + backdropA + ')' : 'none'"
       ></div>
       <div
-        class="film-backdrop__bg"
+        class="film-hero__bg"
         [class.active]="!_bgToggle"
         [style.backgroundImage]="backdropB ? 'url(' + backdropB + ')' : 'none'"
       ></div>
-      <div class="film-backdrop__gradient"></div>
-    </div>
-
-    <div class="film-body">
-      <!-- Poster + Meta -->
-      <div class="film-meta">
+      <div class="film-hero__overlay"></div>
+      <div class="film-hero__content">
         <ion-img
           [src]="posterUrl"
           [alt]="movie.title"
@@ -57,22 +58,31 @@
           <p class="film-tagline" *ngIf="movie.tagline">
             <i>{{ movie.tagline }}</i>
           </p>
-          <p class="film-meta-row">
-            {{ year }}<span *ngIf="movie.runtime"
-              >&nbsp;· {{ movie.runtime }}min</span
+          <div class="film-badges-row">
+            <span class="film-rating-badge" *ngIf="movie.vote_average"
+              >{{ movie.vote_average | number:'1.1-1' }}</span
             >
-            <span *ngIf="movie.vote_average"
-              >&nbsp;· ⭐ {{ movie.vote_average | number:'1.1-1' }}</span
+            <span class="film-content-rating" *ngIf="contentRating"
+              >{{ contentRating }}</span
             >
-          </p>
-          <p class="film-genres">{{ genres }}</p>
-          <p class="film-director" *ngIf="director">Dir. {{ director }}</p>
-          <span class="film-user-rating" *ngIf="userRating"
-            >Your rating: ★{{ userRating }}</span
-          >
+            <span class="film-year" *ngIf="year">{{ year }}</span>
+            <span *ngIf="movie.runtime" class="film-year"
+              >{{ runtimeDisplay }}</span
+            >
+            <span class="film-user-rating" *ngIf="userRating"
+              >★{{ userRating }}</span
+            >
+          </div>
+          <div class="film-genre-pills" *ngIf="movie.genres?.length">
+            <span class="film-genre-pill" *ngFor="let g of movie.genres"
+              >{{ g.name }}</span
+            >
+          </div>
         </div>
       </div>
+    </div>
 
+    <div class="film-body">
       <!-- Action bar -->
       <div class="action-bar">
         <ion-button
@@ -88,29 +98,39 @@
           {{ isWatched() ? 'Watched' : 'Watch' }}
         </ion-button>
         <ion-button
+          *ngIf="trailerKey"
           size="small"
-          [fill]="isFavorite() ? 'solid' : 'outline'"
-          color="danger"
-          (click)="toggleFavorite()"
+          fill="outline"
+          color="medium"
+          (click)="openTrailer()"
         >
-          <ion-icon
-            slot="start"
-            [name]="isFavorite() ? 'heart' : 'heart-outline'"
-          ></ion-icon>
-          Fav
+          <ion-icon slot="start" name="play-circle-outline"></ion-icon>
+          Trailer
         </ion-button>
-        <ion-button
-          size="small"
-          [fill]="isWatchlist() ? 'solid' : 'outline'"
-          color="warning"
-          (click)="toggleWatchlist()"
-        >
-          <ion-icon
-            slot="start"
-            [name]="isWatchlist() ? 'bookmark' : 'bookmark-outline'"
-          ></ion-icon>
-          List
-        </ion-button>
+        <div class="action-icons">
+          <ion-button
+            fill="clear"
+            size="small"
+            [color]="isFavorite() ? 'danger' : 'medium'"
+            (click)="toggleFavorite()"
+          >
+            <ion-icon
+              slot="icon-only"
+              [name]="isFavorite() ? 'heart' : 'heart-outline'"
+            ></ion-icon>
+          </ion-button>
+          <ion-button
+            fill="clear"
+            size="small"
+            [color]="isWatchlist() ? 'warning' : 'medium'"
+            (click)="toggleWatchlist()"
+          >
+            <ion-icon
+              slot="icon-only"
+              [name]="isWatchlist() ? 'bookmark' : 'bookmark-outline'"
+            ></ion-icon>
+          </ion-button>
+        </div>
       </div>
 
       <!-- Overview -->
@@ -118,33 +138,95 @@
         <p class="film-overview">{{ movie.overview }}</p>
       </div>
 
-      <!-- Details -->
+      <!-- Production companies -->
+      <div class="network-section" *ngIf="movie.production_companies?.length">
+        <div class="network-row">
+          <span class="network-label">PRODUCTION</span>
+          <div
+            class="network-item"
+            *ngFor="let company of movie.production_companies | slice:0:3"
+          >
+            <div class="network-pill">
+              <img
+                *ngIf="company.logo_path"
+                [src]="'https://image.tmdb.org/t/p/w92' + company.logo_path"
+                [alt]="company.name"
+                class="network-logo"
+              />
+              <span *ngIf="!company.logo_path">{{ company.name }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats grid -->
       <div class="section">
-        <h2 class="section-title">Details</h2>
-        <ion-list lines="none" class="film-details-list">
-          <ion-item *ngIf="movie.release_date">
-            <ion-label><b>Release</b></ion-label>
-            <ion-note slot="end">{{ movie.release_date | date }}</ion-note>
-          </ion-item>
-          <ion-item *ngIf="movie.runtime">
-            <ion-label><b>Runtime</b></ion-label>
-            <ion-note slot="end">{{ movie.runtime }} min</ion-note>
-          </ion-item>
-          <ion-item *ngIf="movie.original_language">
-            <ion-label><b>Language</b></ion-label>
-            <ion-note slot="end"
-              >{{ movie.original_language | uppercase }}</ion-note
-            >
-          </ion-item>
-          <ion-item *ngIf="movie.budget">
-            <ion-label><b>Budget</b></ion-label>
-            <ion-note slot="end">${{ movie.budget | number }}</ion-note>
-          </ion-item>
-          <ion-item *ngIf="movie.revenue">
-            <ion-label><b>Revenue</b></ion-label>
-            <ion-note slot="end">${{ movie.revenue | number }}</ion-note>
-          </ion-item>
-        </ion-list>
+        <div class="stats-grid">
+          <div class="stat-card" *ngIf="movie.runtime">
+            <p class="stat-value">
+              {{ runtimeDisplay }}
+            </p>
+            <p class="stat-label">Runtime</p>
+          </div>
+          <div class="stat-card" *ngIf="movie.vote_average">
+            <p class="stat-value">
+              {{ movie.vote_average | number:'1.1-1' }}<span class="stat-sub"> / 10</span>
+            </p>
+            <p class="stat-label">{{ movie.vote_count | number }} votes</p>
+          </div>
+          <div class="stat-card" *ngIf="movie.release_date">
+            <p class="stat-value stat-value--sm">
+              {{ movie.release_date | date:'mediumDate' }}
+            </p>
+            <p class="stat-label">Released</p>
+          </div>
+          <div class="stat-card" *ngIf="movie.original_language">
+            <p class="stat-value stat-value--sm">
+              {{ movie.original_language | uppercase }}
+            </p>
+            <p class="stat-label">Language</p>
+          </div>
+          <div class="stat-card" *ngIf="movie.origin_country?.length">
+            <p class="stat-value stat-value--sm">
+              {{ movie.origin_country.join(', ') }}
+            </p>
+            <p class="stat-label">Country</p>
+          </div>
+          <div class="stat-card" *ngIf="movie.status">
+            <p class="stat-value stat-value--sm">
+              <span class="status-badge" [ngClass]="statusBadgeClass"
+                >{{ movie.status }}</span
+              >
+            </p>
+            <p class="stat-label">Status</p>
+          </div>
+          <div class="stat-card" *ngIf="movie.belongs_to_collection">
+            <p class="stat-value stat-value--sm">
+              {{ movie.belongs_to_collection.name }}
+            </p>
+            <p class="stat-label">Collection</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Director(s) -->
+      <div class="section" *ngIf="crewDirectors.length">
+        <h2 class="section-title">Directed By</h2>
+        <div class="cast-scroll">
+          <div class="cast-item" *ngFor="let c of crewDirectors" [routerLink]="['/person', c.id]">
+            <div class="cast-avatar">
+              <img
+                [src]="c.profile_path
+                  ? 'https://image.tmdb.org/t/p/w185' + c.profile_path
+                  : 'assets/icon/favicon.png'"
+                [alt]="c.name"
+                class="cast-avatar__img"
+              />
+            </div>
+            <p class="cast-name">{{ c.name }}</p>
+            <p class="cast-character">Director</p>
+          </div>
+        </div>
       </div>
 
       <!-- Cast -->
@@ -180,12 +262,9 @@
             frameborder="0"
             allowfullscreen
             style="width: 100%; aspect-ratio: 16/9; border-radius: 8px"
-          >
-          </iframe>
+          ></iframe>
         </div>
       </div>
-
-      <!-- Gallery removed: photos are now used as slideshow in header background -->
 
       <!-- Reviews -->
       <div class="section" *ngIf="reviews.length">
@@ -233,8 +312,7 @@
             *ngFor="let m of recommendations"
             [item]="m"
             mediaType="movie"
-          >
-          </app-poster-card>
+          ></app-poster-card>
         </div>
       </div>
 
@@ -246,8 +324,7 @@
             *ngFor="let m of similar"
             [item]="m"
             mediaType="movie"
-          >
-          </app-poster-card>
+          ></app-poster-card>
         </div>
       </div>
     </div>
