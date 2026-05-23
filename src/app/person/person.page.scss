@@ -1,0 +1,61 @@
+.person-header {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.person-photo {
+  width: 120px;
+  min-width: 120px;
+  aspect-ratio: 2/3;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.person-info {
+  flex: 1;
+}
+.person-name {
+  font-size: 1.3rem;
+  font-weight: 800;
+  margin: 0 0 4px;
+}
+.person-known-for,
+.person-born,
+.person-died {
+  font-size: 0.82rem;
+  color: var(--ion-color-medium);
+  margin: 0 0 3px;
+}
+
+.person-bio {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: 4px;
+}
+
+.person-tabs {
+  margin-bottom: 4px;
+}
+.tab-content {
+  padding: 12px 16px;
+}
+
+.poster-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.person-image {
+  width: 100%;
+  aspect-ratio: 2/3;
+  border-radius: 4px;
+  object-fit: cover;
+}
