@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { map, mergeMap } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
 import { ProfileService } from '../services/profile.service';
 import { TmdbService } from '../services/tmdb.service';
 
@@ -11,55 +11,142 @@ import { TmdbService } from '../services/tmdb.service';
 })
 export class FilmPage implements OnInit {
   movie: any;
-  stars: any = new Array(5).fill('star-outline');
-
-  isWatched: boolean;
-  isFavorite: boolean;
-  isWatchlist: boolean;
+  credits: any;
+  videos: any[] = [];
+  images: any[] = [];
+  similar: any[] = [];
+  recommendations: any[] = [];
+  reviews: any[] = [];
+  isLoading = true;
 
   constructor(
-    private tmdbService: TmdbService,
-    private activatedRoute: ActivatedRoute,
-    private profileService: ProfileService
+    private tmdb: TmdbService,
+    private route: ActivatedRoute,
+    public profileService: ProfileService,
   ) {}
 
   ngOnInit() {
-    this.activatedRoute.params
-      .pipe(
-        map((params) => params.id),
-        mergeMap((id) => this.tmdbService.getMovie(id))
-      )
-      .subscribe((movie: any) => {
-        this.movie = movie;
-        new Array(Math.round(movie.vote_average / 2))
-          .fill(0)
-          .forEach((_, i) => {
-            this.stars[i] = 'star';
-          });
-        this.isWatched = this.profileService.isMovieInWatchedMovies(this.movie);
-        this.isFavorite = this.profileService.isMovieInFavoriteMovies(
-          this.movie
+    const id = +this.route.snapshot.paramMap.get('id')!;
+    forkJoin({
+      movie: this.tmdb.getMovie(id),
+      credits: this.tmdb.getMovieCredits(id),
+      videos: this.tmdb.getMovieVideos(id),
+      images: this.tmdb.getMovieImages(id),
+      similar: this.tmdb.getMovieSimilar(id),
+      recommendations: this.tmdb.getMovieRecommendations(id),
+      reviews: this.tmdb.getMovieReviews(id),
+    }).subscribe({
+      next: (data: any) => {
+        this.movie = data.movie;
+        this.credits = data.credits;
+        this.videos = (data.videos?.results || []).filter(
+          (v: any) => v.site === 'YouTube',
         );
-        this.isWatchlist = this.profileService.isMovieInWatchlist(this.movie);
+        this.images = (data.images?.backdrops || []).slice(0, 20);
+        this.similar = (data.similar?.results || []).map((i: any) => ({
+          ...i,
+          media_type: 'movie',
+        }));
+        this.recommendations = (data.recommendations?.results || []).map(
+          (i: any) => ({ ...i, media_type: 'movie' }),
+        );
+        this.reviews = data.reviews?.results || [];
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+      },
+    });
+  }
+
+  get backdropUrl(): string {
+    return this.movie?.backdrop_path
+      ? `https://image.tmdb.org/t/p/w1280${this.movie.backdrop_path}`
+      : '';
+  }
+
+  get posterUrl(): string {
+    return this.movie?.poster_path
+      ? `https://image.tmdb.org/t/p/w342${this.movie.poster_path}`
+      : 'assets/no-image.png';
+  }
+
+  get year(): string {
+    return this.movie?.release_date?.substring(0, 4) || '';
+  }
+
+  get trailerKey(): string | null {
+    return (
+      this.videos.find((v: any) => v.type === 'Trailer')?.key ||
+      this.videos[0]?.key ||
+      null
+    );
+  }
+
+  get cast(): any[] {
+    return (this.credits?.cast || []).slice(0, 30);
+  }
+
+  get director(): string {
+    return (
+      (this.credits?.crew || [])
+        .filter((c: any) => c.job === 'Director')
+        .map((c: any) => c.name)
+        .join(', ') || ''
+    );
+  }
+
+  get genres(): string {
+    return (this.movie?.genres || []).map((g: any) => g.name).join(', ');
+  }
+
+  get userRating(): number | null {
+    return (
+      this.profileService.getRating('movie', this.movie?.id)?.rating || null
+    );
+  }
+
+  isWatched(): boolean {
+    return this.movie
+      ? this.profileService.isInWatched({ ...this.movie, media_type: 'movie' })
+      : false;
+  }
+  isFavorite(): boolean {
+    return this.movie
+      ? this.profileService.isInFavorites({
+          ...this.movie,
+          media_type: 'movie',
+        })
+      : false;
+  }
+  isWatchlist(): boolean {
+    return this.movie
+      ? this.profileService.isInWatchlist({
+          ...this.movie,
+          media_type: 'movie',
+        })
+      : false;
+  }
+
+  toggleWatched() {
+    if (this.movie) {
+      this.profileService.toggleWatched({ ...this.movie, media_type: 'movie' });
+    }
+  }
+  toggleFavorite() {
+    if (this.movie) {
+      this.profileService.toggleFavorite({
+        ...this.movie,
+        media_type: 'movie',
       });
+    }
   }
-
-  goBack() {
-    history.back();
-  }
-
-  addToWatchedMovies() {
-    this.profileService.addToWatchedMovies(this.movie);
-    this.isWatched = !this.isWatched;
-  }
-
-  addToFavoriteMovies() {
-    this.profileService.addToFavoriteMovies(this.movie);
-    this.isFavorite = !this.isFavorite;
-  }
-
-  addToWatchlist() {
-    this.profileService.addToWatchlist(this.movie);
-    this.isWatchlist = !this.isWatchlist;
+  toggleWatchlist() {
+    if (this.movie) {
+      this.profileService.addToWatchlist({
+        ...this.movie,
+        media_type: 'movie',
+      });
+    }
   }
 }

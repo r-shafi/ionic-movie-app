@@ -1,69 +1,259 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button (click)="goBack()">
-        <ion-icon name="arrow-back-outline"></ion-icon>
-      </ion-button>
+      <ion-back-button defaultHref="/home"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ movie ? movie.title : 'Loading Film...' }}</ion-title>
+    <ion-title>{{ movie?.title || '' }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="movie">
-  <ion-img
-    [src]="'https://image.tmdb.org/t/p/original' + movie.backdrop_path"
-  ></ion-img>
+<ion-content>
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="ion-padding">
+    <ion-skeleton-text
+      animated
+      style="width: 100%; height: 220px; border-radius: 0; margin-bottom: 12px"
+    ></ion-skeleton-text>
+    <ion-skeleton-text
+      animated
+      style="width: 60%; height: 28px; margin-bottom: 8px"
+    ></ion-skeleton-text>
+    <ion-skeleton-text
+      animated
+      style="width: 40%; height: 16px; margin-bottom: 12px"
+    ></ion-skeleton-text>
+    <ion-skeleton-text
+      animated
+      style="width: 100%; height: 80px"
+    ></ion-skeleton-text>
+  </div>
 
-  <main class="ion-padding-horizontal">
-    <section class="header">
-      <p><i>{{movie.tagline}}</i></p>
-      <h1>{{movie.title}}</h1>
-      <p *ngIf="movie.original_title !== movie.title">
-        {{movie.original_title}}
-      </p>
-      <p>{{movie.release_date | date}}</p>
-      <span class="rating">
-        <ion-icon *ngFor="let star of stars" [name]="star"></ion-icon>
-        {{ movie.vote_average / 2 }}
-      </span>
-    </section>
+  <ng-container *ngIf="!isLoading && movie">
+    <!-- Backdrop -->
+    <div
+      class="film-backdrop"
+      [style.backgroundImage]="backdropUrl ? 'url(' + backdropUrl + ')' : 'none'"
+    >
+      <div class="film-backdrop__gradient"></div>
+    </div>
 
-    <section>
-      <p>{{movie.overview}}</p>
-    </section>
+    <div class="film-body">
+      <!-- Poster + Meta -->
+      <div class="film-meta">
+        <ion-img
+          [src]="posterUrl"
+          [alt]="movie.title"
+          class="film-poster"
+        ></ion-img>
+        <div class="film-info">
+          <h1 class="film-title">{{ movie.title }}</h1>
+          <p class="film-tagline" *ngIf="movie.tagline">
+            <i>{{ movie.tagline }}</i>
+          </p>
+          <p class="film-meta-row">
+            {{ year }}<span *ngIf="movie.runtime"
+              >&nbsp;· {{ movie.runtime }}min</span
+            >
+            <span *ngIf="movie.vote_average"
+              >&nbsp;· ⭐ {{ movie.vote_average | number:'1.1-1' }}</span
+            >
+          </p>
+          <p class="film-genres">{{ genres }}</p>
+          <p class="film-director" *ngIf="director">Dir. {{ director }}</p>
+          <span class="film-user-rating" *ngIf="userRating"
+            >Your rating: ★{{ userRating }}</span
+          >
+        </div>
+      </div>
 
-    <section>
-      <ion-chip color="light" *ngFor="let genre of movie.genres">
-        <ion-label>{{genre.name}}</ion-label>
-      </ion-chip>
-    </section>
+      <!-- Action bar -->
+      <div class="action-bar">
+        <ion-button
+          size="small"
+          [fill]="isWatched() ? 'solid' : 'outline'"
+          color="primary"
+          (click)="toggleWatched()"
+        >
+          <ion-icon
+            slot="start"
+            [name]="isWatched() ? 'eye' : 'eye-outline'"
+          ></ion-icon>
+          {{ isWatched() ? 'Watched' : 'Watch' }}
+        </ion-button>
+        <ion-button
+          size="small"
+          [fill]="isFavorite() ? 'solid' : 'outline'"
+          color="danger"
+          (click)="toggleFavorite()"
+        >
+          <ion-icon
+            slot="start"
+            [name]="isFavorite() ? 'heart' : 'heart-outline'"
+          ></ion-icon>
+          Fav
+        </ion-button>
+        <ion-button
+          size="small"
+          [fill]="isWatchlist() ? 'solid' : 'outline'"
+          color="warning"
+          (click)="toggleWatchlist()"
+        >
+          <ion-icon
+            slot="start"
+            [name]="isWatchlist() ? 'bookmark' : 'bookmark-outline'"
+          ></ion-icon>
+          List
+        </ion-button>
+      </div>
 
-    <section class="action">
-      <ion-button
-        fill="{{ isWatched ? 'solid' : 'outline' }}"
-        color="light"
-        (click)="addToWatchedMovies(movie)"
-      >
-        <ion-icon slot="start" name="eye-outline"></ion-icon>
-        {{ isWatched ? 'Remove from Watched Movies' : 'Add to Watched Movies' }}
-      </ion-button>
-      <ion-button
-        fill="{{ isFavorite ? 'solid' : 'outline' }}"
-        color="light"
-        (click)="addToFavoriteMovies(movie)"
-      >
-        <ion-icon slot="start" name="heart-outline"></ion-icon>
-        {{ isFavorite ? 'Remove from Favorite Movies' : 'Add to Favorite Movies'
-        }}
-      </ion-button>
-      <ion-button
-        fill="{{ isWatchlist ? 'solid' : 'outline' }}"
-        color="light"
-        (click)="addToWatchlist(movie)"
-      >
-        <ion-icon slot="start" name="list-outline"></ion-icon>
-        {{ isWatchlist ? 'Remove from Watchlist' : 'Add to Watchlist' }}
-      </ion-button>
-    </section>
-  </main>
+      <!-- Overview -->
+      <div class="section" *ngIf="movie.overview">
+        <p class="film-overview">{{ movie.overview }}</p>
+      </div>
+
+      <!-- Details -->
+      <div class="section">
+        <h2 class="section-title">Details</h2>
+        <ion-list lines="none" class="film-details-list">
+          <ion-item *ngIf="movie.release_date">
+            <ion-label><b>Release</b></ion-label>
+            <ion-note slot="end">{{ movie.release_date | date }}</ion-note>
+          </ion-item>
+          <ion-item *ngIf="movie.runtime">
+            <ion-label><b>Runtime</b></ion-label>
+            <ion-note slot="end">{{ movie.runtime }} min</ion-note>
+          </ion-item>
+          <ion-item *ngIf="movie.original_language">
+            <ion-label><b>Language</b></ion-label>
+            <ion-note slot="end"
+              >{{ movie.original_language | uppercase }}</ion-note
+            >
+          </ion-item>
+          <ion-item *ngIf="movie.budget">
+            <ion-label><b>Budget</b></ion-label>
+            <ion-note slot="end">${{ movie.budget | number }}</ion-note>
+          </ion-item>
+          <ion-item *ngIf="movie.revenue">
+            <ion-label><b>Revenue</b></ion-label>
+            <ion-note slot="end">${{ movie.revenue | number }}</ion-note>
+          </ion-item>
+        </ion-list>
+      </div>
+
+      <!-- Cast -->
+      <div class="section" *ngIf="cast.length">
+        <h2 class="section-title">Cast</h2>
+        <div class="cast-scroll">
+          <div
+            class="cast-item"
+            *ngFor="let person of cast"
+            [routerLink]="['/person', person.id]"
+          >
+            <div class="cast-avatar">
+              <img
+                [src]="person.profile_path
+                  ? 'https://image.tmdb.org/t/p/w185' + person.profile_path
+                  : 'assets/icon/favicon.png'"
+                [alt]="person.name"
+                class="cast-avatar__img"
+              />
+            </div>
+            <p class="cast-name">{{ person.name }}</p>
+            <p class="cast-character">{{ person.character }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trailer -->
+      <div class="section" *ngIf="trailerKey">
+        <h2 class="section-title">Trailer</h2>
+        <div class="trailer-wrap">
+          <iframe
+            [src]="'https://www.youtube.com/embed/' + trailerKey | safeUrl"
+            frameborder="0"
+            allowfullscreen
+            style="width: 100%; aspect-ratio: 16/9; border-radius: 8px"
+          >
+          </iframe>
+        </div>
+      </div>
+
+      <!-- Gallery -->
+      <div class="section" *ngIf="images.length">
+        <h2 class="section-title">Photos</h2>
+        <div class="image-scroll">
+          <img
+            *ngFor="let img of images"
+            [src]="'https://image.tmdb.org/t/p/w300' + img.file_path"
+            class="gallery-img"
+            [alt]="movie.title"
+          />
+        </div>
+      </div>
+
+      <!-- Reviews -->
+      <div class="section" *ngIf="reviews.length">
+        <div class="section-header-row">
+          <h2 class="section-title">Reviews</h2>
+          <a
+            class="see-all-link"
+            [routerLink]="['/movie', movie.id, 'reviews']"
+            *ngIf="reviews.length > 3"
+            >See All {{ reviews.length }}</a
+          >
+        </div>
+        <div class="review-card" *ngFor="let review of reviews | slice:0:3">
+          <div class="review-header">
+            <div class="review-avatar">
+              <img
+                [src]="review.author_details?.avatar_path
+                  ? (review.author_details.avatar_path.startsWith('/https')
+                      ? review.author_details.avatar_path.slice(1)
+                      : 'https://image.tmdb.org/t/p/w45' + review.author_details.avatar_path)
+                  : 'assets/icon/favicon.png'"
+                [alt]="review.author"
+                class="review-avatar__img"
+              />
+            </div>
+            <div class="review-author-meta">
+              <span class="review-author">{{ review.author }}</span>
+              <span class="review-rating" *ngIf="review.author_details?.rating">
+                ⭐ {{ review.author_details.rating }}/10
+              </span>
+            </div>
+            <span class="review-date"
+              >{{ review.created_at | date:'mediumDate' }}</span
+            >
+          </div>
+          <p class="review-content">{{ review.content }}</p>
+        </div>
+      </div>
+
+      <!-- Recommendations -->
+      <div class="section" *ngIf="recommendations.length">
+        <h2 class="section-title">Recommended</h2>
+        <div class="poster-grid">
+          <app-poster-card
+            *ngFor="let m of recommendations"
+            [item]="m"
+            mediaType="movie"
+          >
+          </app-poster-card>
+        </div>
+      </div>
+
+      <!-- Similar -->
+      <div class="section" *ngIf="similar.length">
+        <h2 class="section-title">Similar Movies</h2>
+        <div class="poster-grid">
+          <app-poster-card
+            *ngFor="let m of similar"
+            [item]="m"
+            mediaType="movie"
+          >
+          </app-poster-card>
+        </div>
+      </div>
+    </div>
+  </ng-container>
 </ion-content>
