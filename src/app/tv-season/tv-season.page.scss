@@ -1,0 +1,19 @@
+.season-header {
+  padding-bottom: 8px;
+}
+.season-progress {
+  font-size: 0.85rem;
+  color: var(--ion-color-medium);
+  margin-bottom: 6px;
+}
+.ep-overview {
+  font-size: 0.75rem;
+  color: var(--ion-color-medium);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ep-meta {
+  font-size: 0.7rem;
+  color: var(--ion-color-medium);
+}
