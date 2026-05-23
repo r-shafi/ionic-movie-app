@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { Platform } from '@ionic/angular';
 import { ProfileService } from '../services/profile.service';
+import { SettingsService } from '../services/settings.service';
 
 @Component({
   selector: 'app-profile',
@@ -8,12 +8,48 @@ import { ProfileService } from '../services/profile.service';
   styleUrls: ['./profile.page.scss'],
 })
 export class ProfilePage {
-  watched$ = this.profileService.watchedMovies$;
-  favorite$ = this.profileService.favoriteMovies$;
+  watchedMovies$ = this.profileService.watchedMovies$;
+  watchedTv$ = this.profileService.watchedTv$;
+  favoriteMovies$ = this.profileService.favoriteMovies$;
+  favoriteTv$ = this.profileService.favoriteTv$;
   watchlist$ = this.profileService.watchlist$;
+  ratings$ = this.profileService.ratings$;
+  customLists$ = this.profileService.customLists$;
+  activity$ = this.profileService.activity$;
+
+  activeTab: 'overview' | 'activity' | 'lists' = 'overview';
 
   constructor(
-    private profileService: ProfileService,
-    public platform: Platform
+    public profileService: ProfileService,
+    private settingsService: SettingsService,
   ) {}
+
+  get displayName(): string {
+    return this.settingsService.getSettings().displayName;
+  }
+
+  get totalHours(): number {
+    return this.profileService.getTotalHoursWatched();
+  }
+
+  get ratingDistribution(): Record<number, number> {
+    return this.profileService.getRatingDistribution();
+  }
+
+  navigateToRoute(route: string) {
+    window.location.href = route;
+  }
+
+  createList() {
+    const name = prompt('List name:');
+    if (name) {
+      this.profileService.createList(name);
+    }
+  }
+
+  deleteList(id: string) {
+    if (confirm('Delete this list?')) {
+      this.profileService.deleteList(id);
+    }
+  }
 }

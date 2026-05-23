@@ -8,9 +8,9 @@ import { ProfileService } from 'src/app/services/profile.service';
 export class WatchlistPage {
   watchlist$ = this.profileService.watchlist$;
 
-  constructor(private profileService: ProfileService) {}
+  constructor(public profileService: ProfileService) {}
 
-  goBack() {
-    history.back();
+  remove(item: any) {
+    this.profileService.addToWatchlist(item); // toggles off if present
   }
 }

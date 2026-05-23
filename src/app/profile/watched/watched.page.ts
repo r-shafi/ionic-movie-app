@@ -7,10 +7,12 @@ import { ProfileService } from 'src/app/services/profile.service';
 })
 export class WatchedPage {
   watchedMovies$ = this.profileService.watchedMovies$;
+  watchedTv$ = this.profileService.watchedTv$;
+  activeTab: 'movies' | 'tv' = 'movies';
 
-  constructor(private profileService: ProfileService) {}
+  constructor(public profileService: ProfileService) {}
 
-  goBack() {
-    history.back();
+  remove(item: any) {
+    this.profileService.toggleWatched(item);
   }
 }

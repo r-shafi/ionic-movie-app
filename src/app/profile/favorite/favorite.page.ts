@@ -7,10 +7,12 @@ import { ProfileService } from 'src/app/services/profile.service';
 })
 export class FavoritePage {
   favoriteMovies$ = this.profileService.favoriteMovies$;
+  favoriteTv$ = this.profileService.favoriteTv$;
+  activeTab: 'movies' | 'tv' = 'movies';
 
-  constructor(private profileService: ProfileService) {}
+  constructor(public profileService: ProfileService) {}
 
-  goBack() {
-    history.back();
+  remove(item: any) {
+    this.profileService.toggleFavorite(item);
   }
 }
