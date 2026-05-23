@@ -29,11 +29,18 @@
   </div>
 
   <ng-container *ngIf="!isLoading && movie">
-    <!-- Backdrop -->
-    <div
-      class="film-backdrop"
-      [style.backgroundImage]="backdropUrl ? 'url(' + backdropUrl + ')' : 'none'"
-    >
+    <!-- Backdrop (crossfading slideshow) -->
+    <div class="film-backdrop">
+      <div
+        class="film-backdrop__bg"
+        [class.active]="_bgToggle"
+        [style.backgroundImage]="backdropA ? 'url(' + backdropA + ')' : 'none'"
+      ></div>
+      <div
+        class="film-backdrop__bg"
+        [class.active]="!_bgToggle"
+        [style.backgroundImage]="backdropB ? 'url(' + backdropB + ')' : 'none'"
+      ></div>
       <div class="film-backdrop__gradient"></div>
     </div>
 

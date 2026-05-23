@@ -19,6 +19,8 @@ export class TvPage implements OnInit {
   private _slideshowTimer: any = null;
   private _slideshowInterval = 5000; // ms
   private _currentBackdrop: string | null = null;
+  private _prevBackdrop: string | null = null;
+  public _bgToggle = false;
   similar: any[] = [];
   recommendations: any[] = [];
   reviews: any[] = [];
@@ -52,8 +54,9 @@ export class TvPage implements OnInit {
         if (this.images.length) {
           this._currentBackdrop = this._buildImageUrl(
             this.images[0]?.file_path,
-            'w1280',
+            'auto',
           );
+          this._prevBackdrop = this._currentBackdrop;
           this.startBackdropSlideshow();
         }
         this.similar = (data.similar?.results || []).map((i: any) => ({
@@ -77,26 +80,56 @@ export class TvPage implements OnInit {
   }
 
   get backdropUrl(): string {
-    if (this._currentBackdrop) return this._currentBackdrop;
-    return this.show?.backdrop_path
-      ? `https://image.tmdb.org/t/p/w1280${this.show.backdrop_path}`
-      : '';
+    if (this._currentBackdrop) {
+      return this._currentBackdrop;
+    }
+    if (this.show?.backdrop_path) {
+      return this._buildImageUrl(this.show.backdrop_path, 'auto');
+    }
+    return '';
   }
 
-  private _buildImageUrl(path: string | undefined, size = 'w1280') {
-    return path ? `https://image.tmdb.org/t/p/${size}${path}` : '';
+  private _preferredSize(): string {
+    const dpr = (typeof window !== 'undefined' && window.devicePixelRatio) || 1;
+    const vw = typeof window !== 'undefined' ? window.innerWidth : 360;
+    const needed = Math.ceil(vw * dpr);
+
+    // Conservative thresholds: avoid picking w1280 for most phones
+    if (needed <= 360) {
+      return 'w300';
+    }
+    if (needed <= 800) {
+      return 'w780';
+    }
+    if (needed <= 1400) {
+      return 'w1280';
+    }
+    return 'original';
+  }
+
+  private _buildImageUrl(path: string | undefined, size = 'auto') {
+    if (!path) {
+      return '';
+    }
+    const chosen = size === 'auto' ? this._preferredSize() : size;
+    return `https://image.tmdb.org/t/p/${chosen}${path}`;
   }
 
   startBackdropSlideshow() {
     this.stopBackdropSlideshow();
-    if (!this.images || !this.images.length) return;
+    if (!this.images || !this.images.length) {
+      return;
+    }
     this._slideshowIndex = 0;
     this._slideshowTimer = setInterval(() => {
       this._slideshowIndex = (this._slideshowIndex + 1) % this.images.length;
-      this._currentBackdrop = this._buildImageUrl(
+      const next = this._buildImageUrl(
         this.images[this._slideshowIndex]?.file_path,
-        'w1280',
+        'auto',
       );
+      this._prevBackdrop = this._currentBackdrop;
+      this._currentBackdrop = next;
+      this._bgToggle = !this._bgToggle;
     }, this._slideshowInterval);
   }
 
@@ -111,6 +144,21 @@ export class TvPage implements OnInit {
     return this.show?.poster_path
       ? `https://image.tmdb.org/t/p/w342${this.show.poster_path}`
       : 'assets/no-image.png';
+  }
+
+  get backdropA(): string | null {
+    // when _bgToggle is true, A is current; otherwise it's prev or current
+    if (this._bgToggle) {
+      return this._currentBackdrop;
+    }
+    return this._prevBackdrop || this._currentBackdrop;
+  }
+
+  get backdropB(): string | null {
+    if (this._bgToggle) {
+      return this._prevBackdrop || this._currentBackdrop;
+    }
+    return this._currentBackdrop;
   }
 
   get firstAirYear(): string {
@@ -154,11 +202,18 @@ export class TvPage implements OnInit {
 
   get statusBadgeClass(): string {
     const s = (this.show?.status || '').toLowerCase();
-    if (s.includes('returning')) return 'status-returning';
-    if (s.includes('ended')) return 'status-ended';
-    if (s.includes('cancel')) return 'status-cancelled';
-    if (s.includes('planned') || s.includes('production'))
+    if (s.includes('returning')) {
+      return 'status-returning';
+    }
+    if (s.includes('ended')) {
+      return 'status-ended';
+    }
+    if (s.includes('cancel')) {
+      return 'status-cancelled';
+    }
+    if (s.includes('planned') || s.includes('production')) {
       return 'status-planned';
+    }
     return 'status-default';
   }
 

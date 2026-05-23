@@ -19,6 +19,8 @@ export class FilmPage implements OnInit {
   private _slideshowTimer: any = null;
   private _slideshowInterval = 5000; // ms
   private _currentBackdrop: string | null = null;
+  private _prevBackdrop: string | null = null;
+  public _bgToggle = false;
   similar: any[] = [];
   recommendations: any[] = [];
   reviews: any[] = [];
@@ -52,8 +54,9 @@ export class FilmPage implements OnInit {
         if (this.images.length) {
           this._currentBackdrop = this._buildImageUrl(
             this.images[0]?.file_path,
-            'w1280',
+            'auto',
           );
+          this._prevBackdrop = this._currentBackdrop;
           this.startBackdropSlideshow();
         }
         this.similar = (data.similar?.results || []).map((i: any) => ({
@@ -77,26 +80,55 @@ export class FilmPage implements OnInit {
   }
 
   get backdropUrl(): string {
-    if (this._currentBackdrop) return this._currentBackdrop;
-    return this.movie?.backdrop_path
-      ? `https://image.tmdb.org/t/p/w1280${this.movie.backdrop_path}`
-      : '';
+    if (this._currentBackdrop) {
+      return this._currentBackdrop;
+    }
+    if (this.movie?.backdrop_path) {
+      return this._buildImageUrl(this.movie.backdrop_path, 'auto');
+    }
+    return '';
   }
 
-  private _buildImageUrl(path: string | undefined, size = 'w1280') {
-    return path ? `https://image.tmdb.org/t/p/${size}${path}` : '';
+  private _preferredSize(): string {
+    const dpr = (typeof window !== 'undefined' && window.devicePixelRatio) || 1;
+    const vw = typeof window !== 'undefined' ? window.innerWidth : 360;
+    const needed = Math.ceil(vw * dpr);
+
+    if (needed <= 360) {
+      return 'w300';
+    }
+    if (needed <= 800) {
+      return 'w780';
+    }
+    if (needed <= 1400) {
+      return 'w1280';
+    }
+    return 'original';
+  }
+
+  private _buildImageUrl(path: string | undefined, size = 'auto') {
+    if (!path) {
+      return '';
+    }
+    const chosen = size === 'auto' ? this._preferredSize() : size;
+    return `https://image.tmdb.org/t/p/${chosen}${path}`;
   }
 
   startBackdropSlideshow() {
     this.stopBackdropSlideshow();
-    if (!this.images || !this.images.length) return;
+    if (!this.images || !this.images.length) {
+      return;
+    }
     this._slideshowIndex = 0;
     this._slideshowTimer = setInterval(() => {
       this._slideshowIndex = (this._slideshowIndex + 1) % this.images.length;
-      this._currentBackdrop = this._buildImageUrl(
+      const next = this._buildImageUrl(
         this.images[this._slideshowIndex]?.file_path,
-        'w1280',
+        'auto',
       );
+      this._prevBackdrop = this._currentBackdrop;
+      this._currentBackdrop = next;
+      this._bgToggle = !this._bgToggle;
     }, this._slideshowInterval);
   }
 
@@ -111,6 +143,20 @@ export class FilmPage implements OnInit {
     return this.movie?.poster_path
       ? `https://image.tmdb.org/t/p/w342${this.movie.poster_path}`
       : 'assets/no-image.png';
+  }
+
+  get backdropA(): string | null {
+    if (this._bgToggle) {
+      return this._currentBackdrop;
+    }
+    return this._prevBackdrop || this._currentBackdrop;
+  }
+
+  get backdropB(): string | null {
+    if (this._bgToggle) {
+      return this._prevBackdrop || this._currentBackdrop;
+    }
+    return this._currentBackdrop;
   }
 
   get year(): string {

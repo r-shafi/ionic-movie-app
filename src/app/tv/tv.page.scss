@@ -1,6 +1,6 @@
 .tv-hero {
   width: 100%;
-  min-height: 260px;
+  min-height: 180px;
   background: #111 center / cover no-repeat;
   position: relative;
   display: flex;
@@ -11,10 +11,11 @@
     inset: 0;
     background: linear-gradient(
       to top,
-      rgba(0, 0, 0, 0.95) 0%,
-      rgba(0, 0, 0, 0.55) 50%,
-      rgba(0, 0, 0, 0.1) 100%
+      rgba(0, 0, 0, 0.98) 0%,
+      rgba(0, 0, 0, 0.75) 45%,
+      rgba(0, 0, 0, 0.25) 100%
     );
+    z-index: 0;
   }
 
   &__content {
@@ -26,6 +27,19 @@
     padding: 16px;
     width: 100%;
   }
+}
+
+/* Crossfade layers for hero backdrop */
+.tv-hero__bg {
+  position: absolute;
+  inset: 0;
+  background: #111 center / cover no-repeat;
+  transition: opacity 600ms ease-in-out;
+  opacity: 0;
+  z-index: 0;
+}
+.tv-hero__bg.active {
+  opacity: 1;
 }
 
 .tv-body {
@@ -509,7 +523,7 @@
 
 .poster-grid {
   display: grid;
-  grid-template-rows: repeat(2, auto);
+  grid-template-rows: 1fr;
   grid-auto-flow: column;
   grid-auto-columns: 110px;
   gap: 8px 10px;

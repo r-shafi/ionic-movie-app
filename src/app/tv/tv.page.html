@@ -34,11 +34,18 @@
   </div>
 
   <ng-container *ngIf="!isLoading && show">
-    <!-- Hero: backdrop with content overlaid -->
-    <div
-      class="tv-hero"
-      [style.backgroundImage]="backdropUrl ? 'url(' + backdropUrl + ')' : 'none'"
-    >
+    <!-- Hero: backdrop with content overlaid (crossfading slideshow) -->
+    <div class="tv-hero">
+      <div
+        class="tv-hero__bg"
+        [class.active]="_bgToggle"
+        [style.backgroundImage]="backdropA ? 'url(' + backdropA + ')' : 'none'"
+      ></div>
+      <div
+        class="tv-hero__bg"
+        [class.active]="!_bgToggle"
+        [style.backgroundImage]="backdropB ? 'url(' + backdropB + ')' : 'none'"
+      ></div>
       <div class="tv-hero__overlay"></div>
       <div class="tv-hero__content">
         <ion-img
@@ -136,7 +143,10 @@
       <div class="network-section" *ngIf="show.networks?.length">
         <div class="network-row">
           <span class="network-label">AVAILABLE ON</span>
-          <div class="network-item" *ngFor="let net of show.networks">
+          <div
+            class="network-item"
+            *ngFor="let net of show.networks | slice:0:3"
+          >
             <div class="network-pill">
               <img
                 *ngIf="net.logo_path"
