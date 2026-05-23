@@ -1,0 +1,13 @@
+<div class="poster-card" (click)="navigate()">
+  <div class="poster-card__wrap">
+    <ion-img [src]="posterUrl" [alt]="title" class="poster-card__img"></ion-img>
+    <span class="poster-card__rating" *ngIf="item?.vote_average">
+      ⭐ {{ item.vote_average | number: "1.1-1" }}
+    </span>
+    <span class="poster-card__user-rating" *ngIf="userRating">
+      ★{{ userRating }}
+    </span>
+  </div>
+  <p class="poster-card__title">{{ title }}</p>
+  <p class="poster-card__year">{{ year }}</p>
+</div>

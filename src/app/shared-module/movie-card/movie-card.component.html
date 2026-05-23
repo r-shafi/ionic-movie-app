@@ -3,16 +3,25 @@
     class="img"
     src="{{
       movie.poster_path
-        ? 'https://image.tmdb.org/t/p/original' + movie.poster_path
-        : 'https://via.placeholder.com/90x150/eee?text=No Image'
+        ? 'https://image.tmdb.org/t/p/w185' + movie.poster_path
+        : 'assets/no-image.png'
     }}"
-    [routerLink]="['/film', movie.id]"
+    [routerLink]="
+      movie.media_type === 'tv' ? ['/tv', movie.id] : ['/movie', movie.id]
+    "
   ></ion-img>
   <section class="details ion-padding-start">
-    <h1 class="ion-no-margin" [routerLink]="['/film', movie.id]">
-      {{ movie.title }}
+    <h1
+      class="ion-no-margin"
+      [routerLink]="
+        movie.media_type === 'tv' ? ['/tv', movie.id] : ['/movie', movie.id]
+      "
+    >
+      {{ movie.title || movie.name }}
     </h1>
-    <p class="release">{{ movie.release_date | date }}</p>
+    <p class="release">
+      {{ movie.release_date || movie.first_air_date | date }}
+    </p>
     <p class="ion-no-margin">
       {{ movie.vote_average }}
       <ion-icon name="star"></ion-icon>
