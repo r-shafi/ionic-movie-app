@@ -1,28 +1,91 @@
 <ion-header>
   <ion-toolbar>
     <ion-searchbar
-      #search
-      (ionChange)="searchMovie($event.target.value)"
-      debounce="500"
+      [(ngModel)]="query"
+      (ionInput)="onSearch($event.detail.value)"
+      (ionChange)="onSearchSubmit()"
       showCancelButton="focus"
-      placeholder="Search Movies"
+      placeholder="Search movies, TV, people..."
       [disabled]="isOffline"
-      color="light"
     ></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <p *ngIf="isOffline" class="ion-text-center">
-    Please Check Your Internet Connection.
+  <!-- Offline -->
+  <p *ngIf="isOffline" class="ion-text-center ion-padding">
+    No internet connection.
   </p>
-  <ion-list *ngIf="searchResult$ | async as movies">
+
+  <!-- Recent searches (shown when no query) -->
+  <div *ngIf="!query && recentSearches.length && !isOffline">
+    <div class="recent-header">
+      <span>Recent</span>
+      <ion-button fill="clear" size="small" (click)="clearRecent()"
+        >Clear</ion-button
+      >
+    </div>
+    <ion-list>
+      <ion-item
+        *ngFor="let term of recentSearches"
+        button
+        (click)="searchRecent(term)"
+      >
+        <ion-icon name="time-outline" slot="start"></ion-icon>
+        <ion-label>{{ term }}</ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <!-- Loading -->
+  <div class="ion-padding" *ngIf="isLoading">
+    <ion-list>
+      <ion-item *ngFor="let s of [0,1,2,3,4,5]">
+        <ion-thumbnail slot="start">
+          <ion-skeleton-text animated></ion-skeleton-text>
+        </ion-thumbnail>
+        <ion-label>
+          <ion-skeleton-text animated style="width: 70%"></ion-skeleton-text>
+          <ion-skeleton-text animated style="width: 40%"></ion-skeleton-text>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <!-- Results -->
+  <ion-list *ngIf="!isLoading && results.length">
     <ion-item
-      *ngFor="let movie of movies.results"
-      [routerLink]="['/film', movie.id]"
-      routerLinkActive="router-link-active"
+      *ngFor="let item of results"
+      [routerLink]="getRoute(item)"
+      button
+      detail="true"
     >
-      <app-movie-card [movie]="movie"></app-movie-card>
+      <ion-thumbnail slot="start">
+        <ion-img [src]="getPoster(item)" [alt]="getTitle(item)"></ion-img>
+      </ion-thumbnail>
+      <ion-label>
+        <h2>{{ getTitle(item) }}</h2>
+        <p>{{ getSubtitle(item) }}</p>
+      </ion-label>
+      <ion-badge
+        slot="end"
+        [color]="item.media_type === 'tv' ? 'tertiary' : item.media_type === 'person' ? 'medium' : 'primary'"
+      >
+        {{ item.media_type === 'tv' ? 'TV' : item.media_type === 'person' ?
+        'Person' : 'Movie' }}
+      </ion-badge>
     </ion-item>
   </ion-list>
+
+  <!-- Empty state -->
+  <div
+    class="ion-padding ion-text-center"
+    *ngIf="!isLoading && query && !results.length"
+  >
+    <ion-icon
+      name="search-outline"
+      style="font-size: 3rem; color: var(--ion-color-medium)"
+    ></ion-icon>
+    <p>No results for "{{ query }}"</p>
+  </div>
 </ion-content>
