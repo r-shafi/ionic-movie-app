@@ -69,6 +69,10 @@ export class TmdbService {
     return this.get(`/trending/tv/${timeWindow}`, { page });
   }
 
+  getTrendingPeople(page = 1, timeWindow: 'day' | 'week' = 'day'): Observable<any> {
+    return this.get(`/trending/person/${timeWindow}`, { page });
+  }
+
   // ── Movies ─────────────────────────────────────────────────────────────────
 
   getPopularMovies(page = 1): Observable<any> {
