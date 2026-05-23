@@ -3,27 +3,50 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
-    path: 'movies',
-    loadChildren: () =>
-      import('./movies/movies.module').then((m) => m.MoviesPageModule),
-  },
-  {
     path: '',
-    redirectTo: 'movies',
-    pathMatch: 'full',
+    loadChildren: () =>
+      import('./tabs/tabs.module').then((m) => m.TabsPageModule),
   },
   {
-    path: 'film/:id',
+    path: 'movie/:id',
     loadChildren: () =>
       import('./film/film.module').then((m) => m.FilmPageModule),
   },
   {
-    path: 'search',
-    loadChildren: () => import('./search/search.module').then( m => m.SearchPageModule)
+    path: 'movie/:id/reviews',
+    loadChildren: () =>
+      import('./reviews/reviews.module').then((m) => m.ReviewsPageModule),
   },
   {
-    path: 'profile',
-    loadChildren: () => import('./profile/profile.module').then( m => m.ProfilePageModule)
+    path: 'tv/:id',
+    loadChildren: () => import('./tv/tv.module').then((m) => m.TvPageModule),
+  },
+  {
+    path: 'tv/:id/reviews',
+    loadChildren: () =>
+      import('./reviews/reviews.module').then((m) => m.ReviewsPageModule),
+  },
+  {
+    path: 'tv/:id/season/:seasonNumber',
+    loadChildren: () =>
+      import('./tv-season/tv-season.module').then((m) => m.TvSeasonPageModule),
+  },
+  {
+    path: 'person/:id',
+    loadChildren: () =>
+      import('./person/person.module').then((m) => m.PersonPageModule),
+  },
+  {
+    path: 'settings',
+    loadChildren: () =>
+      import('./settings/settings.module').then((m) => m.SettingsPageModule),
+  },
+  {
+    path: 'list/:id',
+    loadChildren: () =>
+      import('./list-detail/list-detail.module').then(
+        (m) => m.ListDetailPageModule,
+      ),
   },
 ];
 
