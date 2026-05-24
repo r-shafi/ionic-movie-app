@@ -1,14 +1,9 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>
+    <ion-title class="flex items-center gap-2 font-bold">
       <ion-img
         src="assets/icon/favicon.png"
-        style="
-          height: 28px;
-          width: auto;
-          display: inline-block;
-          vertical-align: middle;
-        "
+        class="inline-block h-7 w-auto align-middle"
       ></ion-img>
       CineTrack
     </ion-title>
@@ -30,10 +25,11 @@
 
   <!-- Offline state -->
   @if (isOffline) {
-    <div class="offline-state ion-padding ion-text-center">
+    <div class="ion-padding ion-text-center pt-16">
       <ion-icon
         name="cloud-offline-outline"
-        style="font-size: 4rem; color: var(--ion-color-medium)"
+        class="text-[4rem]"
+        style="color: var(--ion-color-medium)"
       ></ion-icon>
       <p>No internet connection.</p>
     </div>
