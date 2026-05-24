@@ -91,9 +91,9 @@
                   @if (movie.genres?.length) {
                     <div class="mt-1 flex flex-wrap gap-[5px]">
                       @for (g of movie.genres; track g) {
-                        <span class="inline-block rounded-xl border border-white/15 bg-white/10 px-2 py-0.5 text-[0.68rem]" style="color: var(--ion-color-light)"
+                        <span class="inline-block rounded-xl border border-white/15 bg-white/10 px-2 py-0.5 text-[0.68rem]" style="color: rgba(255,255,255,0.85)"
                           >{{ g.name }}</span
-                          >
+                        >
                         }
                       </div>
                     }
