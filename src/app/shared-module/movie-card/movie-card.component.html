@@ -1,6 +1,6 @@
-<div class="movie-card">
+<div class="flex items-center justify-center">
   <ion-img
-    class="img"
+    class="h-[200px] aspect-[9/16]"
     src="{{
       movie.poster_path
         ? 'https://image.tmdb.org/t/p/w185' + movie.poster_path
@@ -12,19 +12,19 @@
   ></ion-img>
   <section class="details ion-padding-start">
     <h1
-      class="ion-no-margin"
+      class="ion-no-margin cursor-pointer text-[clamp(24px,2.5vw,44px)]"
       [routerLink]="
         movie.media_type === 'tv' ? ['/tv', movie.id] : ['/movie', movie.id]
       "
     >
       {{ movie.title || movie.name }}
     </h1>
-    <p class="release">
+    <p class="my-[0.2rem] opacity-70">
       {{ movie.release_date || movie.first_air_date | date }}
     </p>
     <p class="ion-no-margin">
       {{ movie.vote_average }}
-      <ion-icon name="star"></ion-icon>
+      <ion-icon name="star" class="mb-[-0.1rem]"></ion-icon>
     </p>
     <section>
       <ion-button
