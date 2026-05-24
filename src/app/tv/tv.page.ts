@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { ModalController } from '@ionic/angular';
 import { forkJoin } from 'rxjs';
+import { ImageViewerComponent } from '../shared-module/image-viewer/image-viewer.component';
 import { ProfileService } from '../services/profile.service';
 import { TmdbService } from '../services/tmdb.service';
 
@@ -29,6 +31,7 @@ export class TvPage implements OnInit {
   constructor(
     private tmdb: TmdbService,
     private route: ActivatedRoute,
+    private modalCtrl: ModalController,
     public profileService: ProfileService,
   ) {}
 
@@ -144,6 +147,20 @@ export class TvPage implements OnInit {
     return this.show?.poster_path
       ? `https://image.tmdb.org/t/p/w342${this.show.poster_path}`
       : 'assets/no-image.png';
+  }
+
+  get fullPosterUrl(): string {
+    return this.show?.poster_path
+      ? `https://image.tmdb.org/t/p/original${this.show.poster_path}`
+      : 'assets/no-image.png';
+  }
+
+  async openPoster() {
+    const modal = await this.modalCtrl.create({
+      component: ImageViewerComponent,
+      componentProps: { src: this.fullPosterUrl, alt: this.show?.name },
+    });
+    await modal.present();
   }
 
   get backdropA(): string | null {

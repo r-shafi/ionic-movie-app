@@ -1,0 +1,16 @@
+<ion-content>
+  <div class="viewer-overlay" (click)="dismiss()">
+    <div class="viewer-header">
+      <ion-button fill="clear" color="light" (click)="download(); $event.stopPropagation()">
+        <ion-icon slot="start" name="download-outline"></ion-icon>
+        Download
+      </ion-button>
+      <ion-button fill="clear" color="light" (click)="dismiss()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </div>
+    <div class="viewer-image-wrap" (click)="$event.stopPropagation()">
+      <img [src]="src" [alt]="alt" class="viewer-image" />
+    </div>
+  </div>
+</ion-content>

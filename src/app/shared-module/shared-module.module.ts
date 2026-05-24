@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { HeroBannerComponent } from './hero-banner/hero-banner.component';
+import { ImageViewerComponent } from './image-viewer/image-viewer.component';
 import { MediaCarouselComponent } from './media-carousel/media-carousel.component';
 import { MovieCardComponent } from './movie-card/movie-card.component';
 import { OfflineBannerComponent } from './offline-banner/offline-banner.component';
@@ -21,7 +22,7 @@ const COMPONENTS = [
 ];
 
 @NgModule({
-  declarations: [...COMPONENTS],
+  declarations: [...COMPONENTS, ImageViewerComponent],
   imports: [CommonModule, IonicModule, RouterModule],
   exports: [...COMPONENTS, RouterModule],
 })

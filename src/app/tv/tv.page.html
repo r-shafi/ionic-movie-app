@@ -52,6 +52,7 @@
           [src]="posterUrl"
           [alt]="show.name"
           class="tv-poster"
+          (click)="openPoster()"
         ></ion-img>
         <div class="tv-info">
           <h1 class="tv-title">{{ show.name }}</h1>
