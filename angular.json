@@ -170,6 +170,7 @@
     }
   },
   "cli": {
+    "packageManager": "npm",
     "schematicCollections": [
       "@ionic/angular-toolkit"
     ]

@@ -1,8 +1,0 @@
-allowBuilds:
-  '@angular/cli': true
-  '@parcel/watcher': true
-  core-js: true
-  core-js-pure: true
-  esbuild: true
-  nice-napi: true
-  nx: true
