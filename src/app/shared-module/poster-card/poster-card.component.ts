@@ -3,9 +3,10 @@ import { Router } from '@angular/router';
 import { ProfileService } from 'src/app/services/profile.service';
 
 @Component({
-  selector: 'app-poster-card',
-  templateUrl: './poster-card.component.html',
-  styleUrls: ['./poster-card.component.scss'],
+    selector: 'app-poster-card',
+    templateUrl: './poster-card.component.html',
+    styleUrls: ['./poster-card.component.scss'],
+    standalone: false
 })
 export class PosterCardComponent {
   @Input() item: any;

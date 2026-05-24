@@ -2,8 +2,9 @@ import { Component } from '@angular/core';
 import { ProfileService } from 'src/app/services/profile.service';
 
 @Component({
-  selector: 'app-watched',
-  templateUrl: './watched.page.html',
+    selector: 'app-watched',
+    templateUrl: './watched.page.html',
+    standalone: false
 })
 export class WatchedPage {
   watchedMovies$ = this.profileService.watchedMovies$;

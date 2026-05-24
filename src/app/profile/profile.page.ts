@@ -3,9 +3,10 @@ import { ProfileService } from '../services/profile.service';
 import { SettingsService } from '../services/settings.service';
 
 @Component({
-  selector: 'app-profile',
-  templateUrl: './profile.page.html',
-  styleUrls: ['./profile.page.scss'],
+    selector: 'app-profile',
+    templateUrl: './profile.page.html',
+    styleUrls: ['./profile.page.scss'],
+    standalone: false
 })
 export class ProfilePage {
   watchedMovies$ = this.profileService.watchedMovies$;

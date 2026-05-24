@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-offline-banner',
-  template: `
+    selector: 'app-offline-banner',
+    template: `
     @if (!isOnline) {
       <div class="offline-banner">
         <ion-icon name="cloud-offline-outline"></ion-icon>
@@ -10,8 +10,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
       </div>
     }
     `,
-  styles: [
-    `
+    styles: [
+        `
       .offline-banner {
         background: var(--ion-color-danger);
         color: #fff;
@@ -25,7 +25,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
         gap: 6px;
       }
     `,
-  ],
+    ],
+    standalone: false
 })
 export class OfflineBannerComponent implements OnInit, OnDestroy {
   isOnline = navigator.onLine;

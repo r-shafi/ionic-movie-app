@@ -4,9 +4,10 @@ import { ProfileService } from '../services/profile.service';
 import { TmdbService } from '../services/tmdb.service';
 
 @Component({
-  selector: 'app-tv-season',
-  templateUrl: './tv-season.page.html',
-  styleUrls: ['./tv-season.page.scss'],
+    selector: 'app-tv-season',
+    templateUrl: './tv-season.page.html',
+    styleUrls: ['./tv-season.page.scss'],
+    standalone: false
 })
 export class TvSeasonPage implements OnInit {
   tvId: number = 0;

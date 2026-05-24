@@ -2,8 +2,9 @@ import { Component } from '@angular/core';
 import { ProfileService } from 'src/app/services/profile.service';
 
 @Component({
-  selector: 'app-favorite',
-  templateUrl: './favorite.page.html',
+    selector: 'app-favorite',
+    templateUrl: './favorite.page.html',
+    standalone: false
 })
 export class FavoritePage {
   favoriteMovies$ = this.profileService.favoriteMovies$;

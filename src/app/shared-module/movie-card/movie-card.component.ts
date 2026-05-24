@@ -2,9 +2,10 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ProfileService } from 'src/app/services/profile.service';
 
 @Component({
-  selector: 'app-movie-card',
-  templateUrl: './movie-card.component.html',
-  styleUrls: ['./movie-card.component.scss'],
+    selector: 'app-movie-card',
+    templateUrl: './movie-card.component.html',
+    styleUrls: ['./movie-card.component.scss'],
+    standalone: false
 })
 export class MovieCardComponent implements OnInit {
   @Input() movie: any;

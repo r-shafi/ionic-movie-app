@@ -7,9 +7,10 @@ import { ProfileService } from '../services/profile.service';
 import { TmdbService } from '../services/tmdb.service';
 
 @Component({
-  selector: 'app-film',
-  templateUrl: './film.page.html',
-  styleUrls: ['./film.page.scss'],
+    selector: 'app-film',
+    templateUrl: './film.page.html',
+    styleUrls: ['./film.page.scss'],
+    standalone: false
 })
 export class FilmPage implements OnInit {
   movie: any;

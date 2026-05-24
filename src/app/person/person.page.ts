@@ -4,9 +4,10 @@ import { forkJoin } from 'rxjs';
 import { TmdbService } from '../services/tmdb.service';
 
 @Component({
-  selector: 'app-person',
-  templateUrl: './person.page.html',
-  styleUrls: ['./person.page.scss'],
+    selector: 'app-person',
+    templateUrl: './person.page.html',
+    styleUrls: ['./person.page.scss'],
+    standalone: false
 })
 export class PersonPage implements OnInit {
   person: any;

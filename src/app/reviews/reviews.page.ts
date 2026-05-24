@@ -3,9 +3,10 @@ import { ActivatedRoute } from '@angular/router';
 import { TmdbService } from '../services/tmdb.service';
 
 @Component({
-  selector: 'app-reviews',
-  templateUrl: './reviews.page.html',
-  styleUrls: ['./reviews.page.scss'],
+    selector: 'app-reviews',
+    templateUrl: './reviews.page.html',
+    styleUrls: ['./reviews.page.scss'],
+    standalone: false
 })
 export class ReviewsPage implements OnInit {
   mediaType: 'movie' | 'tv' = 'movie';

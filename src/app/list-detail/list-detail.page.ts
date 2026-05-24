@@ -3,9 +3,10 @@ import { ActivatedRoute } from '@angular/router';
 import { CustomList, ProfileService } from '../services/profile.service';
 
 @Component({
-  selector: 'app-list-detail',
-  templateUrl: './list-detail.page.html',
-  styleUrls: ['./list-detail.page.scss'],
+    selector: 'app-list-detail',
+    templateUrl: './list-detail.page.html',
+    styleUrls: ['./list-detail.page.scss'],
+    standalone: false
 })
 export class ListDetailPage {
   list: CustomList | undefined;

@@ -7,9 +7,10 @@ import { ProfileService } from '../services/profile.service';
 import { TmdbService } from '../services/tmdb.service';
 
 @Component({
-  selector: 'app-tv',
-  templateUrl: './tv.page.html',
-  styleUrls: ['./tv.page.scss'],
+    selector: 'app-tv',
+    templateUrl: './tv.page.html',
+    styleUrls: ['./tv.page.scss'],
+    standalone: false
 })
 export class TvPage implements OnInit {
   show: any;

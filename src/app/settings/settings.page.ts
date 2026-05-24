@@ -2,9 +2,10 @@ import { Component } from '@angular/core';
 import { AppSettings, SettingsService } from '../services/settings.service';
 
 @Component({
-  selector: 'app-settings',
-  templateUrl: './settings.page.html',
-  styleUrls: ['./settings.page.scss'],
+    selector: 'app-settings',
+    templateUrl: './settings.page.html',
+    styleUrls: ['./settings.page.scss'],
+    standalone: false
 })
 export class SettingsPage {
   settings: AppSettings;

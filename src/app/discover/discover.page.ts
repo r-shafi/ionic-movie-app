@@ -6,9 +6,10 @@ import { SettingsService } from '../services/settings.service';
 import { DiscoverParams, TmdbService } from '../services/tmdb.service';
 
 @Component({
-  selector: 'app-discover',
-  templateUrl: './discover.page.html',
-  styleUrls: ['./discover.page.scss'],
+    selector: 'app-discover',
+    templateUrl: './discover.page.html',
+    styleUrls: ['./discover.page.scss'],
+    standalone: false
 })
 export class DiscoverPage implements OnInit {
   viewMode: 'explore' | 'browse' | 'list' = 'explore';

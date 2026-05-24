@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-skeleton-card',
-  template: `
+    selector: 'app-skeleton-card',
+    template: `
     <div class="skeleton-card">
       <div class="skeleton-card__img">
         <ion-skeleton-text animated></ion-skeleton-text>
@@ -17,8 +17,8 @@ import { Component } from '@angular/core';
       ></ion-skeleton-text>
     </div>
   `,
-  styles: [
-    `
+    styles: [
+        `
       :host {
         display: block;
         width: 100%;
@@ -38,6 +38,7 @@ import { Component } from '@angular/core';
         }
       }
     `,
-  ],
+    ],
+    standalone: false
 })
 export class SkeletonCardComponent {}
