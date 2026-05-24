@@ -17,7 +17,7 @@
         <div class="flex snap-x gap-2.5 overflow-x-auto px-4 pb-2 [-webkit-overflow-scrolling:touch] [scroll-padding-left:16px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           @for (item of items; track item) {
             <app-poster-card
-              class="w-[120px] shrink-0 snap-start"
+              class="w-[clamp(104px,28vw,150px)] shrink-0 snap-start"
               [item]="item"
               [mediaType]="mediaType"
               >
@@ -29,7 +29,7 @@
       @if (isLoading) {
         <div class="flex snap-x gap-2.5 overflow-x-auto px-4 pb-2 [-webkit-overflow-scrolling:touch] [scroll-padding-left:16px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           @for (s of skeletons; track s) {
-            <app-skeleton-card class="w-[120px] shrink-0 snap-start"></app-skeleton-card>
+            <app-skeleton-card class="w-[clamp(104px,28vw,150px)] shrink-0 snap-start"></app-skeleton-card>
           }
         </div>
       }

@@ -21,7 +21,7 @@ import { Component } from '@angular/core';
         `
       :host {
         display: block;
-        width: 100%;
+        min-width: 0;
       }
       .skeleton-card {
         width: 100%;
