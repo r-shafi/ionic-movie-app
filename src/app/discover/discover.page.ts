@@ -7,7 +7,8 @@ import { DiscoverParams, TmdbService } from '../services/tmdb.service';
 
 @Component({
     selector: 'app-discover',
-    templateUrl: './discover.page.html',
+  templateUrl: './discover.page.html',
+  styleUrls: ['./discover.page.scss'],
     standalone: false
 })
 export class DiscoverPage implements OnInit {
@@ -36,6 +37,7 @@ export class DiscoverPage implements OnInit {
   totalPages = 1;
   isLoadingBrowse = false;
   hasMore = false;
+  showBrowseFilters = false;
 
   // Genres
   movieGenres: any[] = [];
@@ -126,6 +128,7 @@ export class DiscoverPage implements OnInit {
     this.route.queryParams.subscribe((params) => {
       if (params['mode'] === 'list') {
         this.viewMode = 'list';
+        this.showBrowseFilters = false;
         this.listTitle = params['title'] || 'Results';
         this.activeTab = (params['tab'] as 'movies' | 'tv') || 'movies';
         this.sortBy = params['sort'] || 'popularity.desc';
@@ -136,6 +139,7 @@ export class DiscoverPage implements OnInit {
         this.loadBrowse();
       } else if (params['mode'] === 'browse') {
         this.viewMode = 'browse';
+        this.showBrowseFilters = false;
         this.activeTab = (params['tab'] as 'movies' | 'tv') || 'movies';
         this.sortBy = params['sort'] || 'popularity.desc';
         this.selectedGenre = null;
@@ -197,6 +201,7 @@ export class DiscoverPage implements OnInit {
 
   enterBrowse() {
     this.viewMode = 'browse';
+    this.showBrowseFilters = false;
     if (!this.browseResults.length) {
       this.loadBrowse();
     }
@@ -296,6 +301,23 @@ export class DiscoverPage implements OnInit {
     }
   }
 
+  openBrowseFilters() {
+    this.showBrowseFilters = true;
+  }
+
+  closeBrowseFilters() {
+    this.showBrowseFilters = false;
+  }
+
+  resetBrowseFilters() {
+    this.selectedGenre = null;
+    this.selectedYear = null;
+    this.sortBy = 'popularity.desc';
+    this.currentPage = 1;
+    this.browseResults = [];
+    this.loadBrowse();
+  }
+
   getGenreColor(genreId: number): string {
     return (
       this.genreColors[genreId] || 'linear-gradient(135deg, #74b9ff, #0984e3)'
@@ -308,5 +330,13 @@ export class DiscoverPage implements OnInit {
 
   get activeGenres(): any[] {
     return this.activeTab === 'movies' ? this.movieGenres : this.tvGenres;
+  }
+
+  get hasActiveFilters(): boolean {
+    return (
+      this.selectedGenre !== null ||
+      this.selectedYear !== null ||
+      this.sortBy !== 'popularity.desc'
+    );
   }
 }

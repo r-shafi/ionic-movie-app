@@ -1,12 +1,10 @@
 <ion-header>
   <ion-toolbar>
     @if (viewMode === 'browse' || viewMode === 'list') {
-      <ion-buttons
-        slot="start"
-        >
+      <ion-buttons slot="start">
         <ion-button
           (click)="viewMode === 'list' ? exitList() : (viewMode = 'explore')"
-          >
+        >
           <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
         </ion-button>
       </ion-buttons>
@@ -14,311 +12,373 @@
     <ion-title
       >{{ viewMode === 'explore' ? 'Explore' : viewMode === 'list' ? listTitle :
       'Browse' }}</ion-title
-      >
-      @if (viewMode === 'explore') {
-        <ion-buttons slot="end">
-          <ion-button (click)="enterBrowse()">
-            <ion-icon slot="icon-only" name="options-outline"></ion-icon>
-          </ion-button>
-        </ion-buttons>
-      }
-    </ion-toolbar>
-
-    @if (viewMode === 'browse') {
-      <ion-toolbar>
-        <ion-segment
-          [value]="activeTab"
-          (ionChange)="switchBrowseTab($event.detail.value)"
-          >
-          <ion-segment-button value="movies">Movies</ion-segment-button>
-          <ion-segment-button value="tv">TV Shows</ion-segment-button>
-        </ion-segment>
-      </ion-toolbar>
-    }
-  </ion-header>
-
-  <ion-content>
-    <!-- ════════ EXPLORE MODE ════════ -->
+    >
     @if (viewMode === 'explore') {
-      <!-- Trending section -->
-      <div class="pb-2">
-        <div class="flex items-center justify-between px-4 pb-2.5 pt-5">
-          <h2 class="m-0 text-[1.05rem] font-extrabold" style="color: var(--ion-text-color)">Trending</h2>
-          <div class="flex gap-1">
-            <button
-              class="cursor-pointer rounded-[20px] border-[1.5px] px-3 py-1 text-[0.76rem] font-semibold transition-colors"
-              [style.background]="trendWindow === 'day' ? 'var(--ion-color-primary)' : 'transparent'"
-              [style.border-color]="trendWindow === 'day' ? 'var(--ion-color-primary)' : 'var(--ion-color-step-250, #4d4d4d)'"
-              [style.color]="trendWindow === 'day' ? '#fff' : 'var(--ion-color-medium)'"
-              (click)="setTrendWindow('day')"
-              >
-              Today
-            </button>
-            <button
-              class="cursor-pointer rounded-[20px] border-[1.5px] px-3 py-1 text-[0.76rem] font-semibold transition-colors"
-              [style.background]="trendWindow === 'week' ? 'var(--ion-color-primary)' : 'transparent'"
-              [style.border-color]="trendWindow === 'week' ? 'var(--ion-color-primary)' : 'var(--ion-color-step-250, #4d4d4d)'"
-              [style.color]="trendWindow === 'week' ? '#fff' : 'var(--ion-color-medium)'"
-              (click)="setTrendWindow('week')"
-              >
-              This Week
-            </button>
-          </div>
-        </div>
-        <app-media-carousel
-          title="Movies"
-          [items]="trendingMovies"
-          mediaType="movie"
-          [isLoading]="isLoadingExplore"
-        ></app-media-carousel>
-        <app-media-carousel
-          title="TV Shows"
-          [items]="trendingTv"
-          mediaType="tv"
-          [isLoading]="isLoadingExplore"
-        ></app-media-carousel>
-      </div>
-      <!-- Browse by Genre -->
-      <div class="pb-2">
-        <div class="flex items-center justify-between px-4 pb-2.5 pt-5">
-          <h2 class="m-0 text-[1.05rem] font-extrabold" style="color: var(--ion-text-color)">Browse by Genre</h2>
-          <button class="cursor-pointer border-0 bg-transparent p-0 text-[0.78rem] font-semibold" style="color: var(--ion-color-primary)" (click)="enterBrowse()">
-            Browse All →
+      <ion-buttons slot="end">
+        <ion-button (click)="enterBrowse()">
+          <ion-icon slot="icon-only" name="options-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    }
+  </ion-toolbar>
+
+  @if (viewMode === 'browse') {
+    <ion-toolbar>
+      <ion-segment
+        [value]="activeTab"
+        (ionChange)="switchBrowseTab($event.detail.value)"
+      >
+        <ion-segment-button value="movies">Movies</ion-segment-button>
+        <ion-segment-button value="tv">TV Shows</ion-segment-button>
+      </ion-segment>
+    </ion-toolbar>
+  }
+</ion-header>
+
+<ion-content class="discover-content">
+  <!-- ════════ EXPLORE MODE ════════ -->
+  @if (viewMode === 'explore') {
+    <!-- Trending section -->
+    <div class="pb-2">
+      <div class="flex items-center justify-between px-4 pb-2.5 pt-5">
+        <h2
+          class="m-0 text-[1.05rem] font-extrabold"
+          style="color: var(--ion-text-color)"
+        >
+          Trending
+        </h2>
+        <div class="flex gap-1">
+          <button
+            class="cursor-pointer rounded-[20px] border-[1.5px] px-3 py-1 text-[0.76rem] font-semibold transition-colors"
+            [style.background]="trendWindow === 'day' ? 'var(--ion-color-primary)' : 'transparent'"
+            [style.border-color]="trendWindow === 'day' ? 'var(--ion-color-primary)' : 'var(--ion-color-step-250, #4d4d4d)'"
+            [style.color]="trendWindow === 'day' ? '#fff' : 'var(--ion-color-medium)'"
+            (click)="setTrendWindow('day')"
+          >
+            Today
+          </button>
+          <button
+            class="cursor-pointer rounded-[20px] border-[1.5px] px-3 py-1 text-[0.76rem] font-semibold transition-colors"
+            [style.background]="trendWindow === 'week' ? 'var(--ion-color-primary)' : 'transparent'"
+            [style.border-color]="trendWindow === 'week' ? 'var(--ion-color-primary)' : 'var(--ion-color-step-250, #4d4d4d)'"
+            [style.color]="trendWindow === 'week' ? '#fff' : 'var(--ion-color-medium)'"
+            (click)="setTrendWindow('week')"
+          >
+            This Week
           </button>
         </div>
-        @if (movieGenres.length) {
-          <div class="grid grid-cols-2 gap-2.5 px-4 pb-4">
-            @for (genre of movieGenres; track genre) {
-              <div
-                class="flex h-[90px] cursor-pointer flex-col items-center justify-center gap-2 rounded-xl transition active:scale-[0.96] active:opacity-85"
-                [style.background]="getGenreColor(genre.id)"
-                (click)="browseGenre(genre.id, 'movies')"
-                >
-                <ion-icon
-                  [name]="getGenreIcon(genre.id)"
-                  class="text-[1.8rem] text-white/90"
-                ></ion-icon>
-                <span class="text-center text-[0.82rem] font-bold text-white [text-shadow:0_1px_4px_rgba(0,0,0,0.5)]">{{ genre.name }}</span>
-              </div>
-            }
-          </div>
-        }
-        @if (!movieGenres.length) {
-          <div class="grid grid-cols-2 gap-2.5 px-4 pb-4">
-            @for (s of [0,1,2,3,4,5,6,7,8,9,10,11]; track s) {
-              <div class="h-[90px] overflow-hidden rounded-xl" style="background: var(--ion-color-step-50, #1a1a1a)">
-                <ion-skeleton-text
-                  animated
-                  class="h-full w-full rounded-xl"
-                ></ion-skeleton-text>
-              </div>
-            }
-          </div>
-        }
       </div>
-      <!-- Critically Acclaimed -->
       <app-media-carousel
-        title="Critically Acclaimed"
-        [items]="topRatedMovies"
+        title="Movies"
+        [items]="trendingMovies"
         mediaType="movie"
         [isLoading]="isLoadingExplore"
       ></app-media-carousel>
-      <!-- Now In Theaters -->
       <app-media-carousel
-        title="Now in Theaters"
-        [items]="nowPlaying"
-        mediaType="movie"
-        [isLoading]="isLoadingExplore"
-      ></app-media-carousel>
-      <!-- Coming Soon -->
-      <app-media-carousel
-        title="Coming Soon"
-        [items]="upcoming"
-        mediaType="movie"
-        [isLoading]="isLoadingExplore"
-      ></app-media-carousel>
-      <!-- Popular TV -->
-      <app-media-carousel
-        title="Popular TV Shows"
-        [items]="popularTv"
+        title="TV Shows"
+        [items]="trendingTv"
         mediaType="tv"
         [isLoading]="isLoadingExplore"
       ></app-media-carousel>
-      <!-- Top Rated TV -->
-      <app-media-carousel
-        title="Top Rated TV"
-        [items]="topRatedTv"
-        mediaType="tv"
-        [isLoading]="isLoadingExplore"
-      ></app-media-carousel>
-      <!-- On TV Tonight -->
-      <app-media-carousel
-        title="On TV Tonight"
-        [items]="airingToday"
-        mediaType="tv"
-        [isLoading]="isLoadingExplore"
-      ></app-media-carousel>
-    }
-
-    <!-- ════════ BROWSE MODE ════════ -->
-    @if (viewMode === 'browse') {
-      <!-- Sort -->
-      <div class="px-4 pb-1 pt-2">
-        <p class="m-0 mb-1.5 text-[0.72rem] font-bold uppercase tracking-[0.07em]" style="color: var(--ion-color-medium)">Sort By</p>
-        <div class="flex gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none] after:block after:min-w-2 after:shrink-0 [&::-webkit-scrollbar]:hidden [&_ion-chip]:shrink-0 [&_ion-chip]:whitespace-nowrap">
-          @for (opt of sortOptions; track opt) {
-            <ion-chip
-              [outline]="sortBy !== opt.value"
-              (click)="setSortBy(opt.value)"
-              >{{ opt.label }}</ion-chip
+    </div>
+    <!-- Browse by Genre -->
+    <div class="pb-2">
+      <div class="flex items-center justify-between px-4 pb-2.5 pt-5">
+        <h2
+          class="m-0 text-[1.05rem] font-extrabold"
+          style="color: var(--ion-text-color)"
+        >
+          Browse by Genre
+        </h2>
+        <button
+          class="cursor-pointer border-0 bg-transparent p-0 text-[0.78rem] font-semibold"
+          style="color: var(--ion-color-primary)"
+          (click)="enterBrowse()"
+        >
+          Browse All →
+        </button>
+      </div>
+      @if (movieGenres.length) {
+        <div class="grid grid-cols-2 gap-2.5 px-4 pb-4">
+          @for (genre of movieGenres; track genre) {
+            <div
+              class="flex h-[90px] cursor-pointer flex-col items-center justify-center gap-2 rounded-xl transition active:scale-[0.96] active:opacity-85"
+              [style.background]="getGenreColor(genre.id)"
+              (click)="browseGenre(genre.id, 'movies')"
+            >
+              <ion-icon
+                [name]="getGenreIcon(genre.id)"
+                class="text-[1.8rem] text-white/90"
+              ></ion-icon>
+              <span
+                class="text-center text-[0.82rem] font-bold text-white [text-shadow:0_1px_4px_rgba(0,0,0,0.5)]"
+                >{{ genre.name }}</span
               >
-            }
-          </div>
+            </div>
+          }
         </div>
-        <!-- Genre filter -->
-        <div class="px-4 pb-1 pt-2">
-          <p class="m-0 mb-1.5 text-[0.72rem] font-bold uppercase tracking-[0.07em]" style="color: var(--ion-color-medium)">Genre</p>
-          <div class="flex gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none] after:block after:min-w-2 after:shrink-0 [&::-webkit-scrollbar]:hidden [&_ion-chip]:shrink-0 [&_ion-chip]:whitespace-nowrap">
-            <ion-chip [outline]="selectedGenre !== null" (click)="selectGenre(null)"
-              >All</ion-chip
-              >
-              @for (g of activeGenres; track g) {
-                <ion-chip
-                  [outline]="selectedGenre !== g.id"
-                  (click)="selectGenre(g.id)"
-                  >{{ g.name }}</ion-chip
+      }
+      @if (!movieGenres.length) {
+        <div class="grid grid-cols-2 gap-2.5 px-4 pb-4">
+          @for (s of [0,1,2,3,4,5,6,7,8,9,10,11]; track s) {
+            <div
+              class="h-[90px] overflow-hidden rounded-xl"
+              style="background: var(--ion-color-step-50, #1a1a1a)"
+            >
+              <ion-skeleton-text
+                animated
+                class="h-full w-full rounded-xl"
+              ></ion-skeleton-text>
+            </div>
+          }
+        </div>
+      }
+    </div>
+    <!-- Critically Acclaimed -->
+    <app-media-carousel
+      title="Critically Acclaimed"
+      [items]="topRatedMovies"
+      mediaType="movie"
+      [isLoading]="isLoadingExplore"
+    ></app-media-carousel>
+    <!-- Now In Theaters -->
+    <app-media-carousel
+      title="Now in Theaters"
+      [items]="nowPlaying"
+      mediaType="movie"
+      [isLoading]="isLoadingExplore"
+    ></app-media-carousel>
+    <!-- Coming Soon -->
+    <app-media-carousel
+      title="Coming Soon"
+      [items]="upcoming"
+      mediaType="movie"
+      [isLoading]="isLoadingExplore"
+    ></app-media-carousel>
+    <!-- Popular TV -->
+    <app-media-carousel
+      title="Popular TV Shows"
+      [items]="popularTv"
+      mediaType="tv"
+      [isLoading]="isLoadingExplore"
+    ></app-media-carousel>
+    <!-- Top Rated TV -->
+    <app-media-carousel
+      title="Top Rated TV"
+      [items]="topRatedTv"
+      mediaType="tv"
+      [isLoading]="isLoadingExplore"
+    ></app-media-carousel>
+    <!-- On TV Tonight -->
+    <app-media-carousel
+      title="On TV Tonight"
+      [items]="airingToday"
+      mediaType="tv"
+      [isLoading]="isLoadingExplore"
+    ></app-media-carousel>
+  }
+
+  <!-- ════════ BROWSE MODE ════════ -->
+  @if (viewMode === 'browse') {
+    @if (showBrowseFilters) {
+      <div class="filters-overlay" (click)="closeBrowseFilters()">
+        <div class="filters-sheet" (click)="$event.stopPropagation()">
+          <div class="filters-header">
+            <div>
+              <p class="filters-kicker">Browse Filters</p>
+              <p class="filters-sub">Find the right vibe faster.</p>
+            </div>
+            <div class="filters-actions">
+              @if (hasActiveFilters) {
+                <button class="filters-reset" (click)="resetBrowseFilters()">Reset</button>
+              }
+            </div>
+          </div>
+
+          <div class="filters-grid">
+            <!-- Sort -->
+            <div class="filter-section">
+              <div class="filter-title-row">
+                <p class="filter-title">Sort</p>
+              </div>
+              <div class="filter-chip-row">
+                @for (opt of sortOptions; track opt) {
+                  <ion-chip
+                    class="filter-chip"
+                    [class.active-chip]="sortBy === opt.value"
+                    [outline]="sortBy !== opt.value"
+                    (click)="setSortBy(opt.value)"
+                    >{{ opt.label }}</ion-chip
                   >
                 }
               </div>
             </div>
+
+            <!-- Genre filter -->
+            <div class="filter-section">
+              <div class="filter-title-row">
+                <p class="filter-title">Genre</p>
+                @if (selectedGenre !== null) {
+                  <button class="filter-clear" (click)="selectGenre(null)">Clear</button>
+                }
+              </div>
+              <div class="filter-chip-row">
+                <ion-chip
+                  class="filter-chip"
+                  [class.active-chip]="selectedGenre === null"
+                  [outline]="selectedGenre !== null"
+                  (click)="selectGenre(null)"
+                  >All</ion-chip
+                >
+                @for (g of activeGenres; track g) {
+                  <ion-chip
+                    class="filter-chip"
+                    [class.active-chip]="selectedGenre === g.id"
+                    [outline]="selectedGenre !== g.id"
+                    (click)="selectGenre(g.id)"
+                    >{{ g.name }}</ion-chip
+                  >
+                }
+              </div>
+            </div>
+
             <!-- Year filter -->
-            <div class="px-4 pb-1 pt-2">
-              <p class="m-0 mb-1.5 text-[0.72rem] font-bold uppercase tracking-[0.07em]" style="color: var(--ion-color-medium)">Year</p>
+            <div class="filter-section">
+              <div class="filter-title-row">
+                <p class="filter-title">Year</p>
+                @if (selectedYear) {
+                  <button class="filter-clear" (click)="setYear(null)">Any</button>
+                }
+              </div>
               <ion-select
-                class="min-w-[130px] rounded-lg border-[1.5px] px-2 py-1 text-[0.85rem]"
-                style="border-color: var(--ion-color-step-200, #333)"
+                class="filter-select"
                 placeholder="Any year"
                 interface="action-sheet"
                 [value]="selectedYear"
                 (ionChange)="setYear($event.detail.value)"
-                >
+              >
                 <ion-select-option [value]="null">Any year</ion-select-option>
                 @for (y of years; track y) {
-                  <ion-select-option [value]="y"
-                    >{{ y }}</ion-select-option
-                    >
-                  }
-                </ion-select>
-              </div>
-              <!-- Loading skeleton -->
-              @if (isLoadingBrowse && currentPage === 1) {
-                <div class="grid grid-cols-3 gap-3 px-4 py-3">
-                  @for (s of [0,1,2,3,4,5,6,7,8,9,10,11]; track s) {
-                    <app-skeleton-card
-                    ></app-skeleton-card>
-                  }
-                </div>
-              }
-              <!-- Results -->
-              @if (browseResults.length) {
-                <div class="grid grid-cols-3 gap-3 px-4 py-3">
-                  @for (item of browseResults; track item) {
-                    <app-poster-card
-                      [item]="item"
-                      [mediaType]="activeTab === 'movies' ? 'movie' : 'tv'"
-                      >
-                    </app-poster-card>
-                  }
-                </div>
-              }
-              <!-- Load more -->
-              @if (hasMore) {
-                <div class="px-4 pb-5 pt-1">
-                  <ion-button
-                    fill="outline"
-                    expand="block"
-                    [disabled]="isLoadingBrowse"
-                    (click)="loadMore()"
-                    >
-                    @if (isLoadingBrowse) {
-                      <ion-spinner
-                        name="crescent"
-                        slot="start"
-                      ></ion-spinner>
-                    }
-                    {{ isLoadingBrowse ? 'Loading...' : 'Load More' }}
-                  </ion-button>
-                </div>
-              }
-              <!-- Empty state -->
-              @if (!isLoadingBrowse && !browseResults.length && currentPage === 1) {
-                <div
-                  class="ion-padding ion-text-center"
-                  >
-                  <ion-icon
-                    name="film-outline"
-                    class="text-5xl"
-                    style="color: var(--ion-color-medium)"
-                  ></ion-icon>
-                  <p>No results found.</p>
-                </div>
-              }
-            }
+                  <ion-select-option [value]="y">{{ y }}</ion-select-option>
+                }
+              </ion-select>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
 
-            <!-- ════════ LIST MODE (See All) ════════ -->
-            @if (viewMode === 'list') {
-              <!-- Loading skeleton -->
-              @if (isLoadingBrowse && currentPage === 1) {
-                <div class="grid grid-cols-3 gap-3 px-4 py-3">
-                  @for (s of [0,1,2,3,4,5,6,7,8,9,10,11]; track s) {
-                    <app-skeleton-card
-                    ></app-skeleton-card>
-                  }
-                </div>
-              }
-              <!-- Results -->
-              @if (browseResults.length) {
-                <div class="grid grid-cols-3 gap-3 px-4 py-3">
-                  @for (item of browseResults; track item) {
-                    <app-poster-card
-                      [item]="item"
-                      [mediaType]="activeTab === 'movies' ? 'movie' : 'tv'"
-                      >
-                    </app-poster-card>
-                  }
-                </div>
-              }
-              <!-- Load more -->
-              @if (hasMore) {
-                <div class="px-4 pb-5 pt-1">
-                  <ion-button
-                    fill="outline"
-                    expand="block"
-                    [disabled]="isLoadingBrowse"
-                    (click)="loadMore()"
-                    >
-                    @if (isLoadingBrowse) {
-                      <ion-spinner
-                        name="crescent"
-                        slot="start"
-                      ></ion-spinner>
-                    }
-                    {{ isLoadingBrowse ? 'Loading...' : 'Load More' }}
-                  </ion-button>
-                </div>
-              }
-              <!-- Empty state -->
-              @if (!isLoadingBrowse && !browseResults.length && currentPage === 1) {
-                <div
-                  class="ion-padding ion-text-center"
-                  >
-                  <ion-icon
-                    name="film-outline"
-                    class="text-5xl"
-                    style="color: var(--ion-color-medium)"
-                  ></ion-icon>
-                  <p>No results found.</p>
-                </div>
-              }
-            }
-          </ion-content>
+    <ion-fab
+      slot="fixed"
+      vertical="bottom"
+      horizontal="end"
+      class="browse-fab"
+      [class.fab-open]="showBrowseFilters"
+    >
+      <ion-fab-button
+        (click)="showBrowseFilters ? closeBrowseFilters() : openBrowseFilters()"
+      >
+        <ion-icon [name]="showBrowseFilters ? 'close' : 'options-outline'"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+
+    <!-- Loading skeleton -->
+    @if (isLoadingBrowse && currentPage === 1) {
+      <div class="browse-grid grid grid-cols-3 gap-3 px-4 py-3">
+        @for (s of [0,1,2,3,4,5,6,7,8,9,10,11]; track s) {
+          <app-skeleton-card></app-skeleton-card>
+        }
+      </div>
+    }
+    <!-- Results -->
+    @if (browseResults.length) {
+      <div class="browse-grid grid grid-cols-3 gap-3 px-4 py-3">
+        @for (item of browseResults; track item) {
+          <app-poster-card
+            [item]="item"
+            [mediaType]="activeTab === 'movies' ? 'movie' : 'tv'"
+          >
+          </app-poster-card>
+        }
+      </div>
+    }
+    <!-- Load more -->
+    @if (hasMore) {
+      <div class="px-4 pb-5 pt-1">
+        <ion-button
+          fill="outline"
+          expand="block"
+          [disabled]="isLoadingBrowse"
+          (click)="loadMore()"
+        >
+          @if (isLoadingBrowse) {
+            <ion-spinner name="crescent" slot="start"></ion-spinner>
+          }
+          {{ isLoadingBrowse ? 'Loading...' : 'Load More' }}
+        </ion-button>
+      </div>
+    }
+    <!-- Empty state -->
+    @if (!isLoadingBrowse && !browseResults.length && currentPage === 1) {
+      <div class="ion-padding ion-text-center">
+        <ion-icon
+          name="film-outline"
+          class="text-5xl"
+          style="color: var(--ion-color-medium)"
+        ></ion-icon>
+        <p>No results found.</p>
+      </div>
+    }
+  }
+
+  <!-- ════════ LIST MODE (See All) ════════ -->
+  @if (viewMode === 'list') {
+    <!-- Loading skeleton -->
+    @if (isLoadingBrowse && currentPage === 1) {
+      <div class="browse-grid grid grid-cols-3 gap-3 px-4 py-3">
+        @for (s of [0,1,2,3,4,5,6,7,8,9,10,11]; track s) {
+          <app-skeleton-card></app-skeleton-card>
+        }
+      </div>
+    }
+    <!-- Results -->
+    @if (browseResults.length) {
+      <div class="browse-grid grid grid-cols-3 gap-3 px-4 py-3">
+        @for (item of browseResults; track item) {
+          <app-poster-card
+            [item]="item"
+            [mediaType]="activeTab === 'movies' ? 'movie' : 'tv'"
+          >
+          </app-poster-card>
+        }
+      </div>
+    }
+    <!-- Load more -->
+    @if (hasMore) {
+      <div class="px-4 pb-5 pt-1">
+        <ion-button
+          fill="outline"
+          expand="block"
+          [disabled]="isLoadingBrowse"
+          (click)="loadMore()"
+        >
+          @if (isLoadingBrowse) {
+            <ion-spinner name="crescent" slot="start"></ion-spinner>
+          }
+          {{ isLoadingBrowse ? 'Loading...' : 'Load More' }}
+        </ion-button>
+      </div>
+    }
+    <!-- Empty state -->
+    @if (!isLoadingBrowse && !browseResults.length && currentPage === 1) {
+      <div class="ion-padding ion-text-center">
+        <ion-icon
+          name="film-outline"
+          class="text-5xl"
+          style="color: var(--ion-color-medium)"
+        ></ion-icon>
+        <p>No results found.</p>
+      </div>
+    }
+  }
+</ion-content>
