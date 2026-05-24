@@ -56,6 +56,8 @@ export class DiscoverPage implements OnInit {
     { label: 'Revenue', value: 'revenue.desc' },
   ];
 
+  readonly popularGenreIds = [28, 12, 16, 35, 80, 99];
+
   readonly genreColors: Record<number, string> = {
     28: 'linear-gradient(135deg, #ff6b6b, #ee0979)',
     12: 'linear-gradient(135deg, #74b9ff, #0984e3)',
@@ -330,6 +332,24 @@ export class DiscoverPage implements OnInit {
 
   get activeGenres(): any[] {
     return this.activeTab === 'movies' ? this.movieGenres : this.tvGenres;
+  }
+
+  get popularGenres(): any[] {
+    if (!this.movieGenres.length) {
+      return [];
+    }
+    const byId = new Map(this.movieGenres.map((g) => [g.id, g]));
+    return this.popularGenreIds
+      .map((id) => byId.get(id))
+      .filter(Boolean);
+  }
+
+  get otherGenres(): any[] {
+    if (!this.movieGenres.length) {
+      return [];
+    }
+    const popularSet = new Set(this.popularGenreIds);
+    return this.movieGenres.filter((g) => !popularSet.has(g.id));
   }
 
   get hasActiveFilters(): boolean {

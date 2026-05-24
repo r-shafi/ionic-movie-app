@@ -238,3 +238,59 @@ ion-select.filter-select::part(icon) {
 .browse-grid {
   animation: rise-in 320ms ease;
 }
+
+.genre-subtitle {
+  margin: 0 0 8px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ion-color-medium);
+}
+
+.genre-rail {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+
+.genre-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.genre-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--discover-border);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--discover-text-strong);
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+.genre-pill:active {
+  transform: scale(0.97);
+}
+
+.genre-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+}
+
+.genre-pill-label {
+  line-height: 1;
+}
+
+.genre-pill-skeleton {
+  flex: 0 0 auto;
+}

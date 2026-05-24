@@ -99,8 +99,8 @@
         </button>
       </div>
       @if (movieGenres.length) {
-        <div class="grid grid-cols-2 gap-2.5 px-4 pb-4">
-          @for (genre of movieGenres; track genre) {
+        <div class="grid grid-cols-2 gap-2.5 px-4 pb-3">
+          @for (genre of popularGenres; track genre) {
             <div
               class="flex h-[90px] cursor-pointer flex-col items-center justify-center gap-2 rounded-xl transition active:scale-[0.96] active:opacity-85"
               [style.background]="getGenreColor(genre.id)"
@@ -117,10 +117,29 @@
             </div>
           }
         </div>
+        @if (otherGenres.length) {
+          <div class="px-4 pb-4">
+            <p class="genre-subtitle">More genres</p>
+            <div class="genre-rail">
+              @for (genre of otherGenres; track genre) {
+                <button
+                  class="genre-pill"
+                  (click)="browseGenre(genre.id, 'movies')"
+                >
+                  <span
+                    class="genre-dot"
+                    [style.background]="getGenreColor(genre.id)"
+                  ></span>
+                  <span class="genre-pill-label">{{ genre.name }}</span>
+                </button>
+              }
+            </div>
+          </div>
+        }
       }
       @if (!movieGenres.length) {
-        <div class="grid grid-cols-2 gap-2.5 px-4 pb-4">
-          @for (s of [0,1,2,3,4,5,6,7,8,9,10,11]; track s) {
+        <div class="grid grid-cols-2 gap-2.5 px-4 pb-3">
+          @for (s of [0,1,2,3,4,5]; track s) {
             <div
               class="h-[90px] overflow-hidden rounded-xl"
               style="background: var(--ion-color-step-50, #1a1a1a)"
@@ -131,6 +150,18 @@
               ></ion-skeleton-text>
             </div>
           }
+        </div>
+        <div class="px-4 pb-4">
+          <div class="genre-rail">
+            @for (s of [0,1,2,3,4,5,6,7]; track s) {
+              <div class="genre-pill-skeleton">
+                <ion-skeleton-text
+                  animated
+                  class="h-6 w-20 rounded-full"
+                ></ion-skeleton-text>
+              </div>
+            }
+          </div>
         </div>
       }
     </div>
