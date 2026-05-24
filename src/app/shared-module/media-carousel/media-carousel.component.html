@@ -1,10 +1,11 @@
 @if (isLoading || items?.length) {
-  <div class="carousel">
-    <div class="carousel__header">
-      <h2 class="carousel__title">{{ title }}</h2>
+  <div class="pb-2">
+    <div class="flex items-center justify-between px-4 pb-2 pt-4">
+      <h2 class="m-0 text-base font-bold" style="color: var(--ion-text-color)">{{ title }}</h2>
       @if (!isLoading && seeAllRoute) {
         <a
-          class="carousel__see-all"
+          class="text-[0.8rem] font-semibold no-underline"
+          style="color: var(--ion-color-primary)"
           [routerLink]="seeAllRoute"
           [queryParams]="seeAllQueryParams"
           >See All</a
@@ -13,9 +14,10 @@
       </div>
       <!-- Loaded -->
       @if (!isLoading) {
-        <div class="carousel__scroll">
+        <div class="flex snap-x gap-2.5 overflow-x-auto px-4 pb-2 [-webkit-overflow-scrolling:touch] [scroll-padding-left:16px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           @for (item of items; track item) {
             <app-poster-card
+              class="w-[120px] shrink-0 snap-start"
               [item]="item"
               [mediaType]="mediaType"
               >
@@ -25,9 +27,9 @@
       }
       <!-- Skeleton -->
       @if (isLoading) {
-        <div class="carousel__scroll">
+        <div class="flex snap-x gap-2.5 overflow-x-auto px-4 pb-2 [-webkit-overflow-scrolling:touch] [scroll-padding-left:16px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           @for (s of skeletons; track s) {
-            <app-skeleton-card></app-skeleton-card>
+            <app-skeleton-card class="w-[120px] shrink-0 snap-start"></app-skeleton-card>
           }
         </div>
       }
