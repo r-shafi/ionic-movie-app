@@ -8,7 +8,6 @@ import { DiscoverParams, TmdbService } from '../services/tmdb.service';
 @Component({
     selector: 'app-discover',
     templateUrl: './discover.page.html',
-    styleUrls: ['./discover.page.scss'],
     standalone: false
 })
 export class DiscoverPage implements OnInit {
