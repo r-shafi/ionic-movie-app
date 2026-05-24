@@ -1,16 +1,16 @@
 @if (!isLoading && current) {
-  <div class="hero" (click)="navigate()">
+  <div class="relative w-full cursor-pointer" (click)="navigate()">
     <div
-      class="hero__backdrop"
+      class="relative h-[56vw] max-h-[420px] min-h-60 w-full overflow-hidden bg-[#111] bg-cover bg-center bg-no-repeat"
       [style.backgroundImage]="backdropUrl ? 'url(' + backdropUrl + ')' : 'none'"
       >
-      <div class="hero__gradient"></div>
-      <div class="hero__content">
-        <span class="hero__type-badge">{{
+      <div class="absolute inset-0 bg-gradient-to-b from-black/10 via-black/50 to-black/90"></div>
+      <div class="absolute inset-x-0 bottom-0 p-4">
+        <span class="mb-1.5 inline-block text-[0.7rem] font-bold uppercase tracking-[0.08em]" style="color: var(--ion-color-primary)">{{
           current.media_type === "tv" ? "TV Series" : "Movie"
         }}</span>
-        <h1 class="hero__title">{{ current.title || current.name }}</h1>
-        <p class="hero__meta">
+        <h1 class="m-0 mb-1 text-[clamp(1.3rem,5vw,2rem)] font-extrabold leading-[1.2] text-white [text-shadow:0_2px_8px_rgba(0,0,0,0.6)]">{{ current.title || current.name }}</h1>
+        <p class="m-0 mb-2.5 text-[0.85rem] text-white/80">
           {{ getYear(current) }}
           @if (current.vote_average) {
             <span>
@@ -18,7 +18,7 @@
             </span>
           }
         </p>
-        <div class="hero__actions" (click)="$event.stopPropagation()">
+        <div class="hero__actions flex flex-wrap gap-1.5" (click)="$event.stopPropagation()">
           <ion-button
             size="small"
             fill="solid"
@@ -64,13 +64,16 @@
     <!-- Dot indicators -->
     @if (items.length > 1) {
       <div
-        class="hero__dots"
+        class="flex justify-center gap-1.5 bg-black/30 py-2"
         (click)="$event.stopPropagation()"
         >
         @for (item of items; track item; let i = $index) {
           <span
-            class="hero__dot"
-            [class.hero__dot--active]="i === currentIndex"
+            class="h-1.5 cursor-pointer rounded-full transition-[background,width] duration-300"
+            [class.w-[18px]]="i === currentIndex"
+            [class.w-1.5]="i !== currentIndex"
+            [class.rounded-[3px]]="i === currentIndex"
+            [style.background]="i === currentIndex ? 'var(--ion-color-primary)' : 'rgba(255, 255, 255, 0.4)'"
             (click)="goTo(i)"
             >
           </span>
@@ -82,34 +85,34 @@
 
 <!-- Skeleton -->
 @if (isLoading) {
-  <div class="hero hero--skeleton">
-    <div class="hero__backdrop">
-      <div class="hero__gradient"></div>
-      <div class="hero__content">
+  <div class="relative w-full cursor-pointer">
+    <div class="relative h-[56vw] max-h-[420px] min-h-60 w-full overflow-hidden bg-cover bg-center bg-no-repeat" style="background: var(--ion-color-step-50, #1a1a1a)">
+      <div class="absolute inset-0 bg-gradient-to-b from-black/10 via-black/50 to-black/90"></div>
+      <div class="absolute inset-x-0 bottom-0 p-4">
         <ion-skeleton-text
           animated
-          style="width: 60px; height: 20px; margin-bottom: 8px"
+          class="mb-2 h-5 w-[60px]"
         ></ion-skeleton-text>
         <ion-skeleton-text
           animated
-          style="width: 70%; height: 28px; margin-bottom: 6px"
+          class="mb-1.5 h-7 w-[70%]"
         ></ion-skeleton-text>
         <ion-skeleton-text
           animated
-          style="width: 40%; height: 16px; margin-bottom: 12px"
+          class="mb-3 h-4 w-[40%]"
         ></ion-skeleton-text>
-        <div class="hero__actions">
+        <div class="flex gap-2">
           <ion-skeleton-text
             animated
-            style="width: 90px; height: 32px; border-radius: 8px"
+            class="h-8 w-[90px] rounded-lg"
           ></ion-skeleton-text>
           <ion-skeleton-text
             animated
-            style="width: 90px; height: 32px; border-radius: 8px"
+            class="h-8 w-[90px] rounded-lg"
           ></ion-skeleton-text>
           <ion-skeleton-text
             animated
-            style="width: 90px; height: 32px; border-radius: 8px"
+            class="h-8 w-[90px] rounded-lg"
           ></ion-skeleton-text>
         </div>
       </div>
