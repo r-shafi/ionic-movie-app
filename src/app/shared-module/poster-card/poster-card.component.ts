@@ -18,8 +18,8 @@ export class PosterCardComponent {
   ) {}
 
   get posterUrl(): string {
-    const p = this.item?.poster_path;
-    return p ? `https://image.tmdb.org/t/p/w185${p}` : 'assets/no-image.png';
+    const p = this.item?.poster_path || this.item?.backdrop_path;
+    return p ? `https://image.tmdb.org/t/p/w342${p}` : 'assets/no-image.png';
   }
 
   get title(): string {
