@@ -248,7 +248,7 @@
                   @if (crewDirectors.length) {
                     <div class="pt-3">
                       <h2 class="m-0 mb-2 px-4 text-base font-extrabold">Directed By</h2>
-                      <div class="flex snap-x gap-2.5 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                      <div class="flex snap-x gap-2.5 overflow-x-auto px-4 pb-2 [scroll-padding-left:16px] [scroll-padding-right:16px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                         @for (c of crewDirectors; track c) {
                           <div class="w-20 shrink-0 snap-start cursor-pointer text-center" [routerLink]="['/person', c.id]">
                             <div class="mx-auto mb-1 h-16 w-16 overflow-hidden rounded-full" style="background: var(--ion-color-step-100)">
@@ -271,7 +271,7 @@
                   @if (cast.length) {
                     <div class="pt-3">
                       <h2 class="m-0 mb-2 px-4 text-base font-extrabold">Cast</h2>
-                      <div class="flex snap-x gap-2.5 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                      <div class="flex snap-x gap-2.5 overflow-x-auto px-4 pb-2 [scroll-padding-left:16px] [scroll-padding-right:16px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                         @for (person of cast; track person) {
                           <div
                             class="w-20 shrink-0 snap-start cursor-pointer text-center"
