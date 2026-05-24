@@ -9,6 +9,11 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Keep only Ionic CSS variables below */
 :root {
   --ion-background-color: #212529;
   --ion-text-color: #ced4da;
