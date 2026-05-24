@@ -16,6 +16,8 @@ export class PersonPage implements OnInit {
   isLoading = true;
   showFullBio = false;
   activeTab: 'movies' | 'tv' | 'photos' = 'movies';
+  creditRole: 'all' | 'acting' | 'crew' = 'all';
+  creditSort: 'newest' | 'oldest' | 'popular' = 'newest';
 
   constructor(
     private route: ActivatedRoute,
@@ -33,6 +35,8 @@ export class PersonPage implements OnInit {
         this.person = data.person;
         this.credits = data.credits;
         this.images = (data.images?.profiles || []).slice(0, 20);
+        const dept = (this.person?.known_for_department || '').toLowerCase();
+        this.creditRole = dept && dept !== 'acting' ? 'crew' : 'acting';
         this.isLoading = false;
       },
       error: () => {
@@ -48,36 +52,168 @@ export class PersonPage implements OnInit {
   }
 
   get movieCredits(): any[] {
-    return (this.credits?.cast || [])
-      .filter(
-        (c: any) =>
-          c.media_type === 'movie' ||
-          !c.first_air_date === false ||
-          c.release_date,
-      )
-      .sort((a: any, b: any) => {
-        const da = new Date(a.release_date || 0).getTime();
-        const db = new Date(b.release_date || 0).getTime();
-        return db - da;
-      })
-      .map((c: any) => ({ ...c, media_type: 'movie' }))
-      .slice(0, 30);
+    return this.buildCredits('movie');
   }
 
   get tvCredits(): any[] {
-    return (this.credits?.cast || [])
-      .filter((c: any) => c.first_air_date)
-      .sort((a: any, b: any) => {
-        const da = new Date(a.first_air_date || 0).getTime();
-        const db = new Date(b.first_air_date || 0).getTime();
-        return db - da;
-      })
-      .map((c: any) => ({ ...c, media_type: 'tv' }))
-      .slice(0, 30);
+    return this.buildCredits('tv');
   }
 
   get bioShort(): string {
     const bio = this.person?.biography || '';
     return bio.length > 300 ? bio.substring(0, 300) + '...' : bio;
+  }
+
+  get ageValue(): string | null {
+    const birthday = this.person?.birthday;
+    if (!birthday) {
+      return null;
+    }
+    const start = new Date(birthday);
+    if (Number.isNaN(start.getTime())) {
+      return null;
+    }
+    const end = this.person?.deathday
+      ? new Date(this.person.deathday)
+      : new Date();
+    let age = end.getFullYear() - start.getFullYear();
+    const monthDiff = end.getMonth() - start.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && end.getDate() < start.getDate())) {
+      age -= 1;
+    }
+    return `${age}`;
+  }
+
+  get popularityLabel(): string | null {
+    const p = this.person?.popularity;
+    return p ? p.toFixed(1) : null;
+  }
+
+  get movieCount(): number {
+    return this.movieCredits.length;
+  }
+
+  get tvCount(): number {
+    return this.tvCredits.length;
+  }
+
+  get photoCount(): number {
+    return this.images.length;
+  }
+
+  get totalCredits(): number {
+    const castCount = this.credits?.cast?.length || 0;
+    const crewCount = this.credits?.crew?.length || 0;
+    return castCount + crewCount;
+  }
+
+  get socialLinks(): { label: string; url: string; icon: string }[] {
+    const links: { label: string; url: string; icon: string }[] = [];
+    const ids = this.person?.external_ids || {};
+    if (this.person?.homepage) {
+      links.push({
+        label: 'Website',
+        url: this.person.homepage,
+        icon: 'globe-outline',
+      });
+    }
+    const imdbId = this.person?.imdb_id || ids.imdb_id;
+    if (imdbId) {
+      links.push({
+        label: 'IMDb',
+        url: `https://www.imdb.com/name/${imdbId}`,
+        icon: 'film-outline',
+      });
+    }
+    if (ids.instagram_id) {
+      links.push({
+        label: 'Instagram',
+        url: `https://www.instagram.com/${ids.instagram_id}`,
+        icon: 'logo-instagram',
+      });
+    }
+    if (ids.twitter_id) {
+      links.push({
+        label: 'Twitter',
+        url: `https://twitter.com/${ids.twitter_id}`,
+        icon: 'logo-twitter',
+      });
+    }
+    if (ids.facebook_id) {
+      links.push({
+        label: 'Facebook',
+        url: `https://www.facebook.com/${ids.facebook_id}`,
+        icon: 'logo-facebook',
+      });
+    }
+    if (ids.youtube_id) {
+      links.push({
+        label: 'YouTube',
+        url: `https://www.youtube.com/${ids.youtube_id}`,
+        icon: 'logo-youtube',
+      });
+    }
+    if (ids.tiktok_id) {
+      links.push({
+        label: 'TikTok',
+        url: `https://www.tiktok.com/@${ids.tiktok_id}`,
+        icon: 'logo-tiktok',
+      });
+    }
+    if (ids.wikidata_id) {
+      links.push({
+        label: 'Wikidata',
+        url: `https://www.wikidata.org/wiki/${ids.wikidata_id}`,
+        icon: 'information-circle-outline',
+      });
+    }
+    return links;
+  }
+
+  private buildCredits(mediaType: 'movie' | 'tv'): any[] {
+    const source = this.getCreditsByRole();
+    let items = source.filter((c: any) => {
+      const mt = c.media_type || (c.first_air_date ? 'tv' : 'movie');
+      return mt === mediaType;
+    });
+
+    const seen = new Set<number>();
+    items = items.filter((c: any) => {
+      if (seen.has(c.id)) {
+        return false;
+      }
+      seen.add(c.id);
+      return true;
+    });
+
+    items = items.map((c: any) => ({
+      ...c,
+      media_type: c.media_type || mediaType,
+    }));
+
+    const byDate = (c: any) =>
+      new Date(c.release_date || c.first_air_date || 0).getTime();
+
+    if (this.creditSort === 'popular') {
+      items.sort((a: any, b: any) => (b.popularity || 0) - (a.popularity || 0));
+    } else if (this.creditSort === 'oldest') {
+      items.sort((a: any, b: any) => byDate(a) - byDate(b));
+    } else {
+      items.sort((a: any, b: any) => byDate(b) - byDate(a));
+    }
+
+    return items.slice(0, 30);
+  }
+
+  private getCreditsByRole(): any[] {
+    const cast = this.credits?.cast || [];
+    const crew = this.credits?.crew || [];
+    if (this.creditRole === 'acting') {
+      return cast;
+    }
+    if (this.creditRole === 'crew') {
+      return crew;
+    }
+    return [...cast, ...crew];
   }
 }
