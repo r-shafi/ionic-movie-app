@@ -8,30 +8,37 @@
 </ion-header>
 
 <ion-content>
-  <div class="ion-padding" *ngIf="!list">
-    <p>List not found.</p>
-  </div>
+  @if (!list) {
+    <div class="ion-padding">
+      <p>List not found.</p>
+    </div>
+  }
 
-  <ion-list *ngIf="list">
-    <ion-item *ngFor="let item of list.items">
-      <ion-thumbnail slot="start">
-        <ion-img
-          [src]="'https://image.tmdb.org/t/p/w92' + item.poster_path"
-          *ngIf="item.poster_path"
-        ></ion-img>
-      </ion-thumbnail>
-      <ion-label>
-        <h2>{{ item.title || item.name }}</h2>
-        <p>{{ item.media_type | titlecase }}</p>
-      </ion-label>
-      <ion-button
-        slot="end"
-        fill="clear"
-        color="danger"
-        (click)="removeItem(item.media_type, item.id)"
-      >
-        <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
-      </ion-button>
-    </ion-item>
-  </ion-list>
+  @if (list) {
+    <ion-list>
+      @for (item of list.items; track item) {
+        <ion-item>
+          <ion-thumbnail slot="start">
+            @if (item.poster_path) {
+              <ion-img
+                [src]="'https://image.tmdb.org/t/p/w92' + item.poster_path"
+              ></ion-img>
+            }
+          </ion-thumbnail>
+          <ion-label>
+            <h2>{{ item.title || item.name }}</h2>
+            <p>{{ item.media_type | titlecase }}</p>
+          </ion-label>
+          <ion-button
+            slot="end"
+            fill="clear"
+            color="danger"
+            (click)="removeItem(item.media_type, item.id)"
+            >
+            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+          </ion-button>
+        </ion-item>
+      }
+    </ion-list>
+  }
 </ion-content>

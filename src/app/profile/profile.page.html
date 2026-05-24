@@ -20,114 +20,119 @@
       <div class="stat-item">
         <span class="stat-value"
           >{{ (watchedMovies$ | async)?.length || 0 }}</span
-        >
-        <span class="stat-label">Movies</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-value">{{ (watchedTv$ | async)?.length || 0 }}</span>
-        <span class="stat-label">Shows</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-value">{{ totalHours }}</span>
-        <span class="stat-label">Hours</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-value">{{ (ratings$ | async)?.length || 0 }}</span>
-        <span class="stat-label">Ratings</span>
+          >
+          <span class="stat-label">Movies</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">{{ (watchedTv$ | async)?.length || 0 }}</span>
+          <span class="stat-label">Shows</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">{{ totalHours }}</span>
+          <span class="stat-label">Hours</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">{{ (ratings$ | async)?.length || 0 }}</span>
+          <span class="stat-label">Ratings</span>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Quick links -->
-  <ion-list class="quick-links" lines="full">
-    <ion-item routerLink="./watched" detail="true">
-      <ion-icon name="eye-outline" slot="start" color="primary"></ion-icon>
-      <ion-label>Watched Movies</ion-label>
-      <ion-badge slot="end"
-        >{{ (watchedMovies$ | async)?.length || 0 }}</ion-badge
-      >
-    </ion-item>
-    <ion-item routerLink="./watched" detail="true">
-      <ion-icon name="tv-outline" slot="start" color="tertiary"></ion-icon>
-      <ion-label>Watched TV Shows</ion-label>
-      <ion-badge slot="end" color="tertiary"
-        >{{ (watchedTv$ | async)?.length || 0 }}</ion-badge
-      >
-    </ion-item>
-    <ion-item routerLink="./favorite" detail="true">
-      <ion-icon name="heart-outline" slot="start" color="danger"></ion-icon>
-      <ion-label>Favorites</ion-label>
-      <ion-badge slot="end" color="danger"
-        >{{ ((favoriteMovies$ | async)?.length || 0) + ((favoriteTv$ |
-        async)?.length || 0) }}</ion-badge
-      >
-    </ion-item>
-    <ion-item routerLink="./watchlist" detail="true">
-      <ion-icon name="bookmark-outline" slot="start" color="warning"></ion-icon>
-      <ion-label>Watchlist</ion-label>
-      <ion-badge slot="end" color="warning"
-        >{{ (watchlist$ | async)?.length || 0 }}</ion-badge
-      >
-    </ion-item>
-  </ion-list>
+    <!-- Quick links -->
+    <ion-list class="quick-links" lines="full">
+      <ion-item routerLink="./watched" detail="true">
+        <ion-icon name="eye-outline" slot="start" color="primary"></ion-icon>
+        <ion-label>Watched Movies</ion-label>
+        <ion-badge slot="end"
+          >{{ (watchedMovies$ | async)?.length || 0 }}</ion-badge
+          >
+        </ion-item>
+        <ion-item routerLink="./watched" detail="true">
+          <ion-icon name="tv-outline" slot="start" color="tertiary"></ion-icon>
+          <ion-label>Watched TV Shows</ion-label>
+          <ion-badge slot="end" color="tertiary"
+            >{{ (watchedTv$ | async)?.length || 0 }}</ion-badge
+            >
+          </ion-item>
+          <ion-item routerLink="./favorite" detail="true">
+            <ion-icon name="heart-outline" slot="start" color="danger"></ion-icon>
+            <ion-label>Favorites</ion-label>
+            <ion-badge slot="end" color="danger"
+              >{{ ((favoriteMovies$ | async)?.length || 0) + ((favoriteTv$ |
+              async)?.length || 0) }}</ion-badge
+              >
+            </ion-item>
+            <ion-item routerLink="./watchlist" detail="true">
+              <ion-icon name="bookmark-outline" slot="start" color="warning"></ion-icon>
+              <ion-label>Watchlist</ion-label>
+              <ion-badge slot="end" color="warning"
+                >{{ (watchlist$ | async)?.length || 0 }}</ion-badge
+                >
+              </ion-item>
+            </ion-list>
 
-  <!-- Custom lists -->
-  <div class="section-header">
-    <h3>My Lists</h3>
-    <ion-button fill="clear" size="small" (click)="createList()">
-      <ion-icon slot="start" name="add-outline"></ion-icon>New
-    </ion-button>
-  </div>
-  <ion-list *ngIf="(customLists$ | async)?.length; else noLists">
-    <ion-item
-      *ngFor="let list of (customLists$ | async)"
-      [routerLink]="['/list', list.id]"
-      detail="true"
-    >
-      <ion-icon name="list-outline" slot="start"></ion-icon>
-      <ion-label>
-        <h2>{{ list.name }}</h2>
-        <p>{{ list.items.length }} items</p>
-      </ion-label>
-      <ion-button
-        slot="end"
-        fill="clear"
-        color="danger"
-        size="small"
-        (click)="deleteList(list.id); $event.stopPropagation()"
-      >
-        <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
-      </ion-button>
-    </ion-item>
-  </ion-list>
-  <ng-template #noLists>
-    <p class="empty-hint ion-padding-horizontal">
-      No lists yet. Create one to organize your movies!
-    </p>
-  </ng-template>
+            <!-- Custom lists -->
+            <div class="section-header">
+              <h3>My Lists</h3>
+              <ion-button fill="clear" size="small" (click)="createList()">
+                <ion-icon slot="start" name="add-outline"></ion-icon>New
+              </ion-button>
+            </div>
+            @if ((customLists$ | async)?.length) {
+              <ion-list>
+                @for (list of (customLists$ | async); track list) {
+                  <ion-item
+                    [routerLink]="['/list', list.id]"
+                    detail="true"
+                    >
+                    <ion-icon name="list-outline" slot="start"></ion-icon>
+                    <ion-label>
+                      <h2>{{ list.name }}</h2>
+                      <p>{{ list.items.length }} items</p>
+                    </ion-label>
+                    <ion-button
+                      slot="end"
+                      fill="clear"
+                      color="danger"
+                      size="small"
+                      (click)="deleteList(list.id); $event.stopPropagation()"
+                      >
+                      <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+                    </ion-button>
+                  </ion-item>
+                }
+              </ion-list>
+            } @else {
+              <p class="empty-hint ion-padding-horizontal">
+                No lists yet. Create one to organize your movies!
+              </p>
+            }
 
-  <!-- Recent activity -->
-  <div class="section-header">
-    <h3>Recent Activity</h3>
-  </div>
-  <ion-list *ngIf="(activity$ | async)?.length; else noActivity">
-    <ion-item *ngFor="let entry of (activity$ | async) | slice:0:10">
-      <ion-icon
-        [name]="entry.action === 'watched' ? 'eye-outline' : entry.action === 'favorite' ? 'heart-outline' : 'bookmark-outline'"
-        slot="start"
-        color="medium"
-      ></ion-icon>
-      <ion-label>
-        <h3>{{ entry.title }}</h3>
-        <p>
-          {{ entry.action | titlecase }} · {{ entry.date | date:'mediumDate' }}
-        </p>
-      </ion-label>
-    </ion-item>
-  </ion-list>
-  <ng-template #noActivity>
-    <p class="empty-hint ion-padding-horizontal">
-      Start watching and favoriting to see activity here.
-    </p>
-  </ng-template>
-</ion-content>
+            <!-- Recent activity -->
+            <div class="section-header">
+              <h3>Recent Activity</h3>
+            </div>
+            @if ((activity$ | async)?.length) {
+              <ion-list>
+                @for (entry of (activity$ | async) | slice:0:10; track entry) {
+                  <ion-item>
+                    <ion-icon
+                      [name]="entry.action === 'watched' ? 'eye-outline' : entry.action === 'favorite' ? 'heart-outline' : 'bookmark-outline'"
+                      slot="start"
+                      color="medium"
+                    ></ion-icon>
+                    <ion-label>
+                      <h3>{{ entry.title }}</h3>
+                      <p>
+                        {{ entry.action | titlecase }} · {{ entry.date | date:'mediumDate' }}
+                      </p>
+                    </ion-label>
+                  </ion-item>
+                }
+              </ion-list>
+            } @else {
+              <p class="empty-hint ion-padding-horizontal">
+                Start watching and favoriting to see activity here.
+              </p>
+            }
+          </ion-content>

@@ -8,27 +8,29 @@
 </ion-header>
 
 <ion-content>
-  <div *ngIf="isLoading" class="ion-padding">
-    <ion-skeleton-text
-      animated
+  @if (isLoading) {
+    <div class="ion-padding">
+      <ion-skeleton-text
+        animated
       style="
         width: 120px;
         height: 180px;
         border-radius: 8px;
         margin-bottom: 12px;
       "
-    ></ion-skeleton-text>
-    <ion-skeleton-text
-      animated
-      style="width: 60%; height: 24px; margin-bottom: 6px"
-    ></ion-skeleton-text>
-    <ion-skeleton-text
-      animated
-      style="width: 100%; height: 80px"
-    ></ion-skeleton-text>
-  </div>
+      ></ion-skeleton-text>
+      <ion-skeleton-text
+        animated
+        style="width: 60%; height: 24px; margin-bottom: 6px"
+      ></ion-skeleton-text>
+      <ion-skeleton-text
+        animated
+        style="width: 100%; height: 80px"
+      ></ion-skeleton-text>
+    </div>
+  }
 
-  <ng-container *ngIf="!isLoading && person">
+  @if (!isLoading && person) {
     <div class="person-header ion-padding">
       <ion-img
         [src]="profileUrl"
@@ -38,69 +40,82 @@
       <div class="person-info">
         <h1 class="person-name">{{ person.name }}</h1>
         <p class="person-known-for">{{ person.known_for_department }}</p>
-        <p class="person-born" *ngIf="person.birthday">
-          Born: {{ person.birthday | date:'mediumDate' }}
-          <span *ngIf="person.place_of_birth"
-            >&nbsp;· {{ person.place_of_birth }}</span
-          >
-        </p>
-        <p class="person-died" *ngIf="person.deathday">
-          Died: {{ person.deathday | date:'mediumDate' }}
-        </p>
+        @if (person.birthday) {
+          <p class="person-born">
+            Born: {{ person.birthday | date:'mediumDate' }}
+            @if (person.place_of_birth) {
+              <span
+                >&nbsp;· {{ person.place_of_birth }}</span
+                >
+              }
+            </p>
+          }
+          @if (person.deathday) {
+            <p class="person-died">
+              Died: {{ person.deathday | date:'mediumDate' }}
+            </p>
+          }
+        </div>
       </div>
-    </div>
-
-    <div class="ion-padding-horizontal" *ngIf="person.biography">
-      <p class="person-bio">{{ showFullBio ? person.biography : bioShort }}</p>
-      <ion-button
-        fill="clear"
-        size="small"
-        *ngIf="person.biography?.length > 300"
-        (click)="showFullBio = !showFullBio"
-      >
-        {{ showFullBio ? 'Show Less' : 'Read More' }}
-      </ion-button>
-    </div>
-
-    <ion-segment
-      [value]="activeTab"
-      (ionChange)="activeTab = $event.detail.value"
-      class="person-tabs"
-    >
-      <ion-segment-button value="movies">Movies</ion-segment-button>
-      <ion-segment-button value="tv">TV</ion-segment-button>
-      <ion-segment-button value="photos">Photos</ion-segment-button>
-    </ion-segment>
-
-    <div class="tab-content" *ngIf="activeTab === 'movies'">
-      <div class="poster-grid">
-        <app-poster-card
-          *ngFor="let m of movieCredits"
-          [item]="m"
-          mediaType="movie"
-        ></app-poster-card>
-      </div>
-    </div>
-
-    <div class="tab-content" *ngIf="activeTab === 'tv'">
-      <div class="poster-grid">
-        <app-poster-card
-          *ngFor="let t of tvCredits"
-          [item]="t"
-          mediaType="tv"
-        ></app-poster-card>
-      </div>
-    </div>
-
-    <div class="tab-content" *ngIf="activeTab === 'photos'">
-      <div class="photo-grid">
-        <ion-img
-          *ngFor="let img of images"
-          [src]="'https://image.tmdb.org/t/p/w185' + img.file_path"
-          class="person-image"
+      @if (person.biography) {
+        <div class="ion-padding-horizontal">
+          <p class="person-bio">{{ showFullBio ? person.biography : bioShort }}</p>
+          @if (person.biography?.length > 300) {
+            <ion-button
+              fill="clear"
+              size="small"
+              (click)="showFullBio = !showFullBio"
+              >
+              {{ showFullBio ? 'Show Less' : 'Read More' }}
+            </ion-button>
+          }
+        </div>
+      }
+      <ion-segment
+        [value]="activeTab"
+        (ionChange)="activeTab = $event.detail.value"
+        class="person-tabs"
         >
-        </ion-img>
-      </div>
-    </div>
-  </ng-container>
-</ion-content>
+        <ion-segment-button value="movies">Movies</ion-segment-button>
+        <ion-segment-button value="tv">TV</ion-segment-button>
+        <ion-segment-button value="photos">Photos</ion-segment-button>
+      </ion-segment>
+      @if (activeTab === 'movies') {
+        <div class="tab-content">
+          <div class="poster-grid">
+            @for (m of movieCredits; track m) {
+              <app-poster-card
+                [item]="m"
+                mediaType="movie"
+              ></app-poster-card>
+            }
+          </div>
+        </div>
+      }
+      @if (activeTab === 'tv') {
+        <div class="tab-content">
+          <div class="poster-grid">
+            @for (t of tvCredits; track t) {
+              <app-poster-card
+                [item]="t"
+                mediaType="tv"
+              ></app-poster-card>
+            }
+          </div>
+        </div>
+      }
+      @if (activeTab === 'photos') {
+        <div class="tab-content">
+          <div class="photo-grid">
+            @for (img of images; track img) {
+              <ion-img
+                [src]="'https://image.tmdb.org/t/p/w185' + img.file_path"
+                class="person-image"
+                >
+              </ion-img>
+            }
+          </div>
+        </div>
+      }
+    }
+  </ion-content>

@@ -6,15 +6,18 @@
 </ion-header>
 
 <ion-content>
-  <div *ngIf="isLoading" class="ion-padding">
-    <ion-skeleton-text
-      animated
-      style="width: 100%; height: 60px; margin-bottom: 8px"
-      *ngFor="let s of [0,1,2,3,4]"
-    ></ion-skeleton-text>
-  </div>
+  @if (isLoading) {
+    <div class="ion-padding">
+      @for (s of [0,1,2,3,4]; track s) {
+        <ion-skeleton-text
+          animated
+          style="width: 100%; height: 60px; margin-bottom: 8px"
+        ></ion-skeleton-text>
+      }
+    </div>
+  }
 
-  <ng-container *ngIf="!isLoading && season">
+  @if (!isLoading && season) {
     <div class="season-header ion-padding">
       <p class="season-progress">
         {{ watchedCount }} / {{ season.episodes?.length }} episodes watched
@@ -23,31 +26,34 @@
         [value]="season.episodes?.length ? watchedCount / season.episodes.length : 0"
       ></ion-progress-bar>
     </div>
-
     <ion-list>
-      <ion-item *ngFor="let ep of season.episodes">
-        <ion-thumbnail slot="start">
-          <ion-img
-            [src]="ep.still_path ? 'https://image.tmdb.org/t/p/w92' + ep.still_path : 'assets/no-image.png'"
-          ></ion-img>
-        </ion-thumbnail>
-        <ion-label>
-          <h2>{{ ep.episode_number }}. {{ ep.name }}</h2>
-          <p class="ep-overview">{{ ep.overview }}</p>
-          <p class="ep-meta">
-            {{ ep.air_date | date:'mediumDate' }}
-            <span *ngIf="ep.vote_average">
-              · ⭐ {{ ep.vote_average | number:'1.1-1' }}</span
-            >
-          </p>
-        </ion-label>
-        <ion-checkbox
-          slot="end"
-          [checked]="isEpisodeWatched(season.season_number, ep.episode_number)"
-          (ionChange)="toggleEpisode(ep)"
-        >
-        </ion-checkbox>
-      </ion-item>
-    </ion-list>
-  </ng-container>
-</ion-content>
+      @for (ep of season.episodes; track ep) {
+        <ion-item>
+          <ion-thumbnail slot="start">
+            <ion-img
+              [src]="ep.still_path ? 'https://image.tmdb.org/t/p/w92' + ep.still_path : 'assets/no-image.png'"
+            ></ion-img>
+          </ion-thumbnail>
+          <ion-label>
+            <h2>{{ ep.episode_number }}. {{ ep.name }}</h2>
+            <p class="ep-overview">{{ ep.overview }}</p>
+            <p class="ep-meta">
+              {{ ep.air_date | date:'mediumDate' }}
+              @if (ep.vote_average) {
+                <span>
+                  · ⭐ {{ ep.vote_average | number:'1.1-1' }}</span
+                  >
+                }
+              </p>
+            </ion-label>
+            <ion-checkbox
+              slot="end"
+              [checked]="isEpisodeWatched(season.season_number, ep.episode_number)"
+              (ionChange)="toggleEpisode(ep)"
+              >
+            </ion-checkbox>
+          </ion-item>
+        }
+      </ion-list>
+    }
+  </ion-content>

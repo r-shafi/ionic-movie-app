@@ -16,7 +16,7 @@
         slot="end"
         [value]="settings.theme"
         (ionChange)="setTheme($event.detail.value)"
-      >
+        >
         <ion-select-option value="system">System</ion-select-option>
         <ion-select-option value="light">Light</ion-select-option>
         <ion-select-option value="dark">Dark</ion-select-option>
@@ -37,17 +37,19 @@
     <ion-note
       class="ion-padding-horizontal"
       style="display: block; padding-bottom: 8px; font-size: 0.82rem"
-    >
+      >
       Toggle on to hide content in these languages from Browse results.
     </ion-note>
-    <ion-item *ngFor="let lang of languages">
-      <ion-label>{{ lang.name }}</ion-label>
-      <ion-toggle
-        slot="end"
-        [checked]="isLanguageExcluded(lang.code)"
-        (ionChange)="toggleLanguage(lang.code)"
-      ></ion-toggle>
-    </ion-item>
+    @for (lang of languages; track lang) {
+      <ion-item>
+        <ion-label>{{ lang.name }}</ion-label>
+        <ion-toggle
+          slot="end"
+          [checked]="isLanguageExcluded(lang.code)"
+          (ionChange)="toggleLanguage(lang.code)"
+        ></ion-toggle>
+      </ion-item>
+    }
 
     <ion-list-header>Profile</ion-list-header>
     <ion-item>
@@ -65,7 +67,7 @@
         src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_square_2-d537fb228cf3ded904ef09b136fe3fec72548ebc1fea3fbbd1ad9e36364db38b.svg"
         alt="TMDB"
         class="tmdb-logo"
-      />
+        />
     </a>
     <p class="tmdb-text">
       This product uses the TMDB API but is not endorsed or certified by

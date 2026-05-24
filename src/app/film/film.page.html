@@ -14,26 +14,28 @@
 
 <ion-content>
   <!-- Loading -->
-  <div *ngIf="isLoading" class="ion-padding">
-    <ion-skeleton-text
-      animated
-      style="width: 100%; height: 300px; border-radius: 0; margin-bottom: 12px"
-    ></ion-skeleton-text>
-    <ion-skeleton-text
-      animated
-      style="width: 60%; height: 28px; margin-bottom: 8px"
-    ></ion-skeleton-text>
-    <ion-skeleton-text
-      animated
-      style="width: 40%; height: 16px; margin-bottom: 12px"
-    ></ion-skeleton-text>
-    <ion-skeleton-text
-      animated
-      style="width: 100%; height: 80px"
-    ></ion-skeleton-text>
-  </div>
+  @if (isLoading) {
+    <div class="ion-padding">
+      <ion-skeleton-text
+        animated
+        style="width: 100%; height: 300px; border-radius: 0; margin-bottom: 12px"
+      ></ion-skeleton-text>
+      <ion-skeleton-text
+        animated
+        style="width: 60%; height: 28px; margin-bottom: 8px"
+      ></ion-skeleton-text>
+      <ion-skeleton-text
+        animated
+        style="width: 40%; height: 16px; margin-bottom: 12px"
+      ></ion-skeleton-text>
+      <ion-skeleton-text
+        animated
+        style="width: 100%; height: 80px"
+      ></ion-skeleton-text>
+    </div>
+  }
 
-  <ng-container *ngIf="!isLoading && movie">
+  @if (!isLoading && movie) {
     <!-- Hero: backdrop with content overlaid (crossfading slideshow) -->
     <div class="film-hero">
       <div
@@ -56,278 +58,329 @@
         ></ion-img>
         <div class="film-info">
           <h1 class="film-title">{{ movie.title }}</h1>
-          <p class="film-tagline" *ngIf="movie.tagline">
-            <i>{{ movie.tagline }}</i>
-          </p>
+          @if (movie.tagline) {
+            <p class="film-tagline">
+              <i>{{ movie.tagline }}</i>
+            </p>
+          }
           <div class="film-badges-row">
-            <span class="film-rating-badge" *ngIf="movie.vote_average"
-              >{{ movie.vote_average | number:'1.1-1' }}</span
-            >
-            <span class="film-content-rating" *ngIf="contentRating"
-              >{{ contentRating }}</span
-            >
-            <span class="film-year" *ngIf="year">{{ year }}</span>
-            <span *ngIf="movie.runtime" class="film-year"
-              >{{ runtimeDisplay }}</span
-            >
-            <span class="film-user-rating" *ngIf="userRating"
-              >★{{ userRating }}</span
-            >
-          </div>
-          <div class="film-genre-pills" *ngIf="movie.genres?.length">
-            <span class="film-genre-pill" *ngFor="let g of movie.genres"
-              >{{ g.name }}</span
-            >
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="film-body">
-      <!-- Action bar -->
-      <div class="action-bar">
-        <ion-button
-          size="small"
-          [fill]="isWatched() ? 'solid' : 'outline'"
-          color="primary"
-          (click)="toggleWatched()"
-        >
-          <ion-icon
-            slot="start"
-            [name]="isWatched() ? 'eye' : 'eye-outline'"
-          ></ion-icon>
-          {{ isWatched() ? 'Watched' : 'Watch' }}
-        </ion-button>
-        <ion-button
-          *ngIf="trailerKey"
-          size="small"
-          fill="outline"
-          color="medium"
-          (click)="openTrailer()"
-        >
-          <ion-icon slot="start" name="play-circle-outline"></ion-icon>
-          Trailer
-        </ion-button>
-        <div class="action-icons">
-          <ion-button
-            fill="clear"
-            size="small"
-            [color]="isFavorite() ? 'danger' : 'medium'"
-            (click)="toggleFavorite()"
-          >
-            <ion-icon
-              slot="icon-only"
-              [name]="isFavorite() ? 'heart' : 'heart-outline'"
-            ></ion-icon>
-          </ion-button>
-          <ion-button
-            fill="clear"
-            size="small"
-            [color]="isWatchlist() ? 'warning' : 'medium'"
-            (click)="toggleWatchlist()"
-          >
-            <ion-icon
-              slot="icon-only"
-              [name]="isWatchlist() ? 'bookmark' : 'bookmark-outline'"
-            ></ion-icon>
-          </ion-button>
-        </div>
-      </div>
-
-      <!-- Overview -->
-      <div class="section" *ngIf="movie.overview">
-        <p class="film-overview">{{ movie.overview }}</p>
-      </div>
-
-      <!-- Production companies -->
-      <div class="network-section" *ngIf="movie.production_companies?.length">
-        <div class="network-row">
-          <span class="network-label">PRODUCTION</span>
-          <div
-            class="network-item"
-            *ngFor="let company of movie.production_companies | slice:0:3"
-          >
-            <div class="network-pill">
-              <img
-                *ngIf="company.logo_path"
-                [src]="'https://image.tmdb.org/t/p/w92' + company.logo_path"
-                [alt]="company.name"
-                class="network-logo"
-              />
-              <span *ngIf="!company.logo_path">{{ company.name }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Stats grid -->
-      <div class="section">
-        <div class="stats-grid">
-          <div class="stat-card" *ngIf="movie.runtime">
-            <p class="stat-value">
-              {{ runtimeDisplay }}
-            </p>
-            <p class="stat-label">Runtime</p>
-          </div>
-          <div class="stat-card" *ngIf="movie.vote_average">
-            <p class="stat-value">
-              {{ movie.vote_average | number:'1.1-1' }}<span class="stat-sub"> / 10</span>
-            </p>
-            <p class="stat-label">{{ movie.vote_count | number }} votes</p>
-          </div>
-          <div class="stat-card" *ngIf="movie.release_date">
-            <p class="stat-value stat-value--sm">
-              {{ movie.release_date | date:'mediumDate' }}
-            </p>
-            <p class="stat-label">Released</p>
-          </div>
-          <div class="stat-card" *ngIf="movie.original_language">
-            <p class="stat-value stat-value--sm">
-              {{ movie.original_language | uppercase }}
-            </p>
-            <p class="stat-label">Language</p>
-          </div>
-          <div class="stat-card" *ngIf="movie.origin_country?.length">
-            <p class="stat-value stat-value--sm">
-              {{ movie.origin_country.join(', ') }}
-            </p>
-            <p class="stat-label">Country</p>
-          </div>
-          <div class="stat-card" *ngIf="movie.status">
-            <p class="stat-value stat-value--sm">
-              <span class="status-badge" [ngClass]="statusBadgeClass"
-                >{{ movie.status }}</span
-              >
-            </p>
-            <p class="stat-label">Status</p>
-          </div>
-          <div class="stat-card" *ngIf="movie.belongs_to_collection">
-            <p class="stat-value stat-value--sm">
-              {{ movie.belongs_to_collection.name }}
-            </p>
-            <p class="stat-label">Collection</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Director(s) -->
-      <div class="section" *ngIf="crewDirectors.length">
-        <h2 class="section-title">Directed By</h2>
-        <div class="cast-scroll">
-          <div class="cast-item" *ngFor="let c of crewDirectors" [routerLink]="['/person', c.id]">
-            <div class="cast-avatar">
-              <img
+            @if (movie.vote_average) {
+              <span class="film-rating-badge"
+                >{{ movie.vote_average | number:'1.1-1' }}</span
+                >
+              }
+              @if (contentRating) {
+                <span class="film-content-rating"
+                  >{{ contentRating }}</span
+                  >
+                }
+                @if (year) {
+                  <span class="film-year">{{ year }}</span>
+                }
+                @if (movie.runtime) {
+                  <span class="film-year"
+                    >{{ runtimeDisplay }}</span
+                    >
+                  }
+                  @if (userRating) {
+                    <span class="film-user-rating"
+                      >★{{ userRating }}</span
+                      >
+                    }
+                  </div>
+                  @if (movie.genres?.length) {
+                    <div class="film-genre-pills">
+                      @for (g of movie.genres; track g) {
+                        <span class="film-genre-pill"
+                          >{{ g.name }}</span
+                          >
+                        }
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
+              <div class="film-body">
+                <!-- Action bar -->
+                <div class="action-bar">
+                  <ion-button
+                    size="small"
+                    [fill]="isWatched() ? 'solid' : 'outline'"
+                    color="primary"
+                    (click)="toggleWatched()"
+                    >
+                    <ion-icon
+                      slot="start"
+                      [name]="isWatched() ? 'eye' : 'eye-outline'"
+                    ></ion-icon>
+                    {{ isWatched() ? 'Watched' : 'Watch' }}
+                  </ion-button>
+                  @if (trailerKey) {
+                    <ion-button
+                      size="small"
+                      fill="outline"
+                      color="medium"
+                      (click)="openTrailer()"
+                      >
+                      <ion-icon slot="start" name="play-circle-outline"></ion-icon>
+                      Trailer
+                    </ion-button>
+                  }
+                  <div class="action-icons">
+                    <ion-button
+                      fill="clear"
+                      size="small"
+                      [color]="isFavorite() ? 'danger' : 'medium'"
+                      (click)="toggleFavorite()"
+                      >
+                      <ion-icon
+                        slot="icon-only"
+                        [name]="isFavorite() ? 'heart' : 'heart-outline'"
+                      ></ion-icon>
+                    </ion-button>
+                    <ion-button
+                      fill="clear"
+                      size="small"
+                      [color]="isWatchlist() ? 'warning' : 'medium'"
+                      (click)="toggleWatchlist()"
+                      >
+                      <ion-icon
+                        slot="icon-only"
+                        [name]="isWatchlist() ? 'bookmark' : 'bookmark-outline'"
+                      ></ion-icon>
+                    </ion-button>
+                  </div>
+                </div>
+                <!-- Overview -->
+                @if (movie.overview) {
+                  <div class="section">
+                    <p class="film-overview">{{ movie.overview }}</p>
+                  </div>
+                }
+                <!-- Production companies -->
+                @if (movie.production_companies?.length) {
+                  <div class="network-section">
+                    <div class="network-row">
+                      <span class="network-label">PRODUCTION</span>
+                      @for (company of movie.production_companies | slice:0:3; track company) {
+                        <div
+                          class="network-item"
+                          >
+                          <div class="network-pill">
+                            @if (company.logo_path) {
+                              <img
+                                [src]="'https://image.tmdb.org/t/p/w92' + company.logo_path"
+                                [alt]="company.name"
+                                class="network-logo"
+                                />
+                            }
+                            @if (!company.logo_path) {
+                              <span>{{ company.name }}</span>
+                            }
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+                <!-- Stats grid -->
+                <div class="section">
+                  <div class="stats-grid">
+                    @if (movie.runtime) {
+                      <div class="stat-card">
+                        <p class="stat-value">
+                          {{ runtimeDisplay }}
+                        </p>
+                        <p class="stat-label">Runtime</p>
+                      </div>
+                    }
+                    @if (movie.vote_average) {
+                      <div class="stat-card">
+                        <p class="stat-value">
+                          {{ movie.vote_average | number:'1.1-1' }}<span class="stat-sub"> / 10</span>
+                        </p>
+                        <p class="stat-label">{{ movie.vote_count | number }} votes</p>
+                      </div>
+                    }
+                    @if (movie.release_date) {
+                      <div class="stat-card">
+                        <p class="stat-value stat-value--sm">
+                          {{ movie.release_date | date:'mediumDate' }}
+                        </p>
+                        <p class="stat-label">Released</p>
+                      </div>
+                    }
+                    @if (movie.original_language) {
+                      <div class="stat-card">
+                        <p class="stat-value stat-value--sm">
+                          {{ movie.original_language | uppercase }}
+                        </p>
+                        <p class="stat-label">Language</p>
+                      </div>
+                    }
+                    @if (movie.origin_country?.length) {
+                      <div class="stat-card">
+                        <p class="stat-value stat-value--sm">
+                          {{ movie.origin_country.join(', ') }}
+                        </p>
+                        <p class="stat-label">Country</p>
+                      </div>
+                    }
+                    @if (movie.status) {
+                      <div class="stat-card">
+                        <p class="stat-value stat-value--sm">
+                          <span class="status-badge" [ngClass]="statusBadgeClass"
+                            >{{ movie.status }}</span
+                            >
+                          </p>
+                          <p class="stat-label">Status</p>
+                        </div>
+                      }
+                      @if (movie.belongs_to_collection) {
+                        <div class="stat-card">
+                          <p class="stat-value stat-value--sm">
+                            {{ movie.belongs_to_collection.name }}
+                          </p>
+                          <p class="stat-label">Collection</p>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                  <!-- Director(s) -->
+                  @if (crewDirectors.length) {
+                    <div class="section">
+                      <h2 class="section-title">Directed By</h2>
+                      <div class="cast-scroll">
+                        @for (c of crewDirectors; track c) {
+                          <div class="cast-item" [routerLink]="['/person', c.id]">
+                            <div class="cast-avatar">
+                              <img
                 [src]="c.profile_path
                   ? 'https://image.tmdb.org/t/p/w185' + c.profile_path
                   : 'assets/icon/favicon.png'"
-                [alt]="c.name"
-                class="cast-avatar__img"
-              />
-            </div>
-            <p class="cast-name">{{ c.name }}</p>
-            <p class="cast-character">Director</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Cast -->
-      <div class="section" *ngIf="cast.length">
-        <h2 class="section-title">Cast</h2>
-        <div class="cast-scroll">
-          <div
-            class="cast-item"
-            *ngFor="let person of cast"
-            [routerLink]="['/person', person.id]"
-          >
-            <div class="cast-avatar">
-              <img
+                                [alt]="c.name"
+                                class="cast-avatar__img"
+                                />
+                            </div>
+                            <p class="cast-name">{{ c.name }}</p>
+                            <p class="cast-character">Director</p>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  }
+                  <!-- Cast -->
+                  @if (cast.length) {
+                    <div class="section">
+                      <h2 class="section-title">Cast</h2>
+                      <div class="cast-scroll">
+                        @for (person of cast; track person) {
+                          <div
+                            class="cast-item"
+                            [routerLink]="['/person', person.id]"
+                            >
+                            <div class="cast-avatar">
+                              <img
                 [src]="person.profile_path
                   ? 'https://image.tmdb.org/t/p/w185' + person.profile_path
                   : 'assets/icon/favicon.png'"
-                [alt]="person.name"
-                class="cast-avatar__img"
-              />
-            </div>
-            <p class="cast-name">{{ person.name }}</p>
-            <p class="cast-character">{{ person.character }}</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Trailer -->
-      <div class="section" *ngIf="trailerKey">
-        <h2 class="section-title">Trailer</h2>
-        <div class="trailer-wrap">
-          <iframe
-            [src]="'https://www.youtube.com/embed/' + trailerKey | safeUrl"
-            frameborder="0"
-            allowfullscreen
-            style="width: 100%; aspect-ratio: 16/9; border-radius: 8px"
-          ></iframe>
-        </div>
-      </div>
-
-      <!-- Reviews -->
-      <div class="section" *ngIf="reviews.length">
-        <div class="section-header-row">
-          <h2 class="section-title">Reviews</h2>
-          <a
-            class="see-all-link"
-            [routerLink]="['/movie', movie.id, 'reviews']"
-            *ngIf="reviews.length > 3"
-            >See All {{ reviews.length }}</a
-          >
-        </div>
-        <div class="review-card" *ngFor="let review of reviews | slice:0:3">
-          <div class="review-header">
-            <div class="review-avatar">
-              <img
+                                [alt]="person.name"
+                                class="cast-avatar__img"
+                                />
+                            </div>
+                            <p class="cast-name">{{ person.name }}</p>
+                            <p class="cast-character">{{ person.character }}</p>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  }
+                  <!-- Trailer -->
+                  @if (trailerKey) {
+                    <div class="section">
+                      <h2 class="section-title">Trailer</h2>
+                      <div class="trailer-wrap">
+                        <iframe
+                          [src]="'https://www.youtube.com/embed/' + trailerKey | safeUrl"
+                          frameborder="0"
+                          allowfullscreen
+                          style="width: 100%; aspect-ratio: 16/9; border-radius: 8px"
+                        ></iframe>
+                      </div>
+                    </div>
+                  }
+                  <!-- Reviews -->
+                  @if (reviews.length) {
+                    <div class="section">
+                      <div class="section-header-row">
+                        <h2 class="section-title">Reviews</h2>
+                        @if (reviews.length > 3) {
+                          <a
+                            class="see-all-link"
+                            [routerLink]="['/movie', movie.id, 'reviews']"
+                            >See All {{ reviews.length }}</a
+                            >
+                          }
+                        </div>
+                        @for (review of reviews | slice:0:3; track review) {
+                          <div class="review-card">
+                            <div class="review-header">
+                              <div class="review-avatar">
+                                <img
                 [src]="review.author_details?.avatar_path
                   ? (review.author_details.avatar_path.startsWith('/https')
                       ? review.author_details.avatar_path.slice(1)
                       : 'https://image.tmdb.org/t/p/w45' + review.author_details.avatar_path)
                   : 'assets/icon/favicon.png'"
-                [alt]="review.author"
-                class="review-avatar__img"
-              />
-            </div>
-            <div class="review-author-meta">
-              <span class="review-author">{{ review.author }}</span>
-              <span class="review-rating" *ngIf="review.author_details?.rating">
-                ⭐ {{ review.author_details.rating }}/10
-              </span>
-            </div>
-            <span class="review-date"
-              >{{ review.created_at | date:'mediumDate' }}</span
-            >
-          </div>
-          <p class="review-content">{{ review.content }}</p>
-        </div>
-      </div>
-
-      <!-- Recommendations -->
-      <div class="section" *ngIf="recommendations.length">
-        <h2 class="section-title">Recommended</h2>
-        <div class="poster-grid">
-          <app-poster-card
-            *ngFor="let m of recommendations"
-            [item]="m"
-            mediaType="movie"
-          ></app-poster-card>
-        </div>
-      </div>
-
-      <!-- Similar -->
-      <div class="section" *ngIf="similar.length">
-        <h2 class="section-title">Similar Movies</h2>
-        <div class="poster-grid">
-          <app-poster-card
-            *ngFor="let m of similar"
-            [item]="m"
-            mediaType="movie"
-          ></app-poster-card>
-        </div>
-      </div>
-    </div>
-  </ng-container>
-</ion-content>
+                                  [alt]="review.author"
+                                  class="review-avatar__img"
+                                  />
+                              </div>
+                              <div class="review-author-meta">
+                                <span class="review-author">{{ review.author }}</span>
+                                @if (review.author_details?.rating) {
+                                  <span class="review-rating">
+                                    ⭐ {{ review.author_details.rating }}/10
+                                  </span>
+                                }
+                              </div>
+                              <span class="review-date"
+                                >{{ review.created_at | date:'mediumDate' }}</span
+                                >
+                              </div>
+                              <p class="review-content">{{ review.content }}</p>
+                            </div>
+                          }
+                        </div>
+                      }
+                      <!-- Recommendations -->
+                      @if (recommendations.length) {
+                        <div class="section">
+                          <h2 class="section-title">Recommended</h2>
+                          <div class="poster-grid">
+                            @for (m of recommendations; track m) {
+                              <app-poster-card
+                                [item]="m"
+                                mediaType="movie"
+                              ></app-poster-card>
+                            }
+                          </div>
+                        </div>
+                      }
+                      <!-- Similar -->
+                      @if (similar.length) {
+                        <div class="section">
+                          <h2 class="section-title">Similar Movies</h2>
+                          <div class="poster-grid">
+                            @for (m of similar; track m) {
+                              <app-poster-card
+                                [item]="m"
+                                mediaType="movie"
+                              ></app-poster-card>
+                            }
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  }
+                </ion-content>

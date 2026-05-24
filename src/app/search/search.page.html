@@ -12,55 +12,64 @@
 </ion-header>
 
 <ion-content>
-  <p *ngIf="isOffline" class="ion-text-center ion-padding">
-    No internet connection.
-  </p>
+  @if (isOffline) {
+    <p class="ion-text-center ion-padding">
+      No internet connection.
+    </p>
+  }
 
-  <ng-container *ngIf="query">
-    <ion-list *ngIf="isLoading">
-      <ion-item *ngFor="let s of [0,1,2,3,4,5]">
-        <ion-thumbnail slot="start">
-          <ion-skeleton-text animated></ion-skeleton-text>
-        </ion-thumbnail>
-        <ion-label>
-          <ion-skeleton-text animated style="width: 70%"></ion-skeleton-text>
-          <ion-skeleton-text animated style="width: 40%"></ion-skeleton-text>
-        </ion-label>
-      </ion-item>
-    </ion-list>
+  @if (query) {
+    @if (isLoading) {
+      <ion-list>
+        @for (s of [0,1,2,3,4,5]; track s) {
+          <ion-item>
+            <ion-thumbnail slot="start">
+              <ion-skeleton-text animated></ion-skeleton-text>
+            </ion-thumbnail>
+            <ion-label>
+              <ion-skeleton-text animated style="width: 70%"></ion-skeleton-text>
+              <ion-skeleton-text animated style="width: 40%"></ion-skeleton-text>
+            </ion-label>
+          </ion-item>
+        }
+      </ion-list>
+    }
+    @if (!isLoading && results.length) {
+      <ion-list>
+        @for (item of results; track item) {
+          <ion-item
+            [routerLink]="getRoute(item)"
+            button
+            detail="true"
+            >
+            <ion-thumbnail slot="start" class="result-thumb">
+              <img [src]="getPoster(item)" [alt]="getTitle(item)" loading="lazy" />
+            </ion-thumbnail>
+            <ion-label>
+              <h2>{{ getTitle(item) }}</h2>
+              <p>{{ getSubtitle(item) }}</p>
+            </ion-label>
+            <ion-badge
+              slot="end"
+              [color]="item.media_type === 'tv' ? 'tertiary' : item.media_type === 'person' ? 'medium' : 'primary'"
+              >
+              {{ item.media_type === 'tv' ? 'TV' : item.media_type === 'person' ?
+              'Person' : 'Movie' }}
+            </ion-badge>
+          </ion-item>
+        }
+      </ion-list>
+    }
+    @if (!isLoading && query && !results.length) {
+      <div class="empty-state">
+        <ion-icon name="search-outline" class="empty-icon"></ion-icon>
+        <p>No results for "{{ query }}"</p>
+      </div>
+    }
+  }
 
-    <ion-list *ngIf="!isLoading && results.length">
-      <ion-item
-        *ngFor="let item of results"
-        [routerLink]="getRoute(item)"
-        button
-        detail="true"
-      >
-        <ion-thumbnail slot="start" class="result-thumb">
-          <img [src]="getPoster(item)" [alt]="getTitle(item)" loading="lazy" />
-        </ion-thumbnail>
-        <ion-label>
-          <h2>{{ getTitle(item) }}</h2>
-          <p>{{ getSubtitle(item) }}</p>
-        </ion-label>
-        <ion-badge
-          slot="end"
-          [color]="item.media_type === 'tv' ? 'tertiary' : item.media_type === 'person' ? 'medium' : 'primary'"
-        >
-          {{ item.media_type === 'tv' ? 'TV' : item.media_type === 'person' ?
-          'Person' : 'Movie' }}
-        </ion-badge>
-      </ion-item>
-    </ion-list>
-
-    <div class="empty-state" *ngIf="!isLoading && query && !results.length">
-      <ion-icon name="search-outline" class="empty-icon"></ion-icon>
-      <p>No results for "{{ query }}"</p>
-    </div>
-  </ng-container>
-
-  <ng-container *ngIf="!query && !isOffline">
-    <ng-container *ngIf="isLoadingDiscover">
+  @if (!query && !isOffline) {
+    @if (isLoadingDiscover) {
       <div class="section">
         <div class="section-header">
           <ion-skeleton-text
@@ -91,134 +100,148 @@
           ></ion-skeleton-text>
         </div>
         <div class="popular-scroll">
-          <div class="skeleton-poster" *ngFor="let s of [0,1,2,3]">
-            <ion-skeleton-text
-              animated
-              style="width: 130px; height: 195px; border-radius: 10px"
-            ></ion-skeleton-text>
+          @for (s of [0,1,2,3]; track s) {
+            <div class="skeleton-poster">
+              <ion-skeleton-text
+                animated
+                style="width: 130px; height: 195px; border-radius: 10px"
+              ></ion-skeleton-text>
+            </div>
+          }
+        </div>
+      </div>
+    }
+    @if (!isLoadingDiscover && recentSearches.length) {
+      <div class="section">
+        <div class="section-header">
+          <span class="section-title">RECENT</span>
+          <button class="see-all-btn" (click)="clearRecent()">Clear all</button>
+        </div>
+        <div class="recent-chips">
+          @for (term of recentSearches; track term) {
+            <div
+              class="chip"
+              (click)="searchRecent(term)"
+              >
+              <span>{{ term }}</span>
+              <ion-icon
+                name="close"
+                class="chip-close"
+                (click)="removeRecent(term, $event)"
+              ></ion-icon>
+            </div>
+          }
+        </div>
+      </div>
+    }
+    @if (!isLoadingDiscover && popularItems.length) {
+      <div class="section">
+        <div class="section-header">
+          <span class="section-title">POPULAR RIGHT NOW</span>
+          <button class="see-all-btn" (click)="seeAllPopular()">See all</button>
+        </div>
+        <div class="popular-scroll">
+          @for (item of popularItems; track item; let i = $index) {
+            <div
+              class="popular-card"
+              [routerLink]="getRoute(item)"
+              >
+              <div class="popular-poster">
+                <img
+                  [src]="getPoster(item)"
+                  [alt]="getTitle(item)"
+                  loading="lazy"
+                  />
+                <span class="popular-rank">#{{ i + 1 }}</span>
+              </div>
+              <p class="popular-title">{{ getTitle(item) }}</p>
+              <div class="popular-meta">
+                @if (getRating(item)) {
+                  <span class="popular-rating">
+                    <ion-icon name="star"></ion-icon>
+                    {{ getRating(item) }}
+                  </span>
+                }
+                <span class="popular-type"
+                  >{{ item.media_type === 'tv' ? 'TV Show' : 'Movie' }}</span
+                  >
+                </div>
+              </div>
+            }
           </div>
         </div>
-      </div>
-    </ng-container>
-
-    <div class="section" *ngIf="!isLoadingDiscover && recentSearches.length">
-      <div class="section-header">
-        <span class="section-title">RECENT</span>
-        <button class="see-all-btn" (click)="clearRecent()">Clear all</button>
-      </div>
-      <div class="recent-chips">
-        <div
-          class="chip"
-          *ngFor="let term of recentSearches"
-          (click)="searchRecent(term)"
-        >
-          <span>{{ term }}</span>
-          <ion-icon
-            name="close"
-            class="chip-close"
-            (click)="removeRecent(term, $event)"
-          ></ion-icon>
-        </div>
-      </div>
-    </div>
-
-    <div class="section" *ngIf="!isLoadingDiscover && popularItems.length">
-      <div class="section-header">
-        <span class="section-title">POPULAR RIGHT NOW</span>
-        <button class="see-all-btn" (click)="seeAllPopular()">See all</button>
-      </div>
-      <div class="popular-scroll">
-        <div
-          class="popular-card"
-          *ngFor="let item of popularItems; let i = index"
-          [routerLink]="getRoute(item)"
-        >
-          <div class="popular-poster">
-            <img
-              [src]="getPoster(item)"
-              [alt]="getTitle(item)"
-              loading="lazy"
-            />
-            <span class="popular-rank">#{{ i + 1 }}</span>
+      }
+      @if (!isLoadingDiscover && genres.length) {
+        <div class="section">
+          <div class="section-header">
+            <span class="section-title">BROWSE BY GENRE</span>
           </div>
-          <p class="popular-title">{{ getTitle(item) }}</p>
-          <div class="popular-meta">
-            <span class="popular-rating" *ngIf="getRating(item)">
-              <ion-icon name="star"></ion-icon>
-              {{ getRating(item) }}
-            </span>
-            <span class="popular-type"
-              >{{ item.media_type === 'tv' ? 'TV Show' : 'Movie' }}</span
-            >
+          <div class="genre-grid">
+            @for (genre of genres; track genre) {
+              <div
+                class="genre-card"
+                [style.background]="getGenreColor(genre.id)"
+                (click)="browseGenre(genre.id)"
+                >
+                <ion-icon
+                  [name]="getGenreIcon(genre.id)"
+                  class="genre-icon"
+                ></ion-icon>
+                <span class="genre-name">{{ genre.name }}</span>
+              </div>
+            }
           </div>
         </div>
-      </div>
-    </div>
-
-    <div class="section" *ngIf="!isLoadingDiscover && genres.length">
-      <div class="section-header">
-        <span class="section-title">BROWSE BY GENRE</span>
-      </div>
-      <div class="genre-grid">
-        <div
-          class="genre-card"
-          *ngFor="let genre of genres"
-          [style.background]="getGenreColor(genre.id)"
-          (click)="browseGenre(genre.id)"
-        >
-          <ion-icon
-            [name]="getGenreIcon(genre.id)"
-            class="genre-icon"
-          ></ion-icon>
-          <span class="genre-name">{{ genre.name }}</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="section" *ngIf="!isLoadingDiscover && trendingSearches.length">
-      <div class="section-header">
-        <span class="section-title">TRENDING SEARCHES</span>
-      </div>
-      <div class="trending-list">
-        <div
-          class="trending-item"
-          *ngFor="let item of trendingSearches; let i = index"
-          [routerLink]="getRoute(item)"
-        >
-          <span class="trending-rank">{{ i + 1 }}</span>
-          <ion-thumbnail class="trending-thumb">
-            <img
-              [src]="getPoster(item)"
-              [alt]="getTitle(item)"
-              loading="lazy"
-            />
-          </ion-thumbnail>
-          <div class="trending-info">
-            <p class="trending-title">{{ getTitle(item) }}</p>
-            <p class="trending-subtitle">{{ getSubtitle(item) }}</p>
+      }
+      @if (!isLoadingDiscover && trendingSearches.length) {
+        <div class="section">
+          <div class="section-header">
+            <span class="section-title">TRENDING SEARCHES</span>
           </div>
-          <ion-icon name="chevron-forward" class="trending-chevron"></ion-icon>
-        </div>
-      </div>
-    </div>
-
-    <div class="section" *ngIf="!isLoadingDiscover && trendingPeople.length">
-      <div class="section-header">
-        <span class="section-title">TRENDING PEOPLE</span>
-        <button class="see-all-btn" (click)="seeAllPeople()">See all</button>
-      </div>
-      <div class="people-scroll">
-        <div
-          class="person-card"
-          *ngFor="let person of trendingPeople"
-          [routerLink]="['/person', person.id]"
-        >
-          <div class="person-avatar">
-            <img [src]="getPoster(person)" [alt]="person.name" loading="lazy" />
+          <div class="trending-list">
+            @for (item of trendingSearches; track item; let i = $index) {
+              <div
+                class="trending-item"
+                [routerLink]="getRoute(item)"
+                >
+                <span class="trending-rank">{{ i + 1 }}</span>
+                <ion-thumbnail class="trending-thumb">
+                  <img
+                    [src]="getPoster(item)"
+                    [alt]="getTitle(item)"
+                    loading="lazy"
+                    />
+                </ion-thumbnail>
+                <div class="trending-info">
+                  <p class="trending-title">{{ getTitle(item) }}</p>
+                  <p class="trending-subtitle">{{ getSubtitle(item) }}</p>
+                </div>
+                <ion-icon name="chevron-forward" class="trending-chevron"></ion-icon>
+              </div>
+            }
           </div>
-          <p class="person-name">{{ person.name }}</p>
         </div>
-      </div>
-    </div>
-  </ng-container>
-</ion-content>
+      }
+      @if (!isLoadingDiscover && trendingPeople.length) {
+        <div class="section">
+          <div class="section-header">
+            <span class="section-title">TRENDING PEOPLE</span>
+            <button class="see-all-btn" (click)="seeAllPeople()">See all</button>
+          </div>
+          <div class="people-scroll">
+            @for (person of trendingPeople; track person) {
+              <div
+                class="person-card"
+                [routerLink]="['/person', person.id]"
+                >
+                <div class="person-avatar">
+                  <img [src]="getPoster(person)" [alt]="person.name" loading="lazy" />
+                </div>
+                <p class="person-name">{{ person.name }}</p>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    }
+  </ion-content>

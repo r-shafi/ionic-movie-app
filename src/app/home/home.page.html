@@ -29,16 +29,18 @@
   </ion-refresher>
 
   <!-- Offline state -->
-  <div *ngIf="isOffline" class="offline-state ion-padding ion-text-center">
-    <ion-icon
-      name="cloud-offline-outline"
-      style="font-size: 4rem; color: var(--ion-color-medium)"
-    ></ion-icon>
-    <p>No internet connection.</p>
-  </div>
+  @if (isOffline) {
+    <div class="offline-state ion-padding ion-text-center">
+      <ion-icon
+        name="cloud-offline-outline"
+        style="font-size: 4rem; color: var(--ion-color-medium)"
+      ></ion-icon>
+      <p>No internet connection.</p>
+    </div>
+  }
 
   <!-- Loading skeleton -->
-  <ng-container *ngIf="isLoading && !isOffline">
+  @if (isLoading && !isOffline) {
     <app-hero-banner [items]="[]" [isLoading]="true"></app-hero-banner>
     <app-media-carousel
       title="Trending Today"
@@ -52,12 +54,11 @@
       mediaType="movie"
       [isLoading]="true"
     ></app-media-carousel>
-  </ng-container>
+  }
 
   <!-- Loaded content -->
-  <ng-container *ngIf="!isLoading && !isOffline">
+  @if (!isLoading && !isOffline) {
     <app-hero-banner [items]="heroItems"></app-hero-banner>
-
     <app-media-carousel
       title="Trending Today"
       [items]="trendingMovies"
@@ -121,5 +122,5 @@
       seeAllRoute="/discover"
       [seeAllQueryParams]="{mode: 'list', title: 'Airing Today', tab: 'tv', sort: 'popularity.desc'}"
     ></app-media-carousel>
-  </ng-container>
+  }
 </ion-content>

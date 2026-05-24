@@ -1,111 +1,118 @@
-<div class="hero" *ngIf="!isLoading && current" (click)="navigate()">
-  <div
-    class="hero__backdrop"
-    [style.backgroundImage]="backdropUrl ? 'url(' + backdropUrl + ')' : 'none'"
-  >
-    <div class="hero__gradient"></div>
-    <div class="hero__content">
-      <span class="hero__type-badge">{{
-        current.media_type === "tv" ? "TV Series" : "Movie"
-      }}</span>
-      <h1 class="hero__title">{{ current.title || current.name }}</h1>
-      <p class="hero__meta">
-        {{ getYear(current) }}
-        <span *ngIf="current.vote_average">
-          &nbsp;·&nbsp;⭐ {{ current.vote_average | number: "1.1-1" }}
-        </span>
-      </p>
-      <div class="hero__actions" (click)="$event.stopPropagation()">
-        <ion-button
-          size="small"
-          fill="solid"
-          color="light"
-          [class.active-btn]="isWatched()"
-          (click)="toggleWatched($event)"
-        >
-          <ion-icon
-            slot="start"
-            [name]="isWatched() ? 'eye' : 'eye-outline'"
-          ></ion-icon>
-          Watched
-        </ion-button>
-        <ion-button
-          size="small"
-          fill="solid"
-          color="light"
-          [class.active-btn]="isFavorite()"
-          (click)="toggleFavorite($event)"
-        >
-          <ion-icon
-            slot="start"
-            [name]="isFavorite() ? 'heart' : 'heart-outline'"
-          ></ion-icon>
-          Favorite
-        </ion-button>
-        <ion-button
-          size="small"
-          fill="solid"
-          color="light"
-          [class.active-btn]="isWatchlist()"
-          (click)="toggleWatchlist($event)"
-        >
-          <ion-icon
-            slot="start"
-            [name]="isWatchlist() ? 'bookmark' : 'bookmark-outline'"
-          ></ion-icon>
-          Watchlist
-        </ion-button>
+@if (!isLoading && current) {
+  <div class="hero" (click)="navigate()">
+    <div
+      class="hero__backdrop"
+      [style.backgroundImage]="backdropUrl ? 'url(' + backdropUrl + ')' : 'none'"
+      >
+      <div class="hero__gradient"></div>
+      <div class="hero__content">
+        <span class="hero__type-badge">{{
+          current.media_type === "tv" ? "TV Series" : "Movie"
+        }}</span>
+        <h1 class="hero__title">{{ current.title || current.name }}</h1>
+        <p class="hero__meta">
+          {{ getYear(current) }}
+          @if (current.vote_average) {
+            <span>
+              &nbsp;·&nbsp;⭐ {{ current.vote_average | number: "1.1-1" }}
+            </span>
+          }
+        </p>
+        <div class="hero__actions" (click)="$event.stopPropagation()">
+          <ion-button
+            size="small"
+            fill="solid"
+            color="light"
+            [class.active-btn]="isWatched()"
+            (click)="toggleWatched($event)"
+            >
+            <ion-icon
+              slot="start"
+              [name]="isWatched() ? 'eye' : 'eye-outline'"
+            ></ion-icon>
+            Watched
+          </ion-button>
+          <ion-button
+            size="small"
+            fill="solid"
+            color="light"
+            [class.active-btn]="isFavorite()"
+            (click)="toggleFavorite($event)"
+            >
+            <ion-icon
+              slot="start"
+              [name]="isFavorite() ? 'heart' : 'heart-outline'"
+            ></ion-icon>
+            Favorite
+          </ion-button>
+          <ion-button
+            size="small"
+            fill="solid"
+            color="light"
+            [class.active-btn]="isWatchlist()"
+            (click)="toggleWatchlist($event)"
+            >
+            <ion-icon
+              slot="start"
+              [name]="isWatchlist() ? 'bookmark' : 'bookmark-outline'"
+            ></ion-icon>
+            Watchlist
+          </ion-button>
+        </div>
       </div>
     </div>
+    <!-- Dot indicators -->
+    @if (items.length > 1) {
+      <div
+        class="hero__dots"
+        (click)="$event.stopPropagation()"
+        >
+        @for (item of items; track item; let i = $index) {
+          <span
+            class="hero__dot"
+            [class.hero__dot--active]="i === currentIndex"
+            (click)="goTo(i)"
+            >
+          </span>
+        }
+      </div>
+    }
   </div>
-
-  <!-- Dot indicators -->
-  <div
-    class="hero__dots"
-    *ngIf="items.length > 1"
-    (click)="$event.stopPropagation()"
-  >
-    <span
-      *ngFor="let item of items; let i = index"
-      class="hero__dot"
-      [class.hero__dot--active]="i === currentIndex"
-      (click)="goTo(i)"
-    >
-    </span>
-  </div>
-</div>
+}
 
 <!-- Skeleton -->
-<div class="hero hero--skeleton" *ngIf="isLoading">
-  <div class="hero__backdrop">
-    <div class="hero__gradient"></div>
-    <div class="hero__content">
-      <ion-skeleton-text
-        animated
-        style="width: 60px; height: 20px; margin-bottom: 8px"
-      ></ion-skeleton-text>
-      <ion-skeleton-text
-        animated
-        style="width: 70%; height: 28px; margin-bottom: 6px"
-      ></ion-skeleton-text>
-      <ion-skeleton-text
-        animated
-        style="width: 40%; height: 16px; margin-bottom: 12px"
-      ></ion-skeleton-text>
-      <div class="hero__actions">
+@if (isLoading) {
+  <div class="hero hero--skeleton">
+    <div class="hero__backdrop">
+      <div class="hero__gradient"></div>
+      <div class="hero__content">
         <ion-skeleton-text
           animated
-          style="width: 90px; height: 32px; border-radius: 8px"
+          style="width: 60px; height: 20px; margin-bottom: 8px"
         ></ion-skeleton-text>
         <ion-skeleton-text
           animated
-          style="width: 90px; height: 32px; border-radius: 8px"
+          style="width: 70%; height: 28px; margin-bottom: 6px"
         ></ion-skeleton-text>
         <ion-skeleton-text
           animated
-          style="width: 90px; height: 32px; border-radius: 8px"
+          style="width: 40%; height: 16px; margin-bottom: 12px"
         ></ion-skeleton-text>
+        <div class="hero__actions">
+          <ion-skeleton-text
+            animated
+            style="width: 90px; height: 32px; border-radius: 8px"
+          ></ion-skeleton-text>
+          <ion-skeleton-text
+            animated
+            style="width: 90px; height: 32px; border-radius: 8px"
+          ></ion-skeleton-text>
+          <ion-skeleton-text
+            animated
+            style="width: 90px; height: 32px; border-radius: 8px"
+          ></ion-skeleton-text>
+        </div>
       </div>
     </div>
   </div>
-</div>
+}

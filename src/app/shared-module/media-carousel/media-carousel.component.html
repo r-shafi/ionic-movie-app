@@ -1,27 +1,35 @@
-<div class="carousel" *ngIf="isLoading || items?.length">
-  <div class="carousel__header">
-    <h2 class="carousel__title">{{ title }}</h2>
-    <a
-      class="carousel__see-all"
-      [routerLink]="seeAllRoute"
-      [queryParams]="seeAllQueryParams"
-      *ngIf="!isLoading && seeAllRoute"
-      >See All</a
-    >
-  </div>
-
-  <!-- Loaded -->
-  <div class="carousel__scroll" *ngIf="!isLoading">
-    <app-poster-card
-      *ngFor="let item of items"
-      [item]="item"
-      [mediaType]="mediaType"
-    >
-    </app-poster-card>
-  </div>
-
-  <!-- Skeleton -->
-  <div class="carousel__scroll" *ngIf="isLoading">
-    <app-skeleton-card *ngFor="let s of skeletons"></app-skeleton-card>
-  </div>
-</div>
+@if (isLoading || items?.length) {
+  <div class="carousel">
+    <div class="carousel__header">
+      <h2 class="carousel__title">{{ title }}</h2>
+      @if (!isLoading && seeAllRoute) {
+        <a
+          class="carousel__see-all"
+          [routerLink]="seeAllRoute"
+          [queryParams]="seeAllQueryParams"
+          >See All</a
+          >
+        }
+      </div>
+      <!-- Loaded -->
+      @if (!isLoading) {
+        <div class="carousel__scroll">
+          @for (item of items; track item) {
+            <app-poster-card
+              [item]="item"
+              [mediaType]="mediaType"
+              >
+            </app-poster-card>
+          }
+        </div>
+      }
+      <!-- Skeleton -->
+      @if (isLoading) {
+        <div class="carousel__scroll">
+          @for (s of skeletons; track s) {
+            <app-skeleton-card></app-skeleton-card>
+          }
+        </div>
+      }
+    </div>
+  }

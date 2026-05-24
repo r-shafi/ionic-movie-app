@@ -7,70 +7,85 @@
     <ion-segment
       [value]="activeTab"
       (ionChange)="activeTab = $event.detail.value"
-    >
+      >
       <ion-segment-button value="movies"
         >Movies ({{ (favoriteMovies$ | async)?.length || 0
         }})</ion-segment-button
-      >
-      <ion-segment-button value="tv"
-        >TV ({{ (favoriteTv$ | async)?.length || 0 }})</ion-segment-button
-      >
-    </ion-segment>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content>
-  <ng-container *ngIf="activeTab === 'movies'">
-    <ion-list *ngIf="(favoriteMovies$ | async)?.length; else empty">
-      <ion-item-sliding *ngFor="let item of (favoriteMovies$ | async)">
-        <ion-item [routerLink]="['/movie', item.id]" button detail="true">
-          <ion-thumbnail slot="start">
-            <ion-img
-              [src]="item.poster_path ? 'https://image.tmdb.org/t/p/w92' + item.poster_path : 'assets/no-image.png'"
-            ></ion-img>
-          </ion-thumbnail>
-          <ion-label>
-            <h2>{{ item.title || item.name }}</h2>
-          </ion-label>
-        </ion-item>
-        <ion-item-options side="end">
-          <ion-item-option color="danger" (click)="remove(item)"
-            >Remove</ion-item-option
+        >
+        <ion-segment-button value="tv"
+          >TV ({{ (favoriteTv$ | async)?.length || 0 }})</ion-segment-button
           >
-        </ion-item-options>
-      </ion-item-sliding>
-    </ion-list>
-  </ng-container>
+        </ion-segment>
+      </ion-toolbar>
+    </ion-header>
 
-  <ng-container *ngIf="activeTab === 'tv'">
-    <ion-list *ngIf="(favoriteTv$ | async)?.length; else empty">
-      <ion-item-sliding *ngFor="let item of (favoriteTv$ | async)">
-        <ion-item [routerLink]="['/tv', item.id]" button detail="true">
-          <ion-thumbnail slot="start">
-            <ion-img
-              [src]="item.poster_path ? 'https://image.tmdb.org/t/p/w92' + item.poster_path : 'assets/no-image.png'"
-            ></ion-img>
-          </ion-thumbnail>
-          <ion-label>
-            <h2>{{ item.title || item.name }}</h2>
-          </ion-label>
-        </ion-item>
-        <ion-item-options side="end">
-          <ion-item-option color="danger" (click)="remove(item)"
-            >Remove</ion-item-option
-          >
-        </ion-item-options>
-      </ion-item-sliding>
-    </ion-list>
-  </ng-container>
+    <ion-content>
+      @if (activeTab === 'movies') {
+        @if ((favoriteMovies$ | async)?.length) {
+          <ion-list>
+            @for (item of (favoriteMovies$ | async); track item) {
+              <ion-item-sliding>
+                <ion-item [routerLink]="['/movie', item.id]" button detail="true">
+                  <ion-thumbnail slot="start">
+                    <ion-img
+                      [src]="item.poster_path ? 'https://image.tmdb.org/t/p/w92' + item.poster_path : 'assets/no-image.png'"
+                    ></ion-img>
+                  </ion-thumbnail>
+                  <ion-label>
+                    <h2>{{ item.title || item.name }}</h2>
+                  </ion-label>
+                </ion-item>
+                <ion-item-options side="end">
+                  <ion-item-option color="danger" (click)="remove(item)"
+                    >Remove</ion-item-option
+                    >
+                  </ion-item-options>
+                </ion-item-sliding>
+              }
+            </ion-list>
+          } @else {
+            <div class="ion-padding ion-text-center">
+              <ion-icon
+                name="heart-outline"
+                style="font-size: 3rem; color: var(--ion-color-medium)"
+              ></ion-icon>
+              <p>No favorites yet.</p>
+            </div>
+          }
+        }
 
-  <ng-template #empty>
-    <div class="ion-padding ion-text-center">
-      <ion-icon
-        name="heart-outline"
-        style="font-size: 3rem; color: var(--ion-color-medium)"
-      ></ion-icon>
-      <p>No favorites yet.</p>
-    </div>
-  </ng-template>
-</ion-content>
+        @if (activeTab === 'tv') {
+          @if ((favoriteTv$ | async)?.length) {
+            <ion-list>
+              @for (item of (favoriteTv$ | async); track item) {
+                <ion-item-sliding>
+                  <ion-item [routerLink]="['/tv', item.id]" button detail="true">
+                    <ion-thumbnail slot="start">
+                      <ion-img
+                        [src]="item.poster_path ? 'https://image.tmdb.org/t/p/w92' + item.poster_path : 'assets/no-image.png'"
+                      ></ion-img>
+                    </ion-thumbnail>
+                    <ion-label>
+                      <h2>{{ item.title || item.name }}</h2>
+                    </ion-label>
+                  </ion-item>
+                  <ion-item-options side="end">
+                    <ion-item-option color="danger" (click)="remove(item)"
+                      >Remove</ion-item-option
+                      >
+                    </ion-item-options>
+                  </ion-item-sliding>
+                }
+              </ion-list>
+            } @else {
+              <div class="ion-padding ion-text-center">
+                <ion-icon
+                  name="heart-outline"
+                  style="font-size: 3rem; color: var(--ion-color-medium)"
+                ></ion-icon>
+                <p>No favorites yet.</p>
+              </div>
+            }
+          }
+
+        </ion-content>

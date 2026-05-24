@@ -3,11 +3,13 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 @Component({
   selector: 'app-offline-banner',
   template: `
-    <div class="offline-banner" *ngIf="!isOnline">
-      <ion-icon name="cloud-offline-outline"></ion-icon>
-      No internet connection
-    </div>
-  `,
+    @if (!isOnline) {
+      <div class="offline-banner">
+        <ion-icon name="cloud-offline-outline"></ion-icon>
+        No internet connection
+      </div>
+    }
+    `,
   styles: [
     `
       .offline-banner {
