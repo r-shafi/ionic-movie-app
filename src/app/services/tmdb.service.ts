@@ -215,7 +215,9 @@ export class TmdbService {
   // ── People ─────────────────────────────────────────────────────────────────
 
   getPersonDetails(id: number | string): Observable<any> {
-    return this.get(`/person/${id}`);
+    return this.get(`/person/${id}`, {
+      append_to_response: 'combined_credits,external_ids',
+    });
   }
 
   getPersonCredits(id: number | string): Observable<any> {
