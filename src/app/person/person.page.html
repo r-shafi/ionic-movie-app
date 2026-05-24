@@ -188,7 +188,7 @@
       <div class="tab-content">
         @if (movieCredits.length) {
           <div class="poster-grid">
-            @for (m of movieCredits; track m) {
+            @for (m of movieCredits; track m.id) {
               <app-poster-card [item]="m" mediaType="movie"></app-poster-card>
             }
           </div>
@@ -202,7 +202,7 @@
       <div class="tab-content">
         @if (tvCredits.length) {
           <div class="poster-grid">
-            @for (t of tvCredits; track t) {
+            @for (t of tvCredits; track t.id) {
               <app-poster-card [item]="t" mediaType="tv"></app-poster-card>
             }
           </div>
@@ -216,7 +216,7 @@
       <div class="tab-content">
         @if (images.length) {
           <div class="photo-grid">
-            @for (img of images; track img) {
+            @for (img of images; track img.file_path) {
               <ion-img
                 [src]="'https://image.tmdb.org/t/p/w185' + img.file_path"
                 class="person-image"

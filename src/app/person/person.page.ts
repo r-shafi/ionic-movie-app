@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { TmdbService } from '../services/tmdb.service';
@@ -22,6 +22,7 @@ export class PersonPage implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private tmdb: TmdbService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
@@ -38,6 +39,7 @@ export class PersonPage implements OnInit {
         const dept = (this.person?.known_for_department || '').toLowerCase();
         this.creditRole = dept && dept !== 'acting' ? 'crew' : 'acting';
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
       error: () => {
         this.isLoading = false;
