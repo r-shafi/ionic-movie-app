@@ -1,17 +1,20 @@
-<div class="poster-card" (click)="navigate()">
-  <div class="poster-card__wrap">
-    <ion-img [src]="posterUrl" [alt]="title" class="poster-card__img"></ion-img>
+<div class="w-full cursor-pointer" (click)="navigate()">
+  <div
+    class="relative aspect-[2/3] w-full overflow-hidden rounded-lg"
+    style="background: var(--ion-color-step-100, #1e1e1e)"
+  >
+    <ion-img [src]="posterUrl" [alt]="title" class="h-full w-full object-cover"></ion-img>
     @if (item?.vote_average) {
-      <span class="poster-card__rating">
+      <span class="absolute bottom-1 left-1 rounded bg-black/75 px-[5px] py-0.5 text-[0.65rem] font-bold text-white">
         ⭐ {{ item.vote_average | number: "1.1-1" }}
       </span>
     }
     @if (userRating) {
-      <span class="poster-card__user-rating">
+      <span class="absolute right-1 top-1 rounded px-[5px] py-0.5 text-[0.65rem] font-bold text-white" style="background: var(--ion-color-primary)">
         ★{{ userRating }}
       </span>
     }
   </div>
-  <p class="poster-card__title">{{ title }}</p>
-  <p class="poster-card__year">{{ year }}</p>
+  <p class="my-0 mb-0.5 mt-[5px] truncate text-[0.78rem] font-semibold" style="color: var(--ion-text-color)">{{ title }}</p>
+  <p class="m-0 text-[0.7rem]" style="color: var(--ion-color-medium)">{{ year }}</p>
 </div>
