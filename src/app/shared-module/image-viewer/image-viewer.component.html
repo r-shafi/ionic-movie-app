@@ -1,6 +1,6 @@
 <ion-content>
-  <div class="viewer-overlay" (click)="dismiss()">
-    <div class="viewer-header">
+  <div class="flex h-full flex-col items-center justify-center p-4" (click)="dismiss()">
+    <div class="absolute inset-x-0 top-0 z-10 flex justify-between p-2">
       <ion-button fill="clear" color="light" (click)="download(); $event.stopPropagation()">
         <ion-icon slot="start" name="download-outline"></ion-icon>
         Download
@@ -9,8 +9,8 @@
         <ion-icon slot="icon-only" name="close"></ion-icon>
       </ion-button>
     </div>
-    <div class="viewer-image-wrap" (click)="$event.stopPropagation()">
-      <img [src]="src" [alt]="alt" class="viewer-image" />
+    <div class="flex max-h-[90vh] max-w-full items-center justify-center" (click)="$event.stopPropagation()">
+      <img [src]="src" [alt]="alt" class="max-h-[85vh] max-w-full rounded-lg object-contain shadow-[0_4px_24px_rgba(0,0,0,0.6)]" />
     </div>
   </div>
 </ion-content>
