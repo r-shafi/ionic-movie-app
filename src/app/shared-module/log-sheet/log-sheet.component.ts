@@ -5,13 +5,13 @@ import {
   OnInit,
 } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
+import { ToastService } from 'src/app/services/toast.service';
 import {
   UserDataService,
   UserList,
   WatchedEntry,
   WatchlistEntry,
 } from 'src/app/services/user-data.service';
-import { ToastService } from 'src/app/services/toast.service';
 
 export interface LogSheetItem {
   id: number;
@@ -44,6 +44,8 @@ export class LogSheetComponent implements OnInit {
   watchlistEnabled = false;
   lists: UserList[] = [];
   selectedListIds: string[] = [];
+  tagsExpanded = false;
+  datePickerOpen = false;
 
   constructor(
     private modalCtrl: ModalController,
@@ -82,6 +84,9 @@ export class LogSheetComponent implements OnInit {
       this.rewatch = this.existing.rewatch;
       this.review = this.existing.review || '';
       this.tags = [...(this.existing.tags || [])];
+      if (this.tags.length) {
+        this.tagsExpanded = true;
+      }
       this.watchedAt = this.existing.watchedAt;
     }
   }
@@ -90,6 +95,10 @@ export class LogSheetComponent implements OnInit {
     return this.item?.poster_path
       ? `https://image.tmdb.org/t/p/w185${this.item.poster_path}`
       : 'assets/no-image.png';
+  }
+
+  get displayTitle(): string {
+    return this.item?.title || 'Untitled';
   }
 
   get yearLabel(): string {
@@ -105,6 +114,37 @@ export class LogSheetComponent implements OnInit {
       .filter((list) => this.selectedListIds.includes(list.id))
       .map((list) => list.name);
     return names.join(', ');
+  }
+
+  get selectedListCount(): number {
+    return this.selectedListIds.length;
+  }
+
+  get reviewLength(): number {
+    return (this.review || '').length;
+  }
+
+  get today(): string {
+    return new Date().toISOString().split('T')[0];
+  }
+
+  get formattedWatchDate(): string {
+    const dateStr = (this.watchedAt || '').split('T')[0];
+    const parts = dateStr.split('-').map(Number);
+    if (parts.length < 3 || !parts[0]) return 'Select date';
+    const [year, month, day] = parts;
+    return new Date(year, month - 1, day).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  }
+
+  get saveLabel(): string {
+    if (this.hasWatched) {
+      return this.existing ? 'Save Log' : 'Save Entry';
+    }
+    return 'Save';
   }
 
   addTag(): void {
@@ -189,12 +229,38 @@ export class LogSheetComponent implements OnInit {
       this.userData.removeFromWatchlist(this.item.media_type, this.item.id);
     }
 
-    this.selectedListIds.forEach((listId) => {
-      this.userData.addToList(listId, watchlistItem);
+    // Keep user lists in sync with the picker state.
+    this.lists.forEach((list) => {
+      const isSelected = this.selectedListIds.includes(list.id);
+      const exists = list.items.some(
+        (entry) =>
+          entry.id === this.item.id &&
+          entry.media_type === this.item.media_type,
+      );
+
+      if (isSelected && !exists) {
+        this.userData.addToList(list.id, watchlistItem);
+      }
+
+      if (!isSelected && exists) {
+        this.userData.removeFromList(
+          list.id,
+          this.item.media_type,
+          this.item.id,
+        );
+      }
     });
 
     await this.modalCtrl.dismiss();
-    this.toast.showToast(this.hasWatched ? 'Log saved.' : 'Saved to watchlist.');
+    if (this.hasWatched) {
+      this.toast.showToast('Log saved.');
+      return;
+    }
+    if (this.watchlistEnabled || this.selectedListIds.length) {
+      this.toast.showToast('Saved to your lists.');
+      return;
+    }
+    this.toast.showToast('Saved.');
   }
 
   async removeLog(): Promise<void> {

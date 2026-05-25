@@ -17,9 +17,11 @@ export class LogSheetService {
     this.modal = await this.modalCtrl.create({
       component: LogSheetComponent,
       componentProps: { item },
-      breakpoints: [0, 0.6, 0.92],
-      initialBreakpoint: 0.6,
-      presentingElement: this.getPresentingElement(),
+      breakpoints: [0, 0.75, 0.96],
+      initialBreakpoint: 0.75,
+      handle: true,
+      backdropBreakpoint: 0.3,
+      cssClass: 'log-sheet-modal',
     });
 
     this.modal.onDidDismiss().then(() => {
@@ -27,10 +29,5 @@ export class LogSheetService {
     });
 
     await this.modal.present();
-  }
-
-  private getPresentingElement(): HTMLElement | undefined {
-    const outlet = document.querySelector('ion-router-outlet');
-    return (outlet as HTMLElement) || undefined;
   }
 }

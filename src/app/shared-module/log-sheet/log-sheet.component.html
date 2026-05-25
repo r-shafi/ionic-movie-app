@@ -1,179 +1,203 @@
-<ion-content [fullscreen]="true" style="--background: #0b0b0b">
-  <div class="flex justify-center pt-3">
-    <div class="h-1 w-12 rounded-full bg-white/20"></div>
-  </div>
+<ion-content [fullscreen]="true" class="log-sheet-content">
+  <div class="sheet-wrap px-4 pb-5 pt-3">
+    <section class="sheet-card hero-card">
+      <ion-img [src]="posterUrl" [alt]="displayTitle" class="poster"></ion-img>
 
-  <div class="flex gap-3 px-4 pt-4">
-    <ion-img
-      [src]="posterUrl"
-      [alt]="item?.title"
-      class="h-[90px] w-[60px] overflow-hidden rounded-md"
-    ></ion-img>
-    <div class="min-w-0">
-      <h2 class="m-0 text-base font-extrabold text-white">
-        {{ item?.title }}
-      </h2>
-      <p class="m-0 text-[0.8rem]" style="color: var(--ion-color-medium)">
-        {{ yearLabel }} · {{ item?.media_type === 'tv' ? 'TV' : 'Movie' }}
-      </p>
-    </div>
-  </div>
-
-  @if (hasWatched) {
-    <div class="px-4 pt-4">
-      <app-star-rating
-        [rating]="rating"
-        (ratingChange)="rating = $event"
-      ></app-star-rating>
-    </div>
-  }
-
-  <div class="flex flex-wrap gap-2 px-4 pt-3">
-    <button
-      type="button"
-      class="flex items-center gap-1 rounded-full border px-3 py-1 text-[0.7rem] font-semibold"
-      [class.bg-white]="hasWatched"
-      [class.text-black]="hasWatched"
-      [class.border-white]="hasWatched"
-      [class.border-white/20]="!hasWatched"
-      [class.text-white]="!hasWatched"
-      (click)="hasWatched = !hasWatched"
-    >
-      <ion-icon
-        [name]="hasWatched ? 'eye' : 'eye-outline'"
-      ></ion-icon>
-      I have watched this
-    </button>
-
-    @if (hasWatched) {
-      <button
-        type="button"
-        class="flex items-center gap-1 rounded-full border px-3 py-1 text-[0.7rem] font-semibold"
-        [class.border-red-500]="liked"
-        [class.text-red-400]="liked"
-        [class.border-white/20]="!liked"
-        [class.text-white]="!liked"
-        (click)="liked = !liked"
-      >
-        <ion-icon [name]="liked ? 'heart' : 'heart-outline'"></ion-icon>
-        Like
-      </button>
-      <button
-        type="button"
-        class="flex items-center gap-1 rounded-full border px-3 py-1 text-[0.7rem] font-semibold"
-        [class.border-white]="rewatch"
-        [class.text-white]="rewatch"
-        [class.border-white/20]="!rewatch"
-        [class.text-white/80]="!rewatch"
-        (click)="rewatch = !rewatch"
-      >
-        <ion-icon name="refresh"></ion-icon>
-        Rewatch
-      </button>
-    }
-  </div>
-
-  @if (hasWatched) {
-    <div class="px-4 pt-4">
-      <p class="m-0 mb-2 text-[0.75rem] font-bold uppercase tracking-[0.1em] text-white/60">
-        Review
-      </p>
-      <ion-textarea
-        [(ngModel)]="review"
-        [maxlength]="1000"
-        auto-grow="true"
-        placeholder="Add a review..."
-      ></ion-textarea>
-    </div>
-
-    <div class="px-4 pt-4">
-      <div class="flex items-center justify-between">
-        <p class="m-0 text-[0.75rem] font-bold uppercase tracking-[0.1em] text-white/60">
-          Tags
+      <div class="hero-content">
+        <p class="eyebrow">Quick Log</p>
+        <h2 class="title">{{ displayTitle }}</h2>
+        <p class="meta">
+          {{ yearLabel || "Unknown year" }} ·
+          {{ item?.media_type === "tv" ? "TV Series" : "Movie" }}
         </p>
+
         <button
           type="button"
-          class="text-[0.7rem] font-semibold"
-          style="color: var(--ion-color-primary)"
-          (click)="addTag()"
+          class="watched-toggle"
+          [class.active]="hasWatched"
+          [class.inactive]="!hasWatched"
+          (click)="hasWatched = !hasWatched"
         >
-          Add
+          <ion-icon
+            [name]="hasWatched ? 'checkmark-circle' : 'ellipse-outline'"
+          ></ion-icon>
+          <span>{{ hasWatched ? "Watched" : "Mark as watched" }}</span>
         </button>
       </div>
-      <div class="mt-2 flex flex-wrap gap-2">
-        @for (tag of tags; track tag) {
-          <ion-chip class="m-0" color="medium">
-            <ion-label>{{ tag }}</ion-label>
-            <ion-icon name="close-circle" (click)="removeTag(tag)"></ion-icon>
-          </ion-chip>
-        }
+    </section>
+
+    <section class="sheet-card options-card">
+      <div class="row">
+        <div>
+          <p class="row-title">Watchlist</p>
+          <p class="row-subtitle">Keep this in your queue</p>
+        </div>
+        <ion-toggle
+          class="watchlist-toggle"
+          [checked]="watchlistEnabled"
+          (ionChange)="watchlistEnabled = $event.detail.checked"
+        ></ion-toggle>
       </div>
-      <ion-input
-        [(ngModel)]="tagInput"
-        class="mt-2"
-        placeholder="Add tag"
-        (keyup.enter)="addTag()"
-      ></ion-input>
-    </div>
 
-    <div class="px-4 pt-4">
-      <p class="m-0 mb-2 text-[0.75rem] font-bold uppercase tracking-[0.1em] text-white/60">
-        Date watched
-      </p>
-      <ion-datetime
-        presentation="date"
-        [value]="watchedAt"
-        (ionChange)="updateWatchedDate($event.detail.value)"
-      ></ion-datetime>
-    </div>
-  }
+      <div class="divider"></div>
 
-  <div class="px-4 pt-4">
-    <div
-      class="flex items-center justify-between rounded-xl border px-3 py-2"
-      style="border-color: rgba(255,255,255,0.12)"
-    >
-      <div>
-        <p class="m-0 text-[0.85rem] font-semibold text-white">Add to watchlist</p>
-        <p class="m-0 text-[0.7rem]" style="color: var(--ion-color-medium)">
-          Keep this in your queue
-        </p>
+      <div class="row">
+        <div class="row-main">
+          <p class="row-title">Custom lists</p>
+          <p class="row-subtitle">{{ selectedListLabel }}</p>
+        </div>
+        <ion-button size="small" fill="outline" (click)="openListPicker()">
+          {{ selectedListCount ? "Edit" : "Choose" }}
+        </ion-button>
       </div>
-      <ion-toggle
-        [checked]="watchlistEnabled"
-        (ionChange)="watchlistEnabled = $event.detail.checked"
-      ></ion-toggle>
-    </div>
-  </div>
+    </section>
 
-  <div class="px-4 pt-3">
-    <div class="flex items-center justify-between rounded-xl border px-3 py-2">
-      <div>
-        <p class="m-0 text-[0.85rem] font-semibold text-white">Add to list</p>
-        <p class="m-0 text-[0.7rem]" style="color: var(--ion-color-medium)">
-          {{ selectedListLabel }}
-        </p>
-      </div>
-      <ion-button size="small" fill="outline" (click)="openListPicker()">
-        Choose
-      </ion-button>
-    </div>
-  </div>
+    @if (hasWatched) {
+      <section class="sheet-card log-card">
+        <div class="pill-row">
+          <button
+            type="button"
+            class="pill liked-pill"
+            [class.is-active]="liked"
+            (click)="liked = !liked"
+          >
+            <ion-icon [name]="liked ? 'heart' : 'heart-outline'"></ion-icon>
+            <span>Liked</span>
+          </button>
 
-  <div class="flex gap-2 px-4 pb-8 pt-5">
-    <ion-button expand="block" class="flex-1" (click)="save()">
-      Save
-    </ion-button>
+          <button
+            type="button"
+            class="pill"
+            [class.is-active]="rewatch"
+            (click)="rewatch = !rewatch"
+          >
+            <ion-icon name="refresh"></ion-icon>
+            <span>Rewatch</span>
+          </button>
+        </div>
+
+        <div class="section-block">
+          <p class="section-title">Your rating</p>
+          <app-star-rating
+            [rating]="rating"
+            (ratingChange)="rating = $event"
+          ></app-star-rating>
+        </div>
+
+        <div class="section-block">
+          <div class="section-heading">
+            <p class="section-title">Review</p>
+            <span class="meta-inline">{{ reviewLength }}/1000</span>
+          </div>
+          <div class="review-field">
+            <ion-textarea
+              [(ngModel)]="review"
+              [maxlength]="1000"
+              [autoGrow]="true"
+              placeholder="What stood out to you?"
+            ></ion-textarea>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-heading">
+            <button
+              type="button"
+              class="tags-toggle-btn"
+              (click)="tagsExpanded = !tagsExpanded"
+            >
+              <p class="section-title">Tags</p>
+              @if (tags.length) {
+                <span class="tag-count-badge">{{ tags.length }}</span>
+              }
+              <ion-icon
+                [name]="tagsExpanded ? 'chevron-up' : 'chevron-down'"
+                class="chevron-icon"
+              ></ion-icon>
+            </button>
+            @if (tagsExpanded) {
+              <ion-button size="small" fill="clear" (click)="addTag()">
+                Add
+              </ion-button>
+            }
+          </div>
+
+          @if (tagsExpanded) {
+            @if (tags.length) {
+              <div class="tag-list">
+                @for (tag of tags; track tag) {
+                  <ion-chip class="m-0" color="medium">
+                    <ion-label>{{ tag }}</ion-label>
+                    <ion-icon
+                      name="close-circle"
+                      (click)="removeTag(tag)"
+                    ></ion-icon>
+                  </ion-chip>
+                }
+              </div>
+            }
+            <ion-input
+              [(ngModel)]="tagInput"
+              placeholder="Add tags (comma separated)"
+              (keyup.enter)="addTag()"
+            ></ion-input>
+          }
+        </div>
+
+        <div class="section-block">
+          <button
+            type="button"
+            class="date-row"
+            (click)="datePickerOpen = !datePickerOpen"
+          >
+            <p class="section-title">Date watched</p>
+            <div class="date-row-right">
+              <span class="date-value">{{ formattedWatchDate }}</span>
+              <ion-icon
+                [name]="datePickerOpen ? 'chevron-up' : 'chevron-down'"
+                class="chevron-icon"
+              ></ion-icon>
+            </div>
+          </button>
+          @if (datePickerOpen) {
+            <ion-datetime
+              presentation="date"
+              prefer-wheel="true"
+              [value]="watchedAt"
+              [max]="today"
+              (ionChange)="updateWatchedDate($event.detail.value)"
+            ></ion-datetime>
+          }
+        </div>
+      </section>
+    }
+
     @if (existing) {
       <ion-button
         expand="block"
-        class="flex-1"
         color="danger"
-        fill="outline"
+        fill="clear"
+        size="small"
+        class="remove-button"
         (click)="removeLog()"
       >
         Remove log
       </ion-button>
     }
+
+    <div class="flex gap-2">
+      <ion-button
+        expand="block"
+        class="flex-1"
+        fill="outline"
+        color="medium"
+        (click)="cancel()"
+      >
+        Cancel
+      </ion-button>
+      <ion-button expand="block" class="flex-1" (click)="save()">
+        {{ saveLabel }}
+      </ion-button>
+    </div>
   </div>
 </ion-content>
