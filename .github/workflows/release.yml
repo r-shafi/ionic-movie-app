@@ -40,7 +40,7 @@ jobs:
 
       # ── Capacitor sync ──────────────────────────────────────────────────────
       - name: Sync Capacitor Android platform
-        run: npx cap sync android
+        run: pnpm exec cap sync android
 
       # ── Decode signing keystore ─────────────────────────────────────────────
       # Store your keystore as a base-64 secret: KEYSTORE_BASE64
