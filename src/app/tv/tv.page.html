@@ -120,15 +120,15 @@
                           class="network-item"
                           >
                           <div class="network-pill">
-                            @if (net.logo_path) {
+                            @if ($any(net).logo_path) {
                               <img
-                                [src]="'https://image.tmdb.org/t/p/w92' + net.logo_path"
-                                [alt]="net.name"
+                                [src]="'https://image.tmdb.org/t/p/w92' + $any(net).logo_path"
+                                [alt]="$any(net).name"
                                 class="network-logo"
                                 />
                             }
-                            @if (!net.logo_path) {
-                              <span>{{ net.name }}</span>
+                            @if (!$any(net).logo_path) {
+                              <span>{{ $any(net).name }}</span>
                             }
                           </div>
                         </div>

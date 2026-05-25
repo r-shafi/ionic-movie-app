@@ -1,17 +1,20 @@
-import { Component } from '@angular/core';
-import { ProfileService } from 'src/app/services/profile.service';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { UserDataService, WatchlistEntry } from 'src/app/services/user-data.service';
 
 @Component({
-    selector: 'app-watchlist',
-    templateUrl: './watchlist.page.html',
-    standalone: false
+  selector: 'app-watchlist',
+  templateUrl: './watchlist.page.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class WatchlistPage {
-  watchlist$ = this.profileService.watchlist$;
+  constructor(public userData: UserDataService) {}
 
-  constructor(public profileService: ProfileService) {}
+  get watchlist(): WatchlistEntry[] {
+    return this.userData.getWatchlist();
+  }
 
-  remove(item: any) {
-    this.profileService.addToWatchlist(item); // toggles off if present
+  remove(item: WatchlistEntry) {
+    this.userData.removeFromWatchlist(item.media_type, item.id);
   }
 }

@@ -1,26 +1,37 @@
-import { Component, Input, OnDestroy } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnChanges,
+  OnDestroy,
+  SimpleChanges,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { LogSheetService } from 'src/app/shared-module/log-sheet/log-sheet.service';
-import { ProfileService } from 'src/app/services/profile.service';
+import { UserDataService } from 'src/app/services/user-data.service';
 
 @Component({
-    selector: 'app-poster-card',
-    templateUrl: './poster-card.component.html',
-    styleUrls: ['./poster-card.component.scss'],
-    standalone: false
+  selector: 'app-poster-card',
+  templateUrl: './poster-card.component.html',
+  styleUrls: ['./poster-card.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
-export class PosterCardComponent implements OnDestroy {
+export class PosterCardComponent implements OnChanges, OnDestroy {
   @Input() item: any;
   @Input() mediaType: 'movie' | 'tv' = 'movie';
+  @Input() showFadeIfWatched = true;
+  @Input() fadeRefresh = 0;
+  shouldFade = false;
   longPressThreshold = 500;
   private longPressTimer: ReturnType<typeof setTimeout> | null = null;
   private suppressClick = false;
 
   constructor(
     private router: Router,
-    private profileService: ProfileService,
     private logSheet: LogSheetService,
+    private userData: UserDataService,
   ) {}
 
   get posterUrl(): string {
@@ -42,7 +53,13 @@ export class PosterCardComponent implements OnDestroy {
       return null;
     }
     const mt = (this.item.media_type || this.mediaType) as 'movie' | 'tv';
-    return this.profileService.getRating(mt, this.item.id)?.rating || null;
+    return this.userData.getWatchedEntry(mt, this.item.id)?.rating || null;
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['item'] || changes['showFadeIfWatched'] || changes['fadeRefresh']) {
+      this.updateFadeState();
+    }
   }
 
   handleClick(event: Event) {
@@ -100,5 +117,16 @@ export class PosterCardComponent implements OnDestroy {
       release_date: this.item.release_date,
       first_air_date: this.item.first_air_date,
     });
+  }
+
+  private updateFadeState() {
+    if (!this.item || !this.showFadeIfWatched) {
+      this.shouldFade = false;
+      return;
+    }
+    const settings = this.userData.getSettings();
+    const mediaType = (this.item.media_type || this.mediaType) as 'movie' | 'tv';
+    this.shouldFade =
+      settings.fadeWatched && this.userData.isWatched(mediaType, this.item.id);
   }
 }

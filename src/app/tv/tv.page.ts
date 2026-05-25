@@ -3,7 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import { ActionSheetController, ModalController } from '@ionic/angular';
 import { forkJoin } from 'rxjs';
 import { ImageViewerComponent } from '../shared-module/image-viewer/image-viewer.component';
-import { ProfileService } from '../services/profile.service';
 import { TmdbService } from '../services/tmdb.service';
 import { LogSheetService } from '../shared-module/log-sheet/log-sheet.service';
 import { ToastService } from '../services/toast.service';
@@ -37,7 +36,6 @@ export class TvPage implements OnInit {
     private route: ActivatedRoute,
     private modalCtrl: ModalController,
     private actionSheetCtrl: ActionSheetController,
-    public profileService: ProfileService,
     private logSheet: LogSheetService,
     private userData: UserDataService,
     private toast: ToastService,
@@ -349,7 +347,7 @@ export class TvPage implements OnInit {
   }
 
   isEpisodeWatched(seasonNum: number, epNum: number): boolean {
-    return this.profileService.isEpisodeWatched(
+    return this.userData.isEpisodeWatched(
       this.show?.id,
       seasonNum,
       epNum,
@@ -357,7 +355,7 @@ export class TvPage implements OnInit {
   }
 
   toggleEpisode(seasonNum: number, epNum: number) {
-    this.profileService.toggleEpisodeWatched(this.show.id, seasonNum, epNum);
+    this.userData.toggleEpisodeWatched(this.show.id, seasonNum, epNum);
   }
 
   markSeasonWatched(season: any) {
@@ -365,7 +363,7 @@ export class TvPage implements OnInit {
       { length: season.episode_count },
       (_, i) => i + 1,
     );
-    this.profileService.markSeasonWatched(
+    this.userData.markSeasonWatched(
       this.show.id,
       season.season_number,
       epNums,

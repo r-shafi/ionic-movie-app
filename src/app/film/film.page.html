@@ -117,15 +117,15 @@
                       @for (company of movie.production_companies | slice:0:3; track company) {
                         <div>
                           <div class="inline-flex items-center gap-1.5 rounded-[20px] border border-white/15 bg-white/10 px-3 py-1 text-[0.78rem] font-semibold" style="color: var(--ion-color-light)">
-                            @if (company.logo_path) {
+                            @if ($any(company).logo_path) {
                               <img
-                                [src]="'https://image.tmdb.org/t/p/w92' + company.logo_path"
-                                [alt]="company.name"
+                                [src]="'https://image.tmdb.org/t/p/w92' + $any(company).logo_path"
+                                [alt]="$any(company).name"
                                 class="h-4 w-auto object-contain opacity-85 brightness-0 invert"
                                 />
                             }
-                            @if (!company.logo_path) {
-                              <span>{{ company.name }}</span>
+                            @if (!$any(company).logo_path) {
+                              <span>{{ $any(company).name }}</span>
                             }
                           </div>
                         </div>

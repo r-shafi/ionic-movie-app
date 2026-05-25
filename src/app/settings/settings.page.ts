@@ -1,62 +1,153 @@
-import { Component } from '@angular/core';
-import { AppSettings, SettingsService } from '../services/settings.service';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { AlertController } from '@ionic/angular';
+import { UserDataService, AppSettings } from '../services/user-data.service';
+import { ToastService } from '../services/toast.service';
 
 @Component({
-    selector: 'app-settings',
-    templateUrl: './settings.page.html',
-    styleUrls: ['./settings.page.scss'],
-    standalone: false
+  selector: 'app-settings',
+  templateUrl: './settings.page.html',
+  styleUrls: ['./settings.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class SettingsPage {
-  settings: AppSettings;
+  readonly appVersion = '0.0.1';
 
-  readonly languages = [
-    { code: 'ko', name: 'Korean' },
-    { code: 'ja', name: 'Japanese' },
-    { code: 'zh', name: 'Chinese' },
-    { code: 'hi', name: 'Hindi' },
-    { code: 'es', name: 'Spanish' },
-    { code: 'fr', name: 'French' },
-    { code: 'de', name: 'German' },
-    { code: 'pt', name: 'Portuguese' },
-    { code: 'it', name: 'Italian' },
-    { code: 'ru', name: 'Russian' },
-    { code: 'ar', name: 'Arabic' },
-    { code: 'tr', name: 'Turkish' },
-    { code: 'th', name: 'Thai' },
-  ];
+  constructor(
+    public userData: UserDataService,
+    private alertCtrl: AlertController,
+    private toast: ToastService,
+  ) {}
 
-  constructor(private settingsService: SettingsService) {
-    this.settings = this.settingsService.getSettings();
+  get settings(): AppSettings {
+    return this.userData.getSettings();
   }
 
-  setTheme(theme: 'light' | 'dark' | 'system') {
-    this.settingsService.updateSetting('theme', theme);
-    this.settings = this.settingsService.getSettings();
+  get safeSearch(): boolean {
+    return !this.settings.includeAdult;
   }
 
-  setAdult(value: boolean) {
-    this.settingsService.updateSetting('includeAdult', value);
-    this.settings = this.settingsService.getSettings();
-  }
-
-  setDisplayName(name: string) {
-    this.settingsService.updateSetting('displayName', name);
-  }
-
-  isLanguageExcluded(code: string): boolean {
-    return this.settings.excludeLanguages?.includes(code) ?? false;
-  }
-
-  toggleLanguage(code: string) {
-    const excludes = [...(this.settings.excludeLanguages || [])];
-    const idx = excludes.indexOf(code);
-    if (idx > -1) {
-      excludes.splice(idx, 1);
+  setTheme(theme: 'system' | 'light' | 'dark') {
+    this.userData.saveSetting('theme', theme);
+    const body = document.body;
+    body.classList.remove('dark', 'light');
+    if (theme === 'dark') {
+      body.classList.add('dark');
+    } else if (theme === 'light') {
+      body.classList.add('light');
     } else {
-      excludes.push(code);
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        body.classList.add('dark');
+      }
     }
-    this.settingsService.updateSetting('excludeLanguages', excludes);
-    this.settings = this.settingsService.getSettings();
+  }
+
+  setFadeWatched(value: boolean) {
+    this.userData.saveSetting('fadeWatched', value);
+  }
+
+  setDefaultMediaTab(value: 'movies' | 'tv') {
+    this.userData.saveSetting('defaultMediaTab', value);
+  }
+
+  setSafeSearch(value: boolean) {
+    this.userData.saveSetting('includeAdult', !value);
+  }
+
+  exportData() {
+    const keys = ['mva_profile', 'mva_watched', 'mva_watchlist', 'mva_favorites', 'mva_lists', 'mva_settings'];
+    const dump: Record<string, unknown> = {};
+    keys.forEach((k) => {
+      dump[k] = JSON.parse(localStorage.getItem(k) ?? 'null');
+    });
+    const blob = new Blob([JSON.stringify(dump, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'movieapp-backup.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    this.toast.showToast('Data exported.');
+  }
+
+  importData() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = (event: any) => {
+      const file = event.target.files?.[0];
+      if (!file) { return; }
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        try {
+          const data = JSON.parse(e.target.result);
+          const keys = ['mva_profile', 'mva_watched', 'mva_watchlist', 'mva_favorites', 'mva_lists', 'mva_settings'];
+          keys.forEach((k) => {
+            if (data[k] !== undefined) {
+              localStorage.setItem(k, JSON.stringify(data[k]));
+            }
+          });
+          this.toast.showToast('Data imported. Reload to see changes.');
+        } catch {
+          this.toast.showToast('Invalid file format.');
+        }
+      };
+      reader.readAsText(file);
+    };
+    input.click();
+  }
+
+  async clearWatchLog() {
+    const alert = await this.alertCtrl.create({
+      header: 'Clear watch log?',
+      message: 'This will remove all watched entries. This cannot be undone.',
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Clear',
+          role: 'destructive',
+          handler: () => {
+            localStorage.removeItem('mva_watched');
+            this.toast.showToast('Watch log cleared.');
+          },
+        },
+      ],
+    });
+    await alert.present();
+  }
+
+  async clearAllData() {
+    const alert = await this.alertCtrl.create({
+      header: 'Clear all data?',
+      message: 'This will remove all your profile, watched, watchlist, favorites, lists, and settings. This cannot be undone.',
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Clear everything',
+          role: 'destructive',
+          handler: async () => {
+            const confirm = await this.alertCtrl.create({
+              header: 'Are you sure?',
+              message: 'All local data will be permanently deleted.',
+              buttons: [
+                { text: 'Cancel', role: 'cancel' },
+                {
+                  text: 'Delete all',
+                  role: 'destructive',
+                  handler: () => {
+                    ['mva_profile', 'mva_watched', 'mva_watchlist', 'mva_favorites', 'mva_lists', 'mva_settings'].forEach(
+                      (k) => localStorage.removeItem(k),
+                    );
+                    this.toast.showToast('All data cleared. Reload to reset.');
+                  },
+                },
+              ],
+            });
+            await confirm.present();
+          },
+        },
+      ],
+    });
+    await alert.present();
   }
 }

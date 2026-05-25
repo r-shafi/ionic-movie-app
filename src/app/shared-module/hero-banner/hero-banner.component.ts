@@ -1,12 +1,12 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ProfileService } from 'src/app/services/profile.service';
+import { UserDataService, WatchlistEntry } from 'src/app/services/user-data.service';
 
 @Component({
-    selector: 'app-hero-banner',
-    templateUrl: './hero-banner.component.html',
-    styleUrls: ['./hero-banner.component.scss'],
-    standalone: false
+  selector: 'app-hero-banner',
+  templateUrl: './hero-banner.component.html',
+  styleUrls: ['./hero-banner.component.scss'],
+  standalone: false,
 })
 export class HeroBannerComponent implements OnInit, OnDestroy {
   @Input() items: any[] = [];
@@ -16,7 +16,7 @@ export class HeroBannerComponent implements OnInit, OnDestroy {
   private timer: any;
 
   constructor(
-    private profileService: ProfileService,
+    private userData: UserDataService,
     private router: Router,
   ) {}
 
@@ -65,36 +65,92 @@ export class HeroBannerComponent implements OnInit, OnDestroy {
     this.router.navigate(route);
   }
 
+  private getMediaType(): 'movie' | 'tv' {
+    return (this.current?.media_type ||
+      (this.current?.first_air_date ? 'tv' : 'movie')) as 'movie' | 'tv';
+  }
+
   isWatched(): boolean {
-    return this.current ? this.profileService.isInWatched(this.current) : false;
+    return this.current
+      ? this.userData.isWatched(this.getMediaType(), this.current.id)
+      : false;
   }
   isFavorite(): boolean {
-    return this.current
-      ? this.profileService.isInFavorites(this.current)
-      : false;
+    return this.userData
+      .getFavorites()
+      .some(
+        (f) =>
+          f.id === this.current?.id && f.media_type === this.getMediaType(),
+      );
   }
   isWatchlist(): boolean {
     return this.current
-      ? this.profileService.isInWatchlist(this.current)
+      ? this.userData.isOnWatchlist(this.getMediaType(), this.current.id)
       : false;
   }
 
   toggleWatched(event: Event) {
     event.stopPropagation();
-    if (this.current) {
-      this.profileService.toggleWatched(this.current);
+    if (!this.current) {
+      return;
+    }
+    const mt = this.getMediaType();
+    const label = this.current.title || this.current.name || '';
+    if (this.isWatched()) {
+      this.userData.removeWatched(mt, this.current.id);
+    } else {
+      this.userData.logEntry({
+        id: this.current.id,
+        media_type: mt,
+        title: label,
+        poster_path: this.current.poster_path || null,
+        rewatch: false,
+        rating: null,
+        review: '',
+        tags: [],
+        liked: false,
+        release_date: this.current.release_date,
+        first_air_date: this.current.first_air_date,
+      });
     }
   }
+
   toggleFavorite(event: Event) {
     event.stopPropagation();
-    if (this.current) {
-      this.profileService.toggleFavorite(this.current);
+    if (!this.current) {
+      return;
+    }
+    const mt = this.getMediaType();
+    if (this.isFavorite()) {
+      this.userData.removeFavorite(mt, this.current.id);
+    } else {
+      this.userData.addFavorite({
+        id: this.current.id,
+        media_type: mt,
+        title: this.current.title || this.current.name || '',
+        poster_path: this.current.poster_path || null,
+      });
     }
   }
+
   toggleWatchlist(event: Event) {
     event.stopPropagation();
-    if (this.current) {
-      this.profileService.addToWatchlist(this.current);
+    if (!this.current) {
+      return;
+    }
+    const mt = this.getMediaType();
+    if (this.isWatchlist()) {
+      this.userData.removeFromWatchlist(mt, this.current.id);
+    } else {
+      const item: Omit<WatchlistEntry, 'addedAt'> = {
+        id: this.current.id,
+        media_type: mt,
+        title: this.current.title || this.current.name || '',
+        poster_path: this.current.poster_path || null,
+        release_date: this.current.release_date,
+        first_air_date: this.current.first_air_date,
+      };
+      this.userData.addToWatchlist(item);
     }
   }
 }

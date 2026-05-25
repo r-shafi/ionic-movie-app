@@ -11,6 +11,12 @@
     style="background: var(--ion-color-step-100, #1e1e1e)"
   >
     <ion-img [src]="posterUrl" [alt]="title" class="h-full w-full object-cover"></ion-img>
+    @if (shouldFade) {
+      <div class="absolute inset-0 bg-black/40 pointer-events-none"></div>
+      <div class="absolute right-1 top-1 rounded-full bg-black/70 px-1.5 py-0.5 text-[0.6rem] font-bold text-white pointer-events-none">
+        ✓
+      </div>
+    }
     @if (item?.vote_average) {
       <span class="absolute bottom-1 left-1 rounded bg-black/75 px-[5px] py-0.5 text-[0.65rem] font-bold text-white">
         ⭐ {{ item.vote_average | number: "1.1-1" }}

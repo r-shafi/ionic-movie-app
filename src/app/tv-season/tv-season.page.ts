@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ProfileService } from '../services/profile.service';
 import { TmdbService } from '../services/tmdb.service';
+import { UserDataService } from '../services/user-data.service';
 
 @Component({
-    selector: 'app-tv-season',
-    templateUrl: './tv-season.page.html',
-    styleUrls: ['./tv-season.page.scss'],
-    standalone: false
+  selector: 'app-tv-season',
+  templateUrl: './tv-season.page.html',
+  styleUrls: ['./tv-season.page.scss'],
+  standalone: false,
 })
 export class TvSeasonPage implements OnInit {
   tvId: number = 0;
@@ -17,7 +17,7 @@ export class TvSeasonPage implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private tmdb: TmdbService,
-    public profileService: ProfileService,
+    private userData: UserDataService,
   ) {}
 
   ngOnInit() {
@@ -35,11 +35,11 @@ export class TvSeasonPage implements OnInit {
   }
 
   isEpisodeWatched(seasonNum: number, epNum: number): boolean {
-    return this.profileService.isEpisodeWatched(this.tvId, seasonNum, epNum);
+    return this.userData.isEpisodeWatched(this.tvId, seasonNum, epNum);
   }
 
   toggleEpisode(ep: any) {
-    this.profileService.toggleEpisodeWatched(
+    this.userData.toggleEpisodeWatched(
       this.tvId,
       this.season.season_number,
       ep.episode_number,

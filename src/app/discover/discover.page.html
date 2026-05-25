@@ -26,7 +26,7 @@
     <ion-toolbar>
       <ion-segment
         [value]="activeTab"
-        (ionChange)="switchBrowseTab($event.detail.value)"
+        (ionChange)="switchBrowseTab($any($event.detail.value))"
       >
         <ion-segment-button value="movies">Movies</ion-segment-button>
         <ion-segment-button value="tv">TV Shows</ion-segment-button>

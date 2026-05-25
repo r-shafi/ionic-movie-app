@@ -111,7 +111,7 @@
     <div class="tabs-wrap">
       <ion-segment
         [value]="activeTab"
-        (ionChange)="activeTab = $event.detail.value"
+        (ionChange)="activeTab = $any($event.detail.value)"
         class="person-tabs"
       >
         <ion-segment-button value="movies">

@@ -1,17 +1,25 @@
 <div class="flex items-center justify-center">
-  <ion-img
-    class="h-[200px] aspect-[9/16]"
-    src="{{
-      movie.poster_path
-        ? 'https://image.tmdb.org/t/p/w185' + movie.poster_path
-        : 'assets/no-image.png'
-    }}"
-    (click)="handleNavigate($event)"
-    (touchstart)="onTouchStart()"
-    (touchend)="onTouchEnd()"
-    (touchcancel)="onTouchEnd()"
-    (touchmove)="onTouchEnd()"
-  ></ion-img>
+  <div class="relative">
+    <ion-img
+      class="h-[200px] aspect-[9/16]"
+      src="{{
+        movie.poster_path
+          ? 'https://image.tmdb.org/t/p/w185' + movie.poster_path
+          : 'assets/no-image.png'
+      }}"
+      (click)="handleNavigate($event)"
+      (touchstart)="onTouchStart()"
+      (touchend)="onTouchEnd()"
+      (touchcancel)="onTouchEnd()"
+      (touchmove)="onTouchEnd()"
+    ></ion-img>
+    @if (shouldFade) {
+      <div class="absolute inset-0 bg-black/40 pointer-events-none"></div>
+      <div class="absolute right-1 top-1 rounded-full bg-black/70 px-1.5 py-0.5 text-[0.6rem] font-bold text-white pointer-events-none">
+        ✓
+      </div>
+    }
+  </div>
   <section class="details ion-padding-start">
     <h1
       class="ion-no-margin cursor-pointer text-[clamp(24px,2.5vw,44px)]"
@@ -30,7 +38,7 @@
       <ion-button
         fill="outline"
         title="Add to Watched Movies"
-        (click)="addToWatchedMovies(movie)"
+        (click)="addToWatchedMovies()"
         color="{{ isWatched ? 'danger' : 'medium' }}"
       >
         <ion-icon
@@ -40,7 +48,7 @@
       <ion-button
         fill="outline"
         title="Add to Favorites"
-        (click)="addToFavoriteMovies(movie)"
+        (click)="addToFavoriteMovies()"
         color="{{ isFavorite ? 'danger' : 'medium' }}"
       >
         <ion-icon
@@ -50,7 +58,7 @@
       <ion-button
         fill="outline"
         title="Add to Watchlist"
-        (click)="addToWatchlist(movie)"
+        (click)="addToWatchlist()"
         color="{{ isWatchlist ? 'danger' : 'medium' }}"
       >
         <ion-icon
