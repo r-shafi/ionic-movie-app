@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Outfit:wght@400;600;700&family=Sora:wght@400;600;700&family=Space+Grotesk:wght@400;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Outfit:wght@400;600;700&family=Sora:wght@400;600;700&family=Space+Grotesk:wght@400;600;700&display=swap");
 
 @import "~@ionic/angular/css/core.css";
 @import "~@ionic/angular/css/normalize.css";
@@ -24,4 +24,22 @@
   --ion-tab-bar-background: #343a40;
   --ion-tab-bar-color-selected: #cf3c4f;
   --ion-item-border-color: #343a40;
+}
+
+ion-modal.log-sheet-modal {
+  --height: 96%;
+  --border-radius: 20px 20px 0 0;
+}
+
+ion-modal.log-sheet-modal::part(content) {
+  background: #070b14;
+  box-shadow: 0 -24px 42px rgba(0, 0, 0, 0.5);
+}
+
+ion-modal.log-sheet-modal::part(handle) {
+  margin-top: 6px;
+  width: 48px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(179, 197, 224, 0.42);
 }

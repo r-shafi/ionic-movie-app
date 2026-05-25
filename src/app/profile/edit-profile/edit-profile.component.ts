@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { UserDataService, UserProfile } from '../../services/user-data.service';
 import { ToastService } from '../../services/toast.service';
@@ -19,6 +19,7 @@ export class EditProfileComponent implements OnInit {
     private modalCtrl: ModalController,
     private userData: UserDataService,
     private toast: ToastService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
@@ -36,6 +37,7 @@ export class EditProfileComponent implements OnInit {
     const reader = new FileReader();
     reader.onload = () => {
       this.avatarBase64 = reader.result as string;
+      this.cdr.detectChanges();
     };
     reader.readAsDataURL(file);
   }
@@ -47,6 +49,7 @@ export class EditProfileComponent implements OnInit {
     const reader = new FileReader();
     reader.onload = () => {
       this.coverBase64 = reader.result as string;
+      this.cdr.detectChanges();
     };
     reader.readAsDataURL(file);
   }

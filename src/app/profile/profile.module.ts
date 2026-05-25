@@ -9,6 +9,7 @@ import { SharedModuleModule } from '../shared-module/shared-module.module';
 
 import { ProfilePage } from './profile.page';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
+import { AddFavoriteModalComponent } from './add-favorite-modal/add-favorite-modal.component';
 
 @NgModule({
   imports: [
@@ -18,6 +19,6 @@ import { EditProfileComponent } from './edit-profile/edit-profile.component';
     ProfilePageRoutingModule,
     SharedModuleModule,
   ],
-  declarations: [ProfilePage, EditProfileComponent],
+  declarations: [ProfilePage, EditProfileComponent, AddFavoriteModalComponent],
 })
 export class ProfilePageModule {}

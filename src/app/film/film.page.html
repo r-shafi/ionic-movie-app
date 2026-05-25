@@ -15,360 +15,480 @@
 <ion-content>
   <!-- Loading -->
   @if (isLoading) {
-    <div class="ion-padding">
-      <ion-skeleton-text
-        animated
-        class="mb-3 h-[300px] w-full rounded-none"
-      ></ion-skeleton-text>
-      <ion-skeleton-text
-        animated
-        class="mb-2 h-7 w-[60%]"
-      ></ion-skeleton-text>
-      <ion-skeleton-text
-        animated
-        class="mb-3 h-4 w-[40%]"
-      ></ion-skeleton-text>
-      <ion-skeleton-text
-        animated
-        class="h-20 w-full"
-      ></ion-skeleton-text>
-    </div>
-  }
-
-  @if (!isLoading && movie) {
-    <!-- Hero: backdrop with content overlaid (crossfading slideshow) -->
-    <div class="relative flex min-h-[180px] w-full items-end bg-[#111] bg-cover bg-center bg-no-repeat">
-      <div
-        class="film-hero__bg"
-        [class.active]="_bgToggle"
-        [style.backgroundImage]="backdropA ? 'url(' + backdropA + ')' : 'none'"
-      ></div>
-      <div
-        class="film-hero__bg"
-        [class.active]="!_bgToggle"
-        [style.backgroundImage]="backdropB ? 'url(' + backdropB + ')' : 'none'"
-      ></div>
-      <div class="absolute inset-0 z-0 bg-gradient-to-t from-black/[0.98] via-black/75 to-black/25"></div>
-      <div class="relative z-[1] flex w-full items-end gap-3.5 p-4">
-        <ion-img
-          [src]="posterUrl"
-          [alt]="movie.title"
-          class="aspect-[2/3] w-24 min-w-24 shrink-0 overflow-hidden rounded-lg border-2 border-white/15 shadow-[0_4px_20px_rgba(0,0,0,0.6)]"
-          [class.opacity-50]="shouldFadePoster"
-          [class.grayscale]="shouldFadePoster"
-          (click)="openPoster()"
-        ></ion-img>
-        <div class="min-w-0 flex-1">
-          <h1 class="m-0 mb-1 text-[1.2rem] font-extrabold leading-[1.2]">{{ movie.title }}</h1>
-          @if (movie.tagline) {
-            <p class="m-0 mb-[3px] text-[0.78rem]" style="color: var(--ion-color-medium)">
-              <i>{{ movie.tagline }}</i>
-            </p>
+  <div class="ion-padding">
+    <ion-skeleton-text
+      animated
+      class="mb-3 h-[300px] w-full rounded-none"
+    ></ion-skeleton-text>
+    <ion-skeleton-text animated class="mb-2 h-7 w-[60%]"></ion-skeleton-text>
+    <ion-skeleton-text animated class="mb-3 h-4 w-[40%]"></ion-skeleton-text>
+    <ion-skeleton-text animated class="h-20 w-full"></ion-skeleton-text>
+  </div>
+  } @if (!isLoading && movie) {
+  <!-- Hero: backdrop with content overlaid (crossfading slideshow) -->
+  <div
+    class="relative flex min-h-[180px] w-full items-end bg-[#111] bg-cover bg-center bg-no-repeat"
+  >
+    <div
+      class="film-hero__bg"
+      [class.active]="_bgToggle"
+      [style.backgroundImage]="backdropA ? 'url(' + backdropA + ')' : 'none'"
+    ></div>
+    <div
+      class="film-hero__bg"
+      [class.active]="!_bgToggle"
+      [style.backgroundImage]="backdropB ? 'url(' + backdropB + ')' : 'none'"
+    ></div>
+    <div
+      class="absolute inset-0 z-0 bg-gradient-to-t from-black/[0.98] via-black/75 to-black/25"
+    ></div>
+    <div class="relative z-[1] flex w-full items-end gap-3.5 p-4">
+      <ion-img
+        [src]="posterUrl"
+        [alt]="movie.title"
+        class="aspect-[2/3] w-24 min-w-24 shrink-0 overflow-hidden rounded-lg border-2 border-white/15 shadow-[0_4px_20px_rgba(0,0,0,0.6)]"
+        [class.opacity-50]="shouldFadePoster"
+        [class.grayscale]="shouldFadePoster"
+        (click)="openPoster()"
+      ></ion-img>
+      <div class="min-w-0 flex-1">
+        <h1 class="m-0 mb-1 text-[1.2rem] font-extrabold leading-[1.2]">
+          {{ movie.title }}
+        </h1>
+        @if (movie.tagline) {
+        <p
+          class="m-0 mb-[3px] text-[0.78rem]"
+          style="color: var(--ion-color-medium)"
+        >
+          <i>{{ movie.tagline }}</i>
+        </p>
+        }
+        <div class="mb-1.5 flex flex-wrap items-center gap-1.5">
+          @if (movie.vote_average) {
+          <span
+            class="inline-flex items-center justify-center rounded px-[7px] py-0.5 text-xs font-extrabold text-black"
+            style="background: var(--ion-color-warning)"
+            >{{ movie.vote_average | number:'1.1-1' }}</span
+          >
+          } @if (contentRating) {
+          <span
+            class="inline-block rounded-[3px] border border-white/40 px-[5px] py-px text-[0.65rem] font-bold tracking-[0.05em] text-white/80"
+            >{{ contentRating }}</span
+          >
+          } @if (year) {
+          <span class="text-[0.78rem]" style="color: var(--ion-color-medium)"
+            >{{ year }}</span
+          >
+          } @if (movie.runtime) {
+          <span class="text-[0.78rem]" style="color: var(--ion-color-medium)"
+            >{{ runtimeDisplay }}</span
+          >
+          } @if (userRating) {
+          <span
+            class="inline-block rounded px-2 py-0.5 text-[0.7rem] font-bold text-white"
+            style="background: var(--ion-color-primary)"
+            >★{{ userRating }}</span
+          >
           }
-          <div class="mb-1.5 flex flex-wrap items-center gap-1.5">
-            @if (movie.vote_average) {
-              <span class="inline-flex items-center justify-center rounded px-[7px] py-0.5 text-xs font-extrabold text-black" style="background: var(--ion-color-warning)"
-                >{{ movie.vote_average | number:'1.1-1' }}</span
-                >
-              }
-              @if (contentRating) {
-                <span class="inline-block rounded-[3px] border border-white/40 px-[5px] py-px text-[0.65rem] font-bold tracking-[0.05em] text-white/80"
-                  >{{ contentRating }}</span
-                  >
-                }
-                @if (year) {
-                  <span class="text-[0.78rem]" style="color: var(--ion-color-medium)">{{ year }}</span>
-                }
-                @if (movie.runtime) {
-                  <span class="text-[0.78rem]" style="color: var(--ion-color-medium)"
-                    >{{ runtimeDisplay }}</span
-                    >
-                  }
-                  @if (userRating) {
-                    <span class="inline-block rounded px-2 py-0.5 text-[0.7rem] font-bold text-white" style="background: var(--ion-color-primary)"
-                      >★{{ userRating }}</span
-                      >
-                    }
-                  </div>
-                  @if (movie.genres?.length) {
-                    <div class="mt-1 flex flex-wrap gap-[5px]">
-                      @for (g of movie.genres; track g) {
-                        <span class="inline-block rounded-xl border border-white/15 bg-white/10 px-2 py-0.5 text-[0.68rem]" style="color: rgba(255,255,255,0.85)"
-                          >{{ g.name }}</span
-                        >
-                        }
-                      </div>
-                    }
-                  </div>
-                </div>
-              </div>
-              <div class="pb-6">
-                <!-- Overview -->
-                @if (movie.overview) {
-                  <div class="pt-3">
-                    <p class="m-0 px-4 text-[0.9rem] leading-[1.6]">{{ movie.overview }}</p>
-                  </div>
-                }
-                <!-- Production companies -->
-                @if (movie.production_companies?.length) {
-                  <div class="px-4 pb-1 pt-2.5">
-                    <div class="flex flex-wrap items-center gap-2.5">
-                      <span class="text-[0.68rem] font-bold uppercase tracking-[0.08em]" style="color: var(--ion-color-medium)">PRODUCTION</span>
-                      @for (company of movie.production_companies | slice:0:3; track company) {
-                        <div>
-                          <div class="inline-flex items-center gap-1.5 rounded-[20px] border border-white/15 bg-white/10 px-3 py-1 text-[0.78rem] font-semibold" style="color: var(--ion-color-light)">
-                            @if ($any(company).logo_path) {
-                              <img
-                                [src]="'https://image.tmdb.org/t/p/w92' + $any(company).logo_path"
-                                [alt]="$any(company).name"
-                                class="h-4 w-auto object-contain opacity-85 brightness-0 invert"
-                                />
-                            }
-                            @if (!$any(company).logo_path) {
-                              <span>{{ $any(company).name }}</span>
-                            }
-                          </div>
-                        </div>
-                      }
-                    </div>
-                  </div>
-                }
-                <!-- Stats grid -->
-                <div class="pt-3">
-                  <div class="grid grid-cols-2 gap-2 px-4">
-                    @if (movie.runtime) {
-                      <div class="rounded-[10px] border px-3 py-2.5" style="background: var(--ion-color-step-50, #1a1a1a); border-color: var(--ion-color-step-100, #222)">
-                        <p class="m-0 mb-0.5 text-base font-extrabold leading-[1.2]">
-                          {{ runtimeDisplay }}
-                        </p>
-                        <p class="m-0 text-[0.72rem]" style="color: var(--ion-color-medium)">Runtime</p>
-                      </div>
-                    }
-                    @if (movie.vote_average) {
-                      <div class="rounded-[10px] border px-3 py-2.5" style="background: var(--ion-color-step-50, #1a1a1a); border-color: var(--ion-color-step-100, #222)">
-                        <p class="m-0 mb-0.5 text-base font-extrabold leading-[1.2]">
-                          {{ movie.vote_average | number:'1.1-1' }}<span class="text-[0.7rem] font-normal" style="color: var(--ion-color-medium)"> / 10</span>
-                        </p>
-                        <p class="m-0 text-[0.72rem]" style="color: var(--ion-color-medium)">{{ movie.vote_count | number }} votes</p>
-                      </div>
-                    }
-                    @if (movie.release_date) {
-                      <div class="rounded-[10px] border px-3 py-2.5" style="background: var(--ion-color-step-50, #1a1a1a); border-color: var(--ion-color-step-100, #222)">
-                        <p class="m-0 mb-0.5 text-[0.78rem] font-bold leading-[1.2]">
-                          {{ movie.release_date | date:'mediumDate' }}
-                        </p>
-                        <p class="m-0 text-[0.72rem]" style="color: var(--ion-color-medium)">Released</p>
-                      </div>
-                    }
-                    @if (movie.original_language) {
-                      <div class="rounded-[10px] border px-3 py-2.5" style="background: var(--ion-color-step-50, #1a1a1a); border-color: var(--ion-color-step-100, #222)">
-                        <p class="m-0 mb-0.5 text-[0.78rem] font-bold leading-[1.2]">
-                          {{ movie.original_language | uppercase }}
-                        </p>
-                        <p class="m-0 text-[0.72rem]" style="color: var(--ion-color-medium)">Language</p>
-                      </div>
-                    }
-                    @if (movie.origin_country?.length) {
-                      <div class="rounded-[10px] border px-3 py-2.5" style="background: var(--ion-color-step-50, #1a1a1a); border-color: var(--ion-color-step-100, #222)">
-                        <p class="m-0 mb-0.5 text-[0.78rem] font-bold leading-[1.2]">
-                          {{ movie.origin_country.join(', ') }}
-                        </p>
-                        <p class="m-0 text-[0.72rem]" style="color: var(--ion-color-medium)">Country</p>
-                      </div>
-                    }
-                    @if (movie.status) {
-                      <div class="rounded-[10px] border px-3 py-2.5" style="background: var(--ion-color-step-50, #1a1a1a); border-color: var(--ion-color-step-100, #222)">
-                        <p class="m-0 mb-0.5 text-[0.78rem] font-bold leading-[1.2]">
-                          <span class="status-badge" [ngClass]="statusBadgeClass"
-                            >{{ movie.status }}</span
-                            >
-                          </p>
-                          <p class="m-0 text-[0.72rem]" style="color: var(--ion-color-medium)">Status</p>
-                        </div>
-                      }
-                      @if (movie.belongs_to_collection) {
-                        <div class="rounded-[10px] border px-3 py-2.5" style="background: var(--ion-color-step-50, #1a1a1a); border-color: var(--ion-color-step-100, #222)">
-                          <p class="m-0 mb-0.5 text-[0.78rem] font-bold leading-[1.2]">
-                            {{ movie.belongs_to_collection.name }}
-                          </p>
-                          <p class="m-0 text-[0.72rem]" style="color: var(--ion-color-medium)">Collection</p>
-                        </div>
-                      }
-                    </div>
-                  </div>
-                  <!-- Director(s) -->
-                  @if (crewDirectors.length) {
-                    <div class="pt-3">
-                      <h2 class="m-0 mb-2 px-4 text-base font-extrabold">Directed By</h2>
-                      <div class="flex snap-x gap-2.5 overflow-x-auto px-4 pb-2 [scroll-padding-left:16px] [scroll-padding-right:16px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                        @for (c of crewDirectors; track c) {
-                          <div class="w-20 shrink-0 snap-start cursor-pointer text-center" [routerLink]="['/person', c.id]">
-                            <div class="mx-auto mb-1 h-16 w-16 overflow-hidden rounded-full" style="background: var(--ion-color-step-100)">
-                              <img
-                [src]="c.profile_path
+        </div>
+        @if (movie.genres?.length) {
+        <div class="mt-1 flex flex-wrap gap-[5px]">
+          @for (g of movie.genres; track g) {
+          <span
+            class="inline-block rounded-xl border border-white/15 bg-white/10 px-2 py-0.5 text-[0.68rem]"
+            style="color: rgba(255, 255, 255, 0.85)"
+            >{{ g.name }}</span
+          >
+          }
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="pb-6">
+    <div class="px-4 pt-3">
+      <div
+        class="flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-1.5 py-1.5"
+      >
+        <ion-button
+          class="flex-1"
+          shape="round"
+          color="primary"
+          size="small"
+          (click)="openLogSheet()"
+        >
+          @if (isWatched()) {
+          <span
+            class="mr-2 inline-flex h-2 w-2 rounded-full bg-emerald-500"
+          ></span>
+          } {{ isWatched() ? 'Edit log' : 'Log' }}
+        </ion-button>
+        <ion-button
+          shape="round"
+          fill="clear"
+          size="small"
+          [color]="isLiked() ? 'danger' : 'medium'"
+          (click)="toggleLiked()"
+        >
+          <ion-icon
+            slot="icon-only"
+            [name]="isLiked() ? 'heart' : 'heart-outline'"
+          ></ion-icon>
+        </ion-button>
+        <ion-button
+          shape="round"
+          fill="clear"
+          size="small"
+          color="medium"
+          (click)="openListActionSheet()"
+        >
+          <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+
+    <!-- Overview -->
+    @if (movie.overview) {
+    <div class="pt-3">
+      <p class="m-0 px-4 text-[0.9rem] leading-[1.6]">{{ movie.overview }}</p>
+    </div>
+    }
+
+    <!-- Production companies -->
+    @if (movie.production_companies?.length) {
+    <div class="px-4 pb-1 pt-2.5">
+      <div class="flex flex-wrap items-center gap-2.5">
+        <span
+          class="text-[0.68rem] font-bold uppercase tracking-[0.08em]"
+          style="color: var(--ion-color-medium)"
+          >PRODUCTION</span
+        >
+        @for (company of movie.production_companies | slice:0:3; track company)
+        {
+        <div>
+          <div
+            class="inline-flex items-center gap-1.5 rounded-[20px] border border-white/15 bg-white/10 px-3 py-1 text-[0.78rem] font-semibold"
+            style="color: var(--ion-color-light)"
+          >
+            @if ($any(company).logo_path) {
+            <img
+              [src]="'https://image.tmdb.org/t/p/w92' + $any(company).logo_path"
+              [alt]="$any(company).name"
+              class="h-4 w-auto object-contain opacity-85 brightness-0 invert"
+            />
+            } @if (!$any(company).logo_path) {
+            <span>{{ $any(company).name }}</span>
+            }
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+    }
+    <!-- Stats grid -->
+    <div class="pt-3">
+      <div class="grid grid-cols-2 gap-2 px-4">
+        @if (movie.runtime) {
+        <div
+          class="rounded-[10px] border px-3 py-2.5"
+          style="
+            background: var(--ion-color-step-50, #1a1a1a);
+            border-color: var(--ion-color-step-100, #222);
+          "
+        >
+          <p class="m-0 mb-0.5 text-base font-extrabold leading-[1.2]">
+            {{ runtimeDisplay }}
+          </p>
+          <p class="m-0 text-[0.72rem]" style="color: var(--ion-color-medium)">
+            Runtime
+          </p>
+        </div>
+        } @if (movie.vote_average) {
+        <div
+          class="rounded-[10px] border px-3 py-2.5"
+          style="
+            background: var(--ion-color-step-50, #1a1a1a);
+            border-color: var(--ion-color-step-100, #222);
+          "
+        >
+          <p class="m-0 mb-0.5 text-base font-extrabold leading-[1.2]">
+            {{ movie.vote_average | number:'1.1-1' }}<span
+              class="text-[0.7rem] font-normal"
+              style="color: var(--ion-color-medium)"
+            >
+              / 10</span
+            >
+          </p>
+          <p class="m-0 text-[0.72rem]" style="color: var(--ion-color-medium)">
+            {{ movie.vote_count | number }} votes
+          </p>
+        </div>
+        } @if (movie.release_date) {
+        <div
+          class="rounded-[10px] border px-3 py-2.5"
+          style="
+            background: var(--ion-color-step-50, #1a1a1a);
+            border-color: var(--ion-color-step-100, #222);
+          "
+        >
+          <p class="m-0 mb-0.5 text-[0.78rem] font-bold leading-[1.2]">
+            {{ movie.release_date | date:'mediumDate' }}
+          </p>
+          <p class="m-0 text-[0.72rem]" style="color: var(--ion-color-medium)">
+            Released
+          </p>
+        </div>
+        } @if (movie.original_language) {
+        <div
+          class="rounded-[10px] border px-3 py-2.5"
+          style="
+            background: var(--ion-color-step-50, #1a1a1a);
+            border-color: var(--ion-color-step-100, #222);
+          "
+        >
+          <p class="m-0 mb-0.5 text-[0.78rem] font-bold leading-[1.2]">
+            {{ movie.original_language | uppercase }}
+          </p>
+          <p class="m-0 text-[0.72rem]" style="color: var(--ion-color-medium)">
+            Language
+          </p>
+        </div>
+        } @if (movie.origin_country?.length) {
+        <div
+          class="rounded-[10px] border px-3 py-2.5"
+          style="
+            background: var(--ion-color-step-50, #1a1a1a);
+            border-color: var(--ion-color-step-100, #222);
+          "
+        >
+          <p class="m-0 mb-0.5 text-[0.78rem] font-bold leading-[1.2]">
+            {{ movie.origin_country.join(', ') }}
+          </p>
+          <p class="m-0 text-[0.72rem]" style="color: var(--ion-color-medium)">
+            Country
+          </p>
+        </div>
+        } @if (movie.status) {
+        <div
+          class="rounded-[10px] border px-3 py-2.5"
+          style="
+            background: var(--ion-color-step-50, #1a1a1a);
+            border-color: var(--ion-color-step-100, #222);
+          "
+        >
+          <p class="m-0 mb-0.5 text-[0.78rem] font-bold leading-[1.2]">
+            <span class="status-badge" [ngClass]="statusBadgeClass"
+              >{{ movie.status }}</span
+            >
+          </p>
+          <p class="m-0 text-[0.72rem]" style="color: var(--ion-color-medium)">
+            Status
+          </p>
+        </div>
+        } @if (movie.belongs_to_collection) {
+        <div
+          class="rounded-[10px] border px-3 py-2.5"
+          style="
+            background: var(--ion-color-step-50, #1a1a1a);
+            border-color: var(--ion-color-step-100, #222);
+          "
+        >
+          <p class="m-0 mb-0.5 text-[0.78rem] font-bold leading-[1.2]">
+            {{ movie.belongs_to_collection.name }}
+          </p>
+          <p class="m-0 text-[0.72rem]" style="color: var(--ion-color-medium)">
+            Collection
+          </p>
+        </div>
+        }
+      </div>
+    </div>
+    <!-- Director(s) -->
+    @if (crewDirectors.length) {
+    <div class="pt-3">
+      <h2 class="m-0 mb-2 px-4 text-base font-extrabold">Directed By</h2>
+      <div
+        class="flex snap-x gap-2.5 overflow-x-auto px-4 pb-2 [scroll-padding-left:16px] [scroll-padding-right:16px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        @for (c of crewDirectors; track c) {
+        <div
+          class="w-20 shrink-0 snap-start cursor-pointer text-center"
+          [routerLink]="['/person', c.id]"
+        >
+          <div
+            class="mx-auto mb-1 h-16 w-16 overflow-hidden rounded-full"
+            style="background: var(--ion-color-step-100)"
+          >
+            <img
+              [src]="c.profile_path
                   ? 'https://image.tmdb.org/t/p/w185' + c.profile_path
                   : 'assets/icon/favicon.png'"
-                                [alt]="c.name"
-                                class="block h-full w-full object-cover"
-                                />
-                            </div>
-                            <p class="m-0 mb-0.5 overflow-hidden text-[0.72rem] font-bold [-webkit-box-orient:vertical] [-webkit-line-clamp:2] [display:-webkit-box]">{{ c.name }}</p>
-                            <p class="m-0 overflow-hidden text-[0.65rem] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] [display:-webkit-box]" style="color: var(--ion-color-medium)">Director</p>
-                          </div>
-                        }
-                      </div>
-                    </div>
-                  }
-                  <!-- Cast -->
-                  @if (cast.length) {
-                    <div class="pt-3">
-                      <h2 class="m-0 mb-2 px-4 text-base font-extrabold">Cast</h2>
-                      <div class="flex snap-x gap-2.5 overflow-x-auto px-4 pb-2 [scroll-padding-left:16px] [scroll-padding-right:16px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                        @for (person of cast; track person) {
-                          <div
-                            class="w-20 shrink-0 snap-start cursor-pointer text-center"
-                            [routerLink]="['/person', person.id]"
-                            >
-                            <div class="mx-auto mb-1 h-16 w-16 overflow-hidden rounded-full" style="background: var(--ion-color-step-100)">
-                              <img
-                [src]="person.profile_path
+              [alt]="c.name"
+              class="block h-full w-full object-cover"
+            />
+          </div>
+          <p
+            class="m-0 mb-0.5 overflow-hidden text-[0.72rem] font-bold [-webkit-box-orient:vertical] [-webkit-line-clamp:2] [display:-webkit-box]"
+          >
+            {{ c.name }}
+          </p>
+          <p
+            class="m-0 overflow-hidden text-[0.65rem] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] [display:-webkit-box]"
+            style="color: var(--ion-color-medium)"
+          >
+            Director
+          </p>
+        </div>
+        }
+      </div>
+    </div>
+    }
+    <!-- Cast -->
+    @if (cast.length) {
+    <div class="pt-3">
+      <h2 class="m-0 mb-2 px-4 text-base font-extrabold">Cast</h2>
+      <div
+        class="flex snap-x gap-2.5 overflow-x-auto px-4 pb-2 [scroll-padding-left:16px] [scroll-padding-right:16px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        @for (person of cast; track person) {
+        <div
+          class="w-20 shrink-0 snap-start cursor-pointer text-center"
+          [routerLink]="['/person', person.id]"
+        >
+          <div
+            class="mx-auto mb-1 h-16 w-16 overflow-hidden rounded-full"
+            style="background: var(--ion-color-step-100)"
+          >
+            <img
+              [src]="person.profile_path
                   ? 'https://image.tmdb.org/t/p/w185' + person.profile_path
                   : 'assets/icon/favicon.png'"
-                                [alt]="person.name"
-                                class="block h-full w-full object-cover"
-                                />
-                            </div>
-                            <p class="m-0 mb-0.5 overflow-hidden text-[0.72rem] font-bold [-webkit-box-orient:vertical] [-webkit-line-clamp:2] [display:-webkit-box]">{{ person.name }}</p>
-                            <p class="m-0 overflow-hidden text-[0.65rem] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] [display:-webkit-box]" style="color: var(--ion-color-medium)">{{ person.character }}</p>
-                          </div>
-                        }
-                      </div>
-                    </div>
-                  }
-                  <!-- Trailer -->
-                  @if (trailerKey) {
-                    <div class="pt-3">
-                      <h2 class="m-0 mb-2 px-4 text-base font-extrabold">Trailer</h2>
-                      <div class="mb-2 px-4">
-                        <iframe
-                          [src]="'https://www.youtube.com/embed/' + trailerKey | safeUrl"
-                          frameborder="0"
-                          allowfullscreen
-                          class="aspect-video w-full rounded-lg"
-                        ></iframe>
-                      </div>
-                    </div>
-                  }
-                  <!-- Reviews -->
-                  @if (reviews.length) {
-                    <div class="pt-3">
-                      <div class="mb-2 flex items-center justify-between px-4">
-                        <h2 class="m-0 text-base font-extrabold">Reviews</h2>
-                        @if (reviews.length > 3) {
-                          <a
-                            class="text-[0.8rem] font-semibold no-underline"
-                            style="color: var(--ion-color-primary)"
-                            [routerLink]="['/movie', movie.id, 'reviews']"
-                            >See All {{ reviews.length }}</a
-                            >
-                          }
-                        </div>
-                        @for (review of reviews | slice:0:3; track review) {
-                          <div class="mx-4 mb-2.5 rounded-[10px] border px-3.5 py-3" style="background: var(--ion-color-step-50, #1a1a1a); border-color: var(--ion-color-step-100, #222)">
-                            <div class="mb-2 flex items-center gap-2.5">
-                              <div class="h-9 w-9 shrink-0 overflow-hidden rounded-full" style="background: var(--ion-color-step-150, #2a2a2a)">
-                                <img
-                [src]="review.author_details?.avatar_path
+              [alt]="person.name"
+              class="block h-full w-full object-cover"
+            />
+          </div>
+          <p
+            class="m-0 mb-0.5 overflow-hidden text-[0.72rem] font-bold [-webkit-box-orient:vertical] [-webkit-line-clamp:2] [display:-webkit-box]"
+          >
+            {{ person.name }}
+          </p>
+          <p
+            class="m-0 overflow-hidden text-[0.65rem] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] [display:-webkit-box]"
+            style="color: var(--ion-color-medium)"
+          >
+            {{ person.character }}
+          </p>
+        </div>
+        }
+      </div>
+    </div>
+    }
+    <!-- Trailer -->
+    @if (trailerKey) {
+    <div class="pt-3">
+      <h2 class="m-0 mb-2 px-4 text-base font-extrabold">Trailer</h2>
+      <div class="mb-2 px-4">
+        <iframe
+          [src]="'https://www.youtube.com/embed/' + trailerKey | safeUrl"
+          frameborder="0"
+          allowfullscreen
+          class="aspect-video w-full rounded-lg"
+        ></iframe>
+      </div>
+    </div>
+    }
+    <!-- Reviews -->
+    @if (reviews.length) {
+    <div class="pt-3">
+      <div class="mb-2 flex items-center justify-between px-4">
+        <h2 class="m-0 text-base font-extrabold">Reviews</h2>
+        @if (reviews.length > 3) {
+        <a
+          class="text-[0.8rem] font-semibold no-underline"
+          style="color: var(--ion-color-primary)"
+          [routerLink]="['/movie', movie.id, 'reviews']"
+          >See All {{ reviews.length }}</a
+        >
+        }
+      </div>
+      @for (review of reviews | slice:0:3; track review) {
+      <div
+        class="mx-4 mb-2.5 rounded-[10px] border px-3.5 py-3"
+        style="
+          background: var(--ion-color-step-50, #1a1a1a);
+          border-color: var(--ion-color-step-100, #222);
+        "
+      >
+        <div class="mb-2 flex items-center gap-2.5">
+          <div
+            class="h-9 w-9 shrink-0 overflow-hidden rounded-full"
+            style="background: var(--ion-color-step-150, #2a2a2a)"
+          >
+            <img
+              [src]="review.author_details?.avatar_path
                   ? (review.author_details.avatar_path.startsWith('/https')
                       ? review.author_details.avatar_path.slice(1)
                       : 'https://image.tmdb.org/t/p/w45' + review.author_details.avatar_path)
                   : 'assets/icon/favicon.png'"
-                                  [alt]="review.author"
-                                  class="block h-full w-full object-cover"
-                                  />
-                              </div>
-                              <div class="flex min-w-0 flex-1 flex-col">
-                                <span class="truncate text-[0.82rem] font-bold">{{ review.author }}</span>
-                                @if (review.author_details?.rating) {
-                                  <span class="text-[0.72rem]" style="color: var(--ion-color-warning)">
-                                    ⭐ {{ review.author_details.rating }}/10
-                                  </span>
-                                }
-                              </div>
-                              <span class="shrink-0 text-[0.68rem]" style="color: var(--ion-color-medium)"
-                                >{{ review.created_at | date:'mediumDate' }}</span
-                                >
-                              </div>
-                              <p class="m-0 overflow-hidden text-[0.84rem] leading-[1.6] [-webkit-box-orient:vertical] [-webkit-line-clamp:4] [display:-webkit-box]">{{ review.content }}</p>
-                            </div>
-                          }
-                        </div>
-                      }
-                      <!-- Recommendations -->
-                      @if (recommendations.length) {
-                        <div class="pt-3">
-                          <h2 class="m-0 mb-2 px-4 text-base font-extrabold">Recommended</h2>
-                          <div class="grid auto-cols-[110px] grid-flow-col grid-rows-1 gap-x-2.5 gap-y-2 overflow-x-auto pb-2 pl-4 [scroll-padding-left:16px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [&_app-poster-card]:snap-start">
-                            @for (m of recommendations; track m) {
-                              <app-poster-card
-                                [item]="m"
-                                mediaType="movie"
-                              ></app-poster-card>
-                            }
-                          </div>
-                        </div>
-                      }
-                      <!-- Similar -->
-                      @if (similar.length) {
-                        <div class="pt-3">
-                          <h2 class="m-0 mb-2 px-4 text-base font-extrabold">Similar Movies</h2>
-                          <div class="grid auto-cols-[110px] grid-flow-col grid-rows-1 gap-x-2.5 gap-y-2 overflow-x-auto pb-2 pl-4 [scroll-padding-left:16px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [&_app-poster-card]:snap-start">
-                            @for (m of similar; track m) {
-                              <app-poster-card
-                                [item]="m"
-                                mediaType="movie"
-                              ></app-poster-card>
-                            }
-                          </div>
-                        </div>
-                      }
-                    </div>
-                  <div
-                    class="sticky bottom-0 z-20 px-4 pb-[calc(env(safe-area-inset-bottom)+16px)] pt-3"
-                    style="background: rgba(8,8,8,0.78); backdrop-filter: blur(10px)"
-                  >
-                    <div class="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-2 py-2">
-                      <ion-button
-                        class="flex-1"
-                        shape="round"
-                        color="primary"
-                        (click)="openLogSheet()"
-                      >
-                        @if (isWatched()) {
-                          <span class="mr-2 inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
-                        }
-                        {{ isWatched() ? 'Edit log' : 'Log' }}
-                      </ion-button>
-                      <ion-button
-                        shape="round"
-                        fill="clear"
-                        [color]="isLiked() ? 'danger' : 'medium'"
-                        (click)="toggleLiked()"
-                      >
-                        <ion-icon
-                          slot="icon-only"
-                          [name]="isLiked() ? 'heart' : 'heart-outline'"
-                        ></ion-icon>
-                      </ion-button>
-                      <ion-button
-                        shape="round"
-                        fill="clear"
-                        color="medium"
-                        (click)="openListActionSheet()"
-                      >
-                        <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
-                      </ion-button>
-                    </div>
-                  </div>
-                  }
-                </ion-content>
+              [alt]="review.author"
+              class="block h-full w-full object-cover"
+            />
+          </div>
+          <div class="flex min-w-0 flex-1 flex-col">
+            <span class="truncate text-[0.82rem] font-bold"
+              >{{ review.author }}</span
+            >
+            @if (review.author_details?.rating) {
+            <span
+              class="text-[0.72rem]"
+              style="color: var(--ion-color-warning)"
+            >
+              ⭐ {{ review.author_details.rating }}/10
+            </span>
+            }
+          </div>
+          <span
+            class="shrink-0 text-[0.68rem]"
+            style="color: var(--ion-color-medium)"
+            >{{ review.created_at | date:'mediumDate' }}</span
+          >
+        </div>
+        <p
+          class="m-0 overflow-hidden text-[0.84rem] leading-[1.6] [-webkit-box-orient:vertical] [-webkit-line-clamp:4] [display:-webkit-box]"
+        >
+          {{ review.content }}
+        </p>
+      </div>
+      }
+    </div>
+    }
+    <!-- Recommendations -->
+    @if (recommendations.length) {
+    <div class="pt-3">
+      <h2 class="m-0 mb-2 px-4 text-base font-extrabold">Recommended</h2>
+      <div
+        class="grid auto-cols-[110px] grid-flow-col grid-rows-1 gap-x-2.5 gap-y-2 overflow-x-auto pb-2 pl-4 [scroll-padding-left:16px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [&_app-poster-card]:snap-start"
+      >
+        @for (m of recommendations; track m) {
+        <app-poster-card [item]="m" mediaType="movie"></app-poster-card>
+        }
+      </div>
+    </div>
+    }
+    <!-- Similar -->
+    @if (similar.length) {
+    <div class="pt-3">
+      <h2 class="m-0 mb-2 px-4 text-base font-extrabold">Similar Movies</h2>
+      <div
+        class="grid auto-cols-[110px] grid-flow-col grid-rows-1 gap-x-2.5 gap-y-2 overflow-x-auto pb-2 pl-4 [scroll-padding-left:16px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [&_app-poster-card]:snap-start"
+      >
+        @for (m of similar; track m) {
+        <app-poster-card [item]="m" mediaType="movie"></app-poster-card>
+        }
+      </div>
+    </div>
+    }
+  </div>
+  }
+</ion-content>
