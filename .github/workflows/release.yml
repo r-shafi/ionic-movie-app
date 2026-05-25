@@ -36,7 +36,7 @@ jobs:
 
       # ── Ionic web build ─────────────────────────────────────────────────────
       - name: Build Ionic app (production)
-        run: pnpm run build -- --configuration production
+        run: pnpm exec ng build --configuration production
 
       # ── Capacitor sync ──────────────────────────────────────────────────────
       - name: Sync Capacitor Android platform
