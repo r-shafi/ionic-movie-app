@@ -34,6 +34,7 @@
         </div>
         <ion-toggle
           class="watchlist-toggle"
+          mode="md"
           [checked]="watchlistEnabled"
           (ionChange)="watchlistEnabled = $event.detail.checked"
         ></ion-toggle>
@@ -94,6 +95,7 @@
               [(ngModel)]="review"
               [maxlength]="1000"
               [autoGrow]="true"
+              mode="md"
               placeholder="What stood out to you?"
             ></ion-textarea>
           </div>
@@ -139,35 +141,20 @@
             <ion-input
               [(ngModel)]="tagInput"
               placeholder="Add tags (comma separated)"
+              mode="md"
               (keyup.enter)="addTag()"
             ></ion-input>
           }
         </div>
 
         <div class="section-block">
-          <button
-            type="button"
-            class="date-row"
-            (click)="datePickerOpen = !datePickerOpen"
-          >
+          <button type="button" class="date-row" (click)="openDatePicker()">
             <p class="section-title">Date watched</p>
             <div class="date-row-right">
               <span class="date-value">{{ formattedWatchDate }}</span>
-              <ion-icon
-                [name]="datePickerOpen ? 'chevron-up' : 'chevron-down'"
-                class="chevron-icon"
-              ></ion-icon>
+              <ion-icon name="chevron-forward" class="chevron-icon"></ion-icon>
             </div>
           </button>
-          @if (datePickerOpen) {
-            <ion-datetime
-              presentation="date"
-              prefer-wheel="true"
-              [value]="watchedAt"
-              [max]="today"
-              (ionChange)="updateWatchedDate($event.detail.value)"
-            ></ion-datetime>
-          }
         </div>
       </section>
     }
@@ -201,3 +188,33 @@
     </div>
   </div>
 </ion-content>
+
+<ion-modal #dateModal cssClass="date-picker-modal">
+  <ng-template>
+    <div class="date-modal-inner">
+      <div class="date-modal-header">
+        <span class="date-modal-title">Date Watched</span>
+      </div>
+      <ion-datetime
+        presentation="date"
+        [value]="tempWatchedAt"
+        [max]="today"
+        (ionChange)="onTempDateChange($event.detail.value)"
+      ></ion-datetime>
+      <div class="date-modal-footer">
+        <button
+          class="date-modal-btn date-modal-cancel"
+          (click)="dateModal.dismiss()"
+        >
+          Cancel
+        </button>
+        <button
+          class="date-modal-btn date-modal-confirm"
+          (click)="confirmDate(); dateModal.dismiss()"
+        >
+          Done
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</ion-modal>

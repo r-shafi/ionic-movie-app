@@ -99,3 +99,78 @@ ion-modal.log-sheet-modal::part(handle) {
   border-radius: 999px;
   background: rgba(179, 197, 224, 0.42);
 }
+
+/* ── Date Picker Modal ── */
+ion-modal.date-picker-modal {
+  --height: auto;
+  --width: calc(100% - 40px);
+  --max-width: 360px;
+  --border-radius: 20px;
+  --backdrop-opacity: 0.65;
+  --box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55);
+}
+
+ion-modal.date-picker-modal ion-datetime {
+  --background: var(--ion-background-color);
+  --color: var(--ion-text-color);
+  --title-color: var(--ion-text-color);
+  --calendar-item-today-background-color: rgba(
+    var(--ion-color-primary-rgb),
+    0.2
+  );
+  --calendar-item-selected-background-color: var(--ion-color-primary);
+  --calendar-item-selected-color: #fff;
+  width: 100%;
+}
+
+.date-modal-inner {
+  background: var(--ion-background-color);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.date-modal-header {
+  padding: 16px 16px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.date-modal-title {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ion-text-color);
+  opacity: 0.45;
+}
+
+.date-modal-footer {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.date-modal-btn {
+  flex: 1;
+  padding: 11px 10px;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.date-modal-btn:active {
+  opacity: 0.75;
+}
+
+.date-modal-cancel {
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--ion-text-color);
+}
+
+.date-modal-confirm {
+  background: var(--ion-color-primary);
+  color: #fff;
+}

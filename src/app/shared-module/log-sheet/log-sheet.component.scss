@@ -6,13 +6,6 @@
   --sheet-muted: var(--app-muted);
 }
 
-ion-datetime {
-  --background: rgba(var(--app-bg-rgb), 0.8);
-  --color: var(--sheet-text);
-  --border-radius: 12px;
-  max-height: 200px;
-}
-
 ion-input,
 ion-textarea {
   --padding-start: 12px;

@@ -1,11 +1,12 @@
 <ion-header>
   <ion-toolbar>
     <ion-title class="flex items-center gap-2 font-bold">
-      <ion-img
-        src="assets/icon/favicon.png"
+      <img
+        src="assets/icon/logo.svg"
         class="inline-block h-7 w-auto align-middle"
-      ></ion-img>
-      CineTrack
+        alt="Open Movie Tracker logo"
+      />
+      Open Movie Tracker
     </ion-title>
     <ion-buttons slot="end">
       <ion-button routerLink="/settings">
@@ -25,98 +26,98 @@
 
   <!-- Offline state -->
   @if (isOffline) {
-    <div class="ion-padding ion-text-center pt-16">
-      <ion-icon
-        name="cloud-offline-outline"
-        class="text-[4rem]"
-        style="color: var(--ion-color-medium)"
-      ></ion-icon>
-      <p>No internet connection.</p>
-    </div>
+  <div class="ion-padding ion-text-center pt-16">
+    <ion-icon
+      name="cloud-offline-outline"
+      class="text-[4rem]"
+      style="color: var(--ion-color-medium)"
+    ></ion-icon>
+    <p>No internet connection.</p>
+  </div>
   }
 
   <!-- Loading skeleton -->
   @if (isLoading && !isOffline) {
-    <app-hero-banner [items]="[]" [isLoading]="true"></app-hero-banner>
-    <app-media-carousel
-      title="Trending Today"
-      [items]="[]"
-      mediaType="movie"
-      [isLoading]="true"
-    ></app-media-carousel>
-    <app-media-carousel
-      title="Popular Movies"
-      [items]="[]"
-      mediaType="movie"
-      [isLoading]="true"
-    ></app-media-carousel>
+  <app-hero-banner [items]="[]" [isLoading]="true"></app-hero-banner>
+  <app-media-carousel
+    title="Trending Today"
+    [items]="[]"
+    mediaType="movie"
+    [isLoading]="true"
+  ></app-media-carousel>
+  <app-media-carousel
+    title="Popular Movies"
+    [items]="[]"
+    mediaType="movie"
+    [isLoading]="true"
+  ></app-media-carousel>
   }
 
   <!-- Loaded content -->
   @if (!isLoading && !isOffline) {
-    <app-hero-banner [items]="heroItems"></app-hero-banner>
-    <app-media-carousel
-      title="Trending Today"
-      [items]="trendingMovies"
-      mediaType="movie"
-      seeAllRoute="/discover"
-      [seeAllQueryParams]="{mode: 'list', title: 'Trending Today', tab: 'movies', sort: 'popularity.desc'}"
-    ></app-media-carousel>
-    <app-media-carousel
-      title="Trending TV"
-      [items]="trendingTv"
-      mediaType="tv"
-      seeAllRoute="/discover"
-      [seeAllQueryParams]="{mode: 'list', title: 'Trending TV', tab: 'tv', sort: 'popularity.desc'}"
-    ></app-media-carousel>
-    <app-media-carousel
-      title="Popular Movies"
-      [items]="popularMovies"
-      mediaType="movie"
-      seeAllRoute="/discover"
-      [seeAllQueryParams]="{mode: 'list', title: 'Popular Movies', tab: 'movies', sort: 'popularity.desc'}"
-    ></app-media-carousel>
-    <app-media-carousel
-      title="Top Rated Movies"
-      [items]="topRatedMovies"
-      mediaType="movie"
-      seeAllRoute="/discover"
-      [seeAllQueryParams]="{mode: 'list', title: 'Top Rated Movies', tab: 'movies', sort: 'vote_average.desc'}"
-    ></app-media-carousel>
-    <app-media-carousel
-      title="Now Playing"
-      [items]="nowPlaying"
-      mediaType="movie"
-      seeAllRoute="/discover"
-      [seeAllQueryParams]="{mode: 'list', title: 'Now Playing', tab: 'movies', sort: 'primary_release_date.desc'}"
-    ></app-media-carousel>
-    <app-media-carousel
-      title="Upcoming Movies"
-      [items]="upcoming"
-      mediaType="movie"
-      seeAllRoute="/discover"
-      [seeAllQueryParams]="{mode: 'list', title: 'Upcoming Movies', tab: 'movies', sort: 'primary_release_date.desc'}"
-    ></app-media-carousel>
-    <app-media-carousel
-      title="Popular TV Shows"
-      [items]="popularTv"
-      mediaType="tv"
-      seeAllRoute="/discover"
-      [seeAllQueryParams]="{mode: 'list', title: 'Popular TV Shows', tab: 'tv', sort: 'popularity.desc'}"
-    ></app-media-carousel>
-    <app-media-carousel
-      title="Top Rated TV"
-      [items]="topRatedTv"
-      mediaType="tv"
-      seeAllRoute="/discover"
-      [seeAllQueryParams]="{mode: 'list', title: 'Top Rated TV', tab: 'tv', sort: 'vote_average.desc'}"
-    ></app-media-carousel>
-    <app-media-carousel
-      title="Airing Today"
-      [items]="airingTv"
-      mediaType="tv"
-      seeAllRoute="/discover"
-      [seeAllQueryParams]="{mode: 'list', title: 'Airing Today', tab: 'tv', sort: 'popularity.desc'}"
-    ></app-media-carousel>
+  <app-hero-banner [items]="heroItems"></app-hero-banner>
+  <app-media-carousel
+    title="Trending Today"
+    [items]="trendingMovies"
+    mediaType="movie"
+    seeAllRoute="/discover"
+    [seeAllQueryParams]="{mode: 'list', title: 'Trending Today', tab: 'movies', sort: 'popularity.desc'}"
+  ></app-media-carousel>
+  <app-media-carousel
+    title="Trending TV"
+    [items]="trendingTv"
+    mediaType="tv"
+    seeAllRoute="/discover"
+    [seeAllQueryParams]="{mode: 'list', title: 'Trending TV', tab: 'tv', sort: 'popularity.desc'}"
+  ></app-media-carousel>
+  <app-media-carousel
+    title="Popular Movies"
+    [items]="popularMovies"
+    mediaType="movie"
+    seeAllRoute="/discover"
+    [seeAllQueryParams]="{mode: 'list', title: 'Popular Movies', tab: 'movies', sort: 'popularity.desc'}"
+  ></app-media-carousel>
+  <app-media-carousel
+    title="Top Rated Movies"
+    [items]="topRatedMovies"
+    mediaType="movie"
+    seeAllRoute="/discover"
+    [seeAllQueryParams]="{mode: 'list', title: 'Top Rated Movies', tab: 'movies', sort: 'vote_average.desc'}"
+  ></app-media-carousel>
+  <app-media-carousel
+    title="Now Playing"
+    [items]="nowPlaying"
+    mediaType="movie"
+    seeAllRoute="/discover"
+    [seeAllQueryParams]="{mode: 'list', title: 'Now Playing', tab: 'movies', sort: 'primary_release_date.desc'}"
+  ></app-media-carousel>
+  <app-media-carousel
+    title="Upcoming Movies"
+    [items]="upcoming"
+    mediaType="movie"
+    seeAllRoute="/discover"
+    [seeAllQueryParams]="{mode: 'list', title: 'Upcoming Movies', tab: 'movies', sort: 'primary_release_date.desc'}"
+  ></app-media-carousel>
+  <app-media-carousel
+    title="Popular TV Shows"
+    [items]="popularTv"
+    mediaType="tv"
+    seeAllRoute="/discover"
+    [seeAllQueryParams]="{mode: 'list', title: 'Popular TV Shows', tab: 'tv', sort: 'popularity.desc'}"
+  ></app-media-carousel>
+  <app-media-carousel
+    title="Top Rated TV"
+    [items]="topRatedTv"
+    mediaType="tv"
+    seeAllRoute="/discover"
+    [seeAllQueryParams]="{mode: 'list', title: 'Top Rated TV', tab: 'tv', sort: 'vote_average.desc'}"
+  ></app-media-carousel>
+  <app-media-carousel
+    title="Airing Today"
+    [items]="airingTv"
+    mediaType="tv"
+    seeAllRoute="/discover"
+    [seeAllQueryParams]="{mode: 'list', title: 'Airing Today', tab: 'tv', sort: 'popularity.desc'}"
+  ></app-media-carousel>
   }
 </ion-content>

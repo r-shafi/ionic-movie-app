@@ -3,8 +3,9 @@ import {
   Component,
   Input,
   OnInit,
+  ViewChild,
 } from '@angular/core';
-import { AlertController, ModalController } from '@ionic/angular';
+import { AlertController, IonModal, ModalController } from '@ionic/angular';
 import { ToastService } from 'src/app/services/toast.service';
 import {
   UserDataService,
@@ -45,7 +46,9 @@ export class LogSheetComponent implements OnInit {
   lists: UserList[] = [];
   selectedListIds: string[] = [];
   tagsExpanded = false;
-  datePickerOpen = false;
+  tempWatchedAt = new Date().toISOString();
+
+  @ViewChild('dateModal') dateModal!: IonModal;
 
   constructor(
     private modalCtrl: ModalController,
@@ -164,11 +167,21 @@ export class LogSheetComponent implements OnInit {
     this.tags = this.tags.filter((t) => t !== tag);
   }
 
-  updateWatchedDate(value: string | string[] | null): void {
-    if (!value) {
-      return;
+  openDatePicker(): void {
+    this.tempWatchedAt = this.watchedAt;
+    this.dateModal.present();
+  }
+
+  onTempDateChange(value: string | string[] | null): void {
+    if (value) {
+      this.tempWatchedAt = Array.isArray(value) ? value[0] : value;
     }
-    this.watchedAt = Array.isArray(value) ? value[0] : value;
+  }
+
+  confirmDate(): void {
+    if (this.tempWatchedAt) {
+      this.watchedAt = this.tempWatchedAt;
+    }
   }
 
   async openListPicker(): Promise<void> {
