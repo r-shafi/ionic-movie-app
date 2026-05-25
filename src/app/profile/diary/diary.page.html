@@ -1,0 +1,100 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start"><ion-back-button></ion-back-button></ion-buttons>
+    <ion-title>Diary</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="px-4 pt-3 pb-5">
+    @if (groupedEntries.length) { @for (group of groupedEntries; track
+    group.month) {
+    <p
+      class="mb-2 mt-4 text-[0.75rem] font-bold uppercase tracking-[0.1em]"
+      style="color: var(--ion-color-medium)"
+    >
+      {{ group.month }}
+    </p>
+
+    @for (entry of group.entries; track entry.media_type + ':' + entry.id) {
+    <div
+      class="mb-2 flex items-center gap-2 rounded-xl border px-2 py-2"
+      style="
+        border-color: var(--ion-color-step-100);
+        background: var(--ion-color-step-50);
+        color: var(--ion-text-color);
+      "
+    >
+      <button
+        type="button"
+        class="flex h-[66px] w-[44px] shrink-0 flex-col items-center justify-center rounded-lg border-0 bg-[#1b2f5f]"
+        style="color: #d8e5ff"
+        (click)="goToDetail(entry)"
+      >
+        <span class="text-[0.58rem] font-semibold tracking-[0.08em]"
+          >{{ watchMonth(entry) }}</span
+        >
+        <span class="-mt-0.5 text-[1.05rem] font-extrabold"
+          >{{ watchDay(entry) }}</span
+        >
+      </button>
+
+      <button
+        type="button"
+        class="flex min-w-0 flex-1 items-center gap-3 rounded-lg border-0 bg-transparent p-0 text-left"
+        (click)="goToDetail(entry)"
+      >
+        <img
+          [src]="poster(entry)"
+          class="h-[66px] w-[44px] rounded object-cover"
+        />
+        <div class="min-w-0 flex-1">
+          <p class="m-0 truncate text-[0.85rem] font-bold">{{ entry.title }}</p>
+          <p
+            class="m-0 mt-0.5 text-[0.7rem]"
+            style="color: var(--ion-color-medium)"
+          >
+            {{ watchDate(entry) }} · {{ entry.media_type === 'tv' ? 'TV Show' :
+            'Movie' }}
+          </p>
+          <div
+            class="mt-1 flex items-center gap-1.5 text-[0.65rem]"
+            style="color: var(--ion-color-medium)"
+          >
+            @if (entry.rating !== null) {
+            <span
+              class="rounded px-1.5 py-0.5 text-[0.65rem] font-bold text-white"
+              style="background: var(--ion-color-primary)"
+            >
+              ★{{ entry.rating }}
+            </span>
+            } @if (entry.liked) {
+            <span class="text-red-400">♥ Liked</span>
+            }
+          </div>
+        </div>
+      </button>
+
+      <ion-button
+        fill="clear"
+        size="small"
+        class="shrink-0"
+        (click)="openEntryActions($event, entry)"
+      >
+        <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
+      </ion-button>
+    </div>
+    } } } @else {
+    <div
+      class="ion-padding ion-text-center rounded-xl"
+      style="background: var(--ion-color-step-50)"
+    >
+      <ion-icon
+        name="calendar-clear-outline"
+        style="font-size: 3rem; color: var(--ion-color-medium)"
+      ></ion-icon>
+      <p class="mb-0">No diary entries yet.</p>
+    </div>
+    }
+  </div>
+</ion-content>
