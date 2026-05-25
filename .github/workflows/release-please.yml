@@ -23,7 +23,6 @@ jobs:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
 
-  # Trigger the release APK build when release-please merges a release PR
   trigger-release:
     needs: release-please
     if: ${{ needs.release-please.outputs.release_created }}

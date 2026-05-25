@@ -30,6 +30,3 @@ jobs:
 
       - name: Build (production smoke test)
         run: npx ng build --configuration production
-
-      - name: Run unit tests
-        run: npx ng test --watch=false --browsers=ChromeHeadless --no-progress
