@@ -86,8 +86,8 @@ ion-content.discover-content {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #c9fff4;
-  background: rgba(61, 216, 198, 0.16);
+  color: #ffffff;
+  background: rgba(var(--ion-color-primary-rgb), 0.8);
   transition:
     transform 150ms ease,
     box-shadow 150ms ease;
@@ -238,6 +238,49 @@ ion-select.filter-select::part(icon) {
 
 .browse-grid {
   animation: rise-in 320ms ease;
+}
+
+.active-filters-wrap {
+  animation: rise-in 240ms ease;
+}
+
+.active-filters-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+
+.active-filters-row::-webkit-scrollbar {
+  display: none;
+}
+
+.active-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(var(--ion-color-primary-rgb), 0.42);
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: rgba(var(--ion-color-primary-rgb), 0.14);
+  color: var(--ion-color-primary);
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.active-filter-chip ion-icon {
+  font-size: 0.86rem;
+}
+
+.active-filter-clear-all {
+  border: 0;
+  background: transparent;
+  color: var(--ion-color-primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
 .genre-subtitle {

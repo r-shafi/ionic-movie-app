@@ -6,10 +6,10 @@ import { SettingsService } from '../services/settings.service';
 import { DiscoverParams, TmdbService } from '../services/tmdb.service';
 
 @Component({
-    selector: 'app-discover',
+  selector: 'app-discover',
   templateUrl: './discover.page.html',
   styleUrls: ['./discover.page.scss'],
-    standalone: false
+  standalone: false,
 })
 export class DiscoverPage implements OnInit {
   viewMode: 'explore' | 'browse' | 'list' = 'explore';
@@ -128,7 +128,9 @@ export class DiscoverPage implements OnInit {
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
-      if (params['mode'] === 'list') {
+      const mode = params['mode'];
+
+      if (mode === 'list') {
         this.viewMode = 'list';
         this.showBrowseFilters = false;
         this.listTitle = params['title'] || 'Results';
@@ -139,7 +141,8 @@ export class DiscoverPage implements OnInit {
         this.currentPage = 1;
         this.browseResults = [];
         this.loadBrowse();
-      } else if (params['mode'] === 'browse') {
+        this.location.replaceState('/discover');
+      } else if (mode === 'browse') {
         this.viewMode = 'browse';
         this.showBrowseFilters = false;
         this.activeTab = (params['tab'] as 'movies' | 'tv') || 'movies';
@@ -149,6 +152,11 @@ export class DiscoverPage implements OnInit {
         this.currentPage = 1;
         this.browseResults = [];
         this.loadBrowse();
+        this.location.replaceState('/discover');
+      } else {
+        this.viewMode = 'explore';
+        this.listTitle = '';
+        this.showBrowseFilters = false;
       }
     });
 
@@ -181,6 +189,15 @@ export class DiscoverPage implements OnInit {
         this.isLoadingExplore = false;
       },
     });
+  }
+
+  ionViewWillEnter() {
+    const mode = this.route.snapshot.queryParamMap.get('mode');
+    if (!mode && this.viewMode !== 'explore') {
+      this.viewMode = 'explore';
+      this.listTitle = '';
+      this.showBrowseFilters = false;
+    }
   }
 
   setTrendWindow(window: 'day' | 'week') {
@@ -339,9 +356,7 @@ export class DiscoverPage implements OnInit {
       return [];
     }
     const byId = new Map(this.movieGenres.map((g) => [g.id, g]));
-    return this.popularGenreIds
-      .map((id) => byId.get(id))
-      .filter(Boolean);
+    return this.popularGenreIds.map((id) => byId.get(id)).filter(Boolean);
   }
 
   get otherGenres(): any[] {
@@ -358,5 +373,51 @@ export class DiscoverPage implements OnInit {
       this.selectedYear !== null ||
       this.sortBy !== 'popularity.desc'
     );
+  }
+
+  get selectedGenreLabel(): string | null {
+    if (this.selectedGenre === null) {
+      return null;
+    }
+    return (
+      this.activeGenres.find((genre) => genre.id === this.selectedGenre)
+        ?.name || null
+    );
+  }
+
+  get selectedSortLabel(): string {
+    return (
+      this.sortOptions.find((opt) => opt.value === this.sortBy)?.label ||
+      'Popular'
+    );
+  }
+
+  get selectedFilterChips(): Array<{
+    key: 'sort' | 'genre' | 'year';
+    label: string;
+  }> {
+    const chips: Array<{ key: 'sort' | 'genre' | 'year'; label: string }> = [];
+    if (this.sortBy !== 'popularity.desc') {
+      chips.push({ key: 'sort', label: `Sort: ${this.selectedSortLabel}` });
+    }
+    if (this.selectedGenreLabel) {
+      chips.push({ key: 'genre', label: `Genre: ${this.selectedGenreLabel}` });
+    }
+    if (this.selectedYear) {
+      chips.push({ key: 'year', label: `Year: ${this.selectedYear}` });
+    }
+    return chips;
+  }
+
+  clearFilterChip(key: 'sort' | 'genre' | 'year') {
+    if (key === 'sort') {
+      this.setSortBy('popularity.desc');
+      return;
+    }
+    if (key === 'genre') {
+      this.selectGenre(null);
+      return;
+    }
+    this.setYear(null);
   }
 }
