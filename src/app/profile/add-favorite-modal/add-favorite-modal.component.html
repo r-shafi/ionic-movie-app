@@ -1,0 +1,75 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()">Cancel</ion-button>
+    </ion-buttons>
+    <ion-title>Add to Favourites</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar
+      [(ngModel)]="query"
+      (ionInput)="onSearch($event.detail.value)"
+      placeholder="Search movies &amp; TV..."
+      autocomplete="off"
+      autocorrect="off"
+    ></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  @if (!query) {
+    <div class="flex h-full flex-col items-center justify-center px-4" style="color: var(--ion-color-medium)">
+      <ion-icon name="search" class="mb-2 text-4xl"></ion-icon>
+      <p class="m-0 text-[0.85rem]">Search for a movie or TV show to add</p>
+      <p class="m-0 mt-1 text-[0.75rem]">Favourites are limited to 6 items</p>
+    </div>
+  }
+
+  @if (isLoading) {
+    <ion-list>
+      @for (s of [0,1,2,3,4,5]; track s) {
+        <ion-item>
+          <ion-thumbnail slot="start" class="h-[66px] w-[44px] [--border-radius:4px]">
+            <ion-skeleton-text animated></ion-skeleton-text>
+          </ion-thumbnail>
+          <ion-label>
+            <ion-skeleton-text animated class="w-[70%]"></ion-skeleton-text>
+            <ion-skeleton-text animated class="w-[40%]"></ion-skeleton-text>
+          </ion-label>
+        </ion-item>
+      }
+    </ion-list>
+  }
+
+  @if (!isLoading && results.length) {
+    <ion-list>
+      @for (item of results; track item.id) {
+        <ion-item button (click)="addFavorite(item)">
+          <ion-thumbnail slot="start" class="h-[66px] w-[44px] shrink-0 overflow-hidden [--border-radius:4px]">
+            <img class="block h-full w-full object-cover" [src]="posterUrl(item.poster_path)" [alt]="item.title || item.name" loading="lazy" />
+          </ion-thumbnail>
+          <ion-label>
+            <h2 class="text-[0.9rem] font-semibold">{{ item.title || item.name }}</h2>
+            <p class="text-[0.75rem]" style="color: var(--ion-color-medium)">
+              {{ item.media_type === 'tv' ? 'TV Show' : 'Movie' }}
+              @if (item.release_date || item.first_air_date) {
+                · {{ (item.release_date || item.first_air_date).substring(0, 4) }}
+              }
+              @if (item.vote_average) {
+                · ★ {{ item.vote_average.toFixed(1) }}
+              }
+            </p>
+          </ion-label>
+          <ion-icon slot="end" name="heart" style="color: var(--ion-color-primary)"></ion-icon>
+        </ion-item>
+      }
+    </ion-list>
+  }
+
+  @if (!isLoading && query && !results.length) {
+    <div class="flex h-full flex-col items-center justify-center px-4" style="color: var(--ion-color-medium)">
+      <ion-icon name="film-outline" class="mb-2 text-4xl"></ion-icon>
+      <p class="m-0 text-[0.85rem]">No results found</p>
+    </div>
+  }
+</ion-content>
