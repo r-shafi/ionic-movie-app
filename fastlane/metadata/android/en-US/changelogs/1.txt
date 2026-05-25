@@ -1,0 +1,10 @@
+Initial release of Open Movie Tracker.
+
+- Browse trending movies and TV shows
+- Search by title
+- Track Watched, Favourites, and Watchlist
+- Movie and TV detail pages with cast, crew, and reviews
+- Discover page with genre, year, language, and rating filters
+- Person filmography pages
+- Customisable theme colour
+- Local storage only — no account or cloud sync required

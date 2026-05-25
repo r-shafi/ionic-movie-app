@@ -1,0 +1,24 @@
+Open Movie Tracker is a free and open-source app for discovering and tracking movies and TV shows. All data is sourced from The Movie Database (TMDb).
+
+<b>Features</b>
+
+• Browse trending movies and TV shows on the Home screen
+• Search for any movie or TV show by title
+• View full details: overview, cast, crew, ratings, seasons, and episodes
+• Add titles to your Watched list, Favourites, or Watchlist
+• Manage up to 4 pinned Favourite titles on your Profile
+• Browse by person — see an actor or director's full filmography
+• Filter and discover titles by genre, year, language, and rating
+• Read user reviews directly within the app
+• Dark/Light theme with a customisable primary colour
+• All data stored locally — no account required, no cloud sync, no tracking
+
+<b>Privacy</b>
+
+Open Movie Tracker does not collect any personal data. It does not use analytics, crash reporters, or advertising SDKs. The only network requests made are to the TMDb public API to fetch movie and TV metadata.
+
+<b>Open Source</b>
+
+The full source code is available on GitHub under the MIT licence. Contributions are welcome.
+
+Movie and TV data provided by The Movie Database (TMDb). This product uses the TMDb API but is not endorsed or certified by TMDb.
