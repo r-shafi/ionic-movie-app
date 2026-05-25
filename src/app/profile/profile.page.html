@@ -2,6 +2,9 @@
   <ion-toolbar>
     <ion-title>Profile</ion-title>
     <ion-buttons slot="end">
+      <ion-button color="primary" (click)="openEditProfile()">
+        <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+      </ion-button>
       <ion-button routerLink="/settings">
         <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
       </ion-button>
@@ -13,7 +16,7 @@
   <!-- Cover + Avatar -->
   <div class="relative w-full">
     <div
-      class="h-[180px] w-full bg-cover bg-center"
+      class="h-[140px] w-full bg-cover bg-center"
       [style.backgroundImage]="profile.coverBase64 ? 'url(' + profile.coverBase64 + ')' : 'none'"
       [class.bg-gradient-to-b]="!profile.coverBase64"
       [class.from-indigo-800]="!profile.coverBase64"
@@ -38,59 +41,83 @@
 
   <!-- Profile info -->
   <div class="px-4 pb-2 pt-12">
-    <div class="flex items-start justify-between">
-      <div class="min-w-0 flex-1">
-        <h2 class="m-0 text-xl font-extrabold">{{ profile.displayName }}</h2>
-        @if (profile.bio) {
-        <p
-          class="m-0 mt-1 text-[0.82rem]"
-          style="color: var(--ion-color-medium)"
-        >
-          {{ profile.bio }}
-        </p>
-        }
-        <p
-          class="m-0 mt-1 text-[0.72rem]"
-          style="color: var(--ion-color-step-200)"
-        >
-          Joined {{ profile.joinedAt | date:'MMMM yyyy' }} · {{
-          stats.totalWatched }} films · {{ stats.totalHoursEstimated }}h
-        </p>
-      </div>
-      <ion-button fill="outline" size="small" (click)="openEditProfile()"
-        >Edit ✎</ion-button
+    <div class="min-w-0">
+      <h2 class="m-0 text-xl font-extrabold">{{ profile.displayName }}</h2>
+      @if (profile.bio) {
+      <p class="m-0 mt-1 text-[0.82rem]" style="color: var(--ion-color-medium)">
+        {{ profile.bio }}
+      </p>
+      }
+      <p
+        class="m-0 mt-1 text-[0.72rem]"
+        style="color: var(--ion-color-step-200)"
       >
+        Joined {{ profile.joinedAt | date:'MMMM yyyy' }} · {{ stats.totalWatched
+        }} films · {{ stats.totalHoursEstimated }}h
+      </p>
     </div>
   </div>
 
   <div class="px-4 pb-1">
-    <p
-      class="mb-2 mt-4 text-[0.75rem] font-bold uppercase tracking-[0.1em]"
-      style="color: var(--ion-color-medium)"
-    >
-      Favourite Films
-    </p>
-    @if (favorites.length) {
-    <div class="grid grid-cols-3 gap-2">
-      @for (fav of favorites; track fav.id + ':' + fav.media_type) {
-      <div
-        [routerLink]="['/' + (fav.media_type === 'tv' ? 'tv' : 'movie'), fav.id]"
-        class="relative aspect-[2/3] overflow-hidden rounded-lg bg-[#1a1a1a]"
-      >
-        <img
-          [src]="fav.poster_path ? 'https://image.tmdb.org/t/p/w185' + fav.poster_path : 'assets/no-image.png'"
-          [alt]="fav.title"
-          class="h-full w-full object-cover"
-        />
-      </div>
-      } @if (favorites.length < 6) {
-      <div
-        (click)="openAddFavorite()"
-        class="flex aspect-[2/3] cursor-pointer items-center justify-center rounded-lg border border-dashed border-white/20 bg-[#1a1a1a]"
+    <div class="mb-2 mt-4 flex items-center justify-between">
+      <p
+        class="m-0 text-[0.75rem] font-bold uppercase tracking-[0.1em]"
         style="color: var(--ion-color-medium)"
       >
-        <ion-icon name="add" class="text-2xl"></ion-icon>
+        Favourite Films
+      </p>
+      <button class="profile-text-btn" (click)="toggleFavoritesEdit()">
+        {{ isEditingFavorites ? 'Done' : 'Edit' }}
+      </button>
+    </div>
+
+    @if (visibleFavorites.length) {
+    <div class="favorites-row">
+      @for (fav of visibleFavorites; track fav.id + ':' + fav.media_type; let i
+      = $index) {
+      <div class="favorite-item">
+        <div
+          [routerLink]="isEditingFavorites ? null : ['/' + (fav.media_type === 'tv' ? 'tv' : 'movie'), fav.id]"
+          class="relative aspect-[2/3] overflow-hidden rounded-lg bg-[#1a1a1a]"
+        >
+          <img
+            [src]="fav.poster_path ? 'https://image.tmdb.org/t/p/w185' + fav.poster_path : 'assets/no-image.png'"
+            [alt]="fav.title"
+            class="h-full w-full object-cover"
+          />
+          @if (isEditingFavorites) {
+          <div class="favorite-controls">
+            <button
+              class="favorite-ctrl"
+              [disabled]="!canMoveFavoriteLeft(i)"
+              (click)="moveFavorite(i, -1)"
+            >
+              <ion-icon name="arrow-back-outline"></ion-icon>
+            </button>
+            <button
+              class="favorite-ctrl favorite-ctrl--danger"
+              (click)="removeFavorite(fav)"
+            >
+              <ion-icon name="close-outline"></ion-icon>
+            </button>
+            <button
+              class="favorite-ctrl"
+              [disabled]="!canMoveFavoriteRight(i)"
+              (click)="moveFavorite(i, 1)"
+            >
+              <ion-icon name="arrow-forward-outline"></ion-icon>
+            </button>
+          </div>
+          }
+        </div>
       </div>
+      } @if (visibleFavorites.length < 4) {
+      <button
+        (click)="openAddFavorite()"
+        class="favorite-item favorite-item--add"
+      >
+        <ion-icon name="add" class="text-2xl"></ion-icon>
+      </button>
       }
     </div>
     } @else {
@@ -233,28 +260,19 @@
         background: var(--ion-color-step-50);
       "
     >
-      @for (row of ratingRows(); track row.label) {
-      <div class="mb-2 flex items-center gap-2 last:mb-0">
-        <span
-          class="w-8 text-[0.68rem] font-semibold"
-          style="color: var(--ion-color-medium)"
-          >★{{ row.label }}</span
-        >
-        <div
-          class="h-2.5 flex-1 overflow-hidden rounded-full"
-          style="background: var(--ion-color-step-100)"
-        >
+      <div class="rating-pulse-bars">
+        @for (row of ratingRows(); track row.label) {
+        <div class="rating-pulse-col">
           <div
-            class="h-full rounded-full transition-all"
-            [style.width.%]="row.pct"
-            style="background: linear-gradient(90deg, #2a7de1, #64a1ff)"
+            class="rating-pulse-bar"
+            tabindex="0"
+            [attr.title]="ratingBarTooltip(row.label, row.count)"
+            [style.height.%]="row.pct"
           ></div>
+          <span class="rating-pulse-label">{{ row.label }}</span>
         </div>
-        <span class="w-5 text-right text-[0.68rem] font-bold"
-          >{{ row.count }}</span
-        >
+        }
       </div>
-      }
     </div>
 
     <p
@@ -276,6 +294,8 @@
           <div
             class="w-full rounded-t-lg transition-all"
             [style.height.%]="row.pct"
+            tabindex="0"
+            [attr.title]="momentumBarTooltip(row.label, row.count)"
             style="background: linear-gradient(180deg, #4f95ff, #2a66d4)"
           ></div>
           <span
@@ -373,7 +393,11 @@
       >
         Lists
       </p>
-      <ion-button fill="clear" size="small" (click)="createList()"
+      <ion-button
+        fill="clear"
+        color="primary"
+        size="small"
+        (click)="createList()"
         >New List</ion-button
       >
     </div>

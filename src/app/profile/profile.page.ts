@@ -22,6 +22,7 @@ import { EditProfileComponent } from './edit-profile/edit-profile.component';
 })
 export class ProfilePage {
   activeTab: 'stats' | 'activity' | 'lists' = 'stats';
+  isEditingFavorites = false;
   activityPage = 0;
   readonly pageSize = 20;
   readonly quickLinks = [
@@ -88,6 +89,10 @@ export class ProfilePage {
 
   get favorites(): FavoriteEntry[] {
     return this.userData.getFavorites();
+  }
+
+  get visibleFavorites(): FavoriteEntry[] {
+    return this.favorites.slice(0, 4);
   }
 
   get watchedEntries(): WatchedEntry[] {
@@ -168,6 +173,37 @@ export class ProfilePage {
     await modal.present();
     await modal.onDidDismiss();
     this.cdr.markForCheck();
+  }
+
+  toggleFavoritesEdit() {
+    this.isEditingFavorites = !this.isEditingFavorites;
+    this.cdr.markForCheck();
+  }
+
+  moveFavorite(index: number, direction: -1 | 1) {
+    const targetIndex = index + direction;
+    if (targetIndex < 0 || targetIndex >= this.visibleFavorites.length) {
+      return;
+    }
+    const next = [...this.visibleFavorites];
+    const current = next[index];
+    next[index] = next[targetIndex];
+    next[targetIndex] = current;
+    this.userData.reorderFavorites(next);
+    this.cdr.markForCheck();
+  }
+
+  removeFavorite(entry: FavoriteEntry) {
+    this.userData.removeFavorite(entry.media_type, entry.id);
+    this.cdr.markForCheck();
+  }
+
+  canMoveFavoriteLeft(index: number): boolean {
+    return index > 0;
+  }
+
+  canMoveFavoriteRight(index: number): boolean {
+    return index < this.visibleFavorites.length - 1;
   }
 
   async createList() {
@@ -297,6 +333,16 @@ export class ProfilePage {
       count: row.count,
       pct: (row.count / max) * 100,
     }));
+  }
+
+  ratingBarTooltip(label: string, count: number): string {
+    const suffix = count === 1 ? 'log' : 'logs';
+    return `${label} stars: ${count} ${suffix}`;
+  }
+
+  momentumBarTooltip(label: string, count: number): string {
+    const suffix = count === 1 ? 'title' : 'titles';
+    return `${label}: ${count} ${suffix} watched`;
   }
 
   ratingBarHeight(count: number): number {
