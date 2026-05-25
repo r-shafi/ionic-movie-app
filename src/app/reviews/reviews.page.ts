@@ -147,4 +147,8 @@ export class ReviewsPage implements OnInit {
       ? avatar.slice(1)
       : `https://image.tmdb.org/t/p/w45${avatar}`;
   }
+
+  toStr(value: any): string {
+    return String(value);
+  }
 }

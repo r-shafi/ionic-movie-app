@@ -61,7 +61,7 @@
   <div
     class="review-card"
     [id]="reviewElementId(review.id)"
-    [class.review-card--focused]="focusedReviewId && String(review.id) === focusedReviewId"
+    [class.review-card--focused]="focusedReviewId && toStr(review.id) === focusedReviewId"
   >
     <div class="review-header">
       <div class="review-avatar">
