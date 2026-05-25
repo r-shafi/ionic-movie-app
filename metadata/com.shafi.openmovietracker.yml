@@ -1,0 +1,61 @@
+Categories:
+  - Multimedia
+
+License: MIT
+AuthorName: R. Shafi
+# TODO: set to your real GitHub username/URL
+SourceCode: https://github.com/r-shafi/ionic-movie-app
+IssueTracker: https://github.com/r-shafi/ionic-movie-app/issues
+Changelog: https://github.com/r-shafi/ionic-movie-app/releases
+
+AutoName: Open Movie Tracker
+
+Description: |
+  Open Movie Tracker is a free and open-source app for discovering and
+  tracking movies and TV shows. All data is sourced from The Movie
+  Database (TMDb).
+
+  Features:
+
+  * Browse trending movies and TV shows on the Home screen
+  * Search for any movie or TV show by title
+  * View full details: overview, cast, crew, ratings, seasons, and episodes
+  * Add titles to your Watched list, Favourites, or Watchlist
+  * Manage up to 4 pinned Favourite titles on your Profile
+  * Browse by person — see an actor or director's full filmography
+  * Filter and discover titles by genre, year, language, and rating
+  * Read user reviews directly within the app
+  * Dark/Light theme with a customisable primary colour
+  * All data stored locally — no account required, no cloud sync, no tracking
+
+  Privacy: Open Movie Tracker does not collect any personal data. No
+  analytics, crash reporters, or advertising SDKs are used. Network
+  requests are limited to the TMDb public API.
+
+  Movie and TV data provided by The Movie Database (TMDb). This product
+  uses the TMDb API but is not endorsed or certified by TMDb.
+
+AntiFeatures:
+  TetheredNet:
+    en-US: Requires network access to the TMDb public API to fetch movie
+      and TV show metadata. No account is required and no personal data
+      is sent.
+
+RepoType: git
+# TODO: replace with the real clone URL once the repo is public
+Repo: https://github.com/r-shafi/ionic-movie-app.git
+
+Builds:
+  - versionName: "0.0.1"
+    versionCode: 1
+    # TODO: replace with the actual semver tag once created (e.g. v0.0.1)
+    commit: v0.0.1
+    subdir: android/app
+    gradle:
+      - release
+    # dependenciesInfo block is present in android/app/build.gradle ✅
+
+AutoUpdateMode: Version
+UpdateCheckMode: Tags
+CurrentVersion: "0.0.1"
+CurrentVersionCode: 1
