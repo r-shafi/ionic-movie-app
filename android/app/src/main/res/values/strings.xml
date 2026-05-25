@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Open Movie Tracker</string>
+    <string name="title_activity_main">Open Movie Tracker</string>
+    <string name="package_name">com.shafi.openmovietracker</string>
+    <string name="custom_url_scheme">com.shafi.openmovietracker</string>
+</resources>

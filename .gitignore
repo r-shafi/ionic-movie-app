@@ -27,3 +27,8 @@ npm-debug.log*
 /plugins
 /www
 /.angular
+
+android/app/release.keystore
+android/.gradle/
+android/app/build/
+android/build/
