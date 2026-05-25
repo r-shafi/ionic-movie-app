@@ -1,0 +1,28 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "release-type": "node",
+  "packages": {
+    ".": {
+      "release-type": "node",
+      "package-name": "open-movie-tracker",
+      "changelog-path": "CHANGELOG.md",
+      "bump-minor-pre-major": true,
+      "bump-patch-for-minor-pre-major": false,
+      "draft": false,
+      "prerelease": false,
+      "extra-files": [
+        {
+          "type": "generic",
+          "path": "android/app/build.gradle",
+          "search-by-regex": true,
+          "version-transform": [
+            {
+              "find": "versionName \"[0-9]+\\.[0-9]+\\.[0-9]+\"",
+              "replace": "versionName \"{{version}}\""
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
