@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AlertController } from '@ionic/angular';
-import { UserDataService, AppSettings } from '../services/user-data.service';
 import { ToastService } from '../services/toast.service';
+import { AppSettings, UserDataService } from '../services/user-data.service';
 
 @Component({
   selector: 'app-settings',
@@ -12,6 +12,7 @@ import { ToastService } from '../services/toast.service';
 })
 export class SettingsPage {
   readonly appVersion = '0.0.1';
+  readonly githubRepoUrl = 'https://github.com/r-shafi/ionic-movie-app';
 
   constructor(
     public userData: UserDataService,
@@ -55,12 +56,21 @@ export class SettingsPage {
   }
 
   exportData() {
-    const keys = ['mva_profile', 'mva_watched', 'mva_watchlist', 'mva_favorites', 'mva_lists', 'mva_settings'];
+    const keys = [
+      'mva_profile',
+      'mva_watched',
+      'mva_watchlist',
+      'mva_favorites',
+      'mva_lists',
+      'mva_settings',
+    ];
     const dump: Record<string, unknown> = {};
     keys.forEach((k) => {
       dump[k] = JSON.parse(localStorage.getItem(k) ?? 'null');
     });
-    const blob = new Blob([JSON.stringify(dump, null, 2)], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify(dump, null, 2)], {
+      type: 'application/json',
+    });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -76,12 +86,21 @@ export class SettingsPage {
     input.accept = '.json';
     input.onchange = (event: any) => {
       const file = event.target.files?.[0];
-      if (!file) { return; }
+      if (!file) {
+        return;
+      }
       const reader = new FileReader();
       reader.onload = (e: any) => {
         try {
           const data = JSON.parse(e.target.result);
-          const keys = ['mva_profile', 'mva_watched', 'mva_watchlist', 'mva_favorites', 'mva_lists', 'mva_settings'];
+          const keys = [
+            'mva_profile',
+            'mva_watched',
+            'mva_watchlist',
+            'mva_favorites',
+            'mva_lists',
+            'mva_settings',
+          ];
           keys.forEach((k) => {
             if (data[k] !== undefined) {
               localStorage.setItem(k, JSON.stringify(data[k]));
@@ -119,7 +138,8 @@ export class SettingsPage {
   async clearAllData() {
     const alert = await this.alertCtrl.create({
       header: 'Clear all data?',
-      message: 'This will remove all your profile, watched, watchlist, favorites, lists, and settings. This cannot be undone.',
+      message:
+        'This will remove all your profile, watched, watchlist, favorites, lists, and settings. This cannot be undone.',
       buttons: [
         { text: 'Cancel', role: 'cancel' },
         {
@@ -135,9 +155,14 @@ export class SettingsPage {
                   text: 'Delete all',
                   role: 'destructive',
                   handler: () => {
-                    ['mva_profile', 'mva_watched', 'mva_watchlist', 'mva_favorites', 'mva_lists', 'mva_settings'].forEach(
-                      (k) => localStorage.removeItem(k),
-                    );
+                    [
+                      'mva_profile',
+                      'mva_watched',
+                      'mva_watchlist',
+                      'mva_favorites',
+                      'mva_lists',
+                      'mva_settings',
+                    ].forEach((k) => localStorage.removeItem(k));
                     this.toast.showToast('All data cleared. Reload to reset.');
                   },
                 },

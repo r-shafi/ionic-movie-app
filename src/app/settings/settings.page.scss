@@ -1,3 +1,8 @@
 ion-segment {
   --background: transparent;
 }
+
+.settings-card {
+  background: rgba(18, 20, 26, 0.88);
+  backdrop-filter: blur(6px);
+}

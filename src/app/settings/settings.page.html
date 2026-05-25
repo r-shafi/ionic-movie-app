@@ -10,9 +10,17 @@
 <ion-content>
   <!-- APPEARANCE -->
   <div class="px-4 pb-2 pt-4">
-    <p class="mb-3 text-[0.7rem] font-bold uppercase tracking-[0.12em]" style="color: var(--ion-color-medium)">Appearance</p>
+    <p
+      class="mb-3 text-[0.7rem] font-bold uppercase tracking-[0.12em]"
+      style="color: var(--ion-color-medium)"
+    >
+      Appearance
+    </p>
 
-    <div class="mb-4 flex items-center justify-between rounded-xl border px-3 py-3" style="border-color: var(--ion-color-step-100)">
+    <div
+      class="settings-card mb-4 flex items-center justify-between rounded-xl border px-3 py-3"
+      style="border-color: var(--ion-color-step-100)"
+    >
       <span class="text-[0.88rem] font-semibold">Theme</span>
       <ion-segment
         [value]="settings.theme"
@@ -25,22 +33,44 @@
       </ion-segment>
     </div>
 
-    <div class="mb-4 flex items-center justify-between rounded-xl border px-3 py-3" style="border-color: var(--ion-color-step-100)">
+    <div
+      class="settings-card mb-4 flex items-center justify-between rounded-xl border px-3 py-3"
+      style="border-color: var(--ion-color-step-100)"
+    >
       <div>
         <p class="m-0 text-[0.88rem] font-semibold">Fade watched</p>
-        <p class="m-0 mt-[2px] text-[0.7rem]" style="color: var(--ion-color-medium)">Dims poster art for titles you've logged</p>
+        <p
+          class="m-0 mt-[2px] text-[0.7rem]"
+          style="color: var(--ion-color-medium)"
+        >
+          Dims poster art for titles you've logged
+        </p>
       </div>
-      <ion-toggle [checked]="settings.fadeWatched" (ionChange)="setFadeWatched($event.detail.checked)"></ion-toggle>
+      <ion-toggle
+        [checked]="settings.fadeWatched"
+        (ionChange)="setFadeWatched($event.detail.checked)"
+      ></ion-toggle>
     </div>
   </div>
 
-  <div class="mx-4 border-t" style="border-color: var(--ion-color-step-100)"></div>
+  <div
+    class="mx-4 border-t"
+    style="border-color: var(--ion-color-step-100)"
+  ></div>
 
   <!-- CONTENT -->
   <div class="px-4 pb-2 pt-4">
-    <p class="mb-3 text-[0.7rem] font-bold uppercase tracking-[0.12em]" style="color: var(--ion-color-medium)">Content</p>
+    <p
+      class="mb-3 text-[0.7rem] font-bold uppercase tracking-[0.12em]"
+      style="color: var(--ion-color-medium)"
+    >
+      Content
+    </p>
 
-    <div class="mb-4 flex items-center justify-between rounded-xl border px-3 py-3" style="border-color: var(--ion-color-step-100)">
+    <div
+      class="settings-card mb-4 flex items-center justify-between rounded-xl border px-3 py-3"
+      style="border-color: var(--ion-color-step-100)"
+    >
       <span class="text-[0.88rem] font-semibold">Default media tab</span>
       <ion-segment
         [value]="settings.defaultMediaTab"
@@ -52,103 +82,202 @@
       </ion-segment>
     </div>
 
-    <div class="mb-4 flex items-center justify-between rounded-xl border px-3 py-3" style="border-color: var(--ion-color-step-100)">
+    <div
+      class="settings-card mb-4 flex items-center justify-between rounded-xl border px-3 py-3"
+      style="border-color: var(--ion-color-step-100)"
+    >
       <div>
         <p class="m-0 text-[0.88rem] font-semibold">Safe search</p>
-        <p class="m-0 mt-[2px] text-[0.7rem]" style="color: var(--ion-color-medium)">Exclude adult content from search</p>
+        <p
+          class="m-0 mt-[2px] text-[0.7rem]"
+          style="color: var(--ion-color-medium)"
+        >
+          Exclude adult content from search
+        </p>
       </div>
-      <ion-toggle [checked]="safeSearch" (ionChange)="setSafeSearch($event.detail.checked)"></ion-toggle>
+      <ion-toggle
+        [checked]="safeSearch"
+        (ionChange)="setSafeSearch($event.detail.checked)"
+      ></ion-toggle>
     </div>
   </div>
 
-  <div class="mx-4 border-t" style="border-color: var(--ion-color-step-100)"></div>
+  <div
+    class="mx-4 border-t"
+    style="border-color: var(--ion-color-step-100)"
+  ></div>
 
   <!-- DATA -->
   <div class="px-4 pb-2 pt-4">
-    <p class="mb-3 text-[0.7rem] font-bold uppercase tracking-[0.12em]" style="color: var(--ion-color-medium)">Data</p>
+    <p
+      class="mb-3 text-[0.7rem] font-bold uppercase tracking-[0.12em]"
+      style="color: var(--ion-color-medium)"
+    >
+      Data
+    </p>
 
     <button
-      class="mb-2 flex w-full items-center justify-between rounded-xl border px-3 py-3 text-left transition-colors hover:bg-white/5"
+      class="settings-card mb-2 flex w-full items-center justify-between rounded-xl border px-3 py-3 text-left transition-colors hover:bg-white/5"
       style="border-color: var(--ion-color-step-100)"
       (click)="exportData()"
     >
       <div>
         <p class="m-0 text-[0.88rem] font-semibold">Export my data</p>
-        <p class="m-0 mt-[2px] text-[0.7rem]" style="color: var(--ion-color-medium)">Download a JSON backup of all your data</p>
+        <p
+          class="m-0 mt-[2px] text-[0.7rem]"
+          style="color: var(--ion-color-medium)"
+        >
+          Download a JSON backup of all your data
+        </p>
       </div>
-      <ion-icon name="download-outline" style="color: var(--ion-color-medium)"></ion-icon>
+      <ion-icon
+        name="download-outline"
+        style="color: var(--ion-color-medium)"
+      ></ion-icon>
     </button>
 
     <button
-      class="mb-2 flex w-full items-center justify-between rounded-xl border px-3 py-3 text-left transition-colors hover:bg-white/5"
+      class="settings-card mb-2 flex w-full items-center justify-between rounded-xl border px-3 py-3 text-left transition-colors hover:bg-white/5"
       style="border-color: var(--ion-color-step-100)"
       (click)="importData()"
     >
       <div>
         <p class="m-0 text-[0.88rem] font-semibold">Import data</p>
-        <p class="m-0 mt-[2px] text-[0.7rem]" style="color: var(--ion-color-medium)">Restore from a previously exported JSON file</p>
+        <p
+          class="m-0 mt-[2px] text-[0.7rem]"
+          style="color: var(--ion-color-medium)"
+        >
+          Restore from a previously exported JSON file
+        </p>
       </div>
-      <ion-icon name="cloud-upload-outline" style="color: var(--ion-color-medium)"></ion-icon>
+      <ion-icon
+        name="cloud-upload-outline"
+        style="color: var(--ion-color-medium)"
+      ></ion-icon>
     </button>
 
     <button
-      class="mb-2 flex w-full items-center justify-between rounded-xl border px-3 py-3 text-left transition-colors hover:bg-white/5"
+      class="settings-card mb-2 flex w-full items-center justify-between rounded-xl border px-3 py-3 text-left transition-colors hover:bg-white/5"
       style="border-color: var(--ion-color-step-100)"
       (click)="clearWatchLog()"
     >
       <div>
-        <p class="m-0 text-[0.88rem] font-semibold" style="color: var(--ion-color-danger)">Clear watch log</p>
-        <p class="m-0 mt-[2px] text-[0.7rem]" style="color: var(--ion-color-medium)">Remove all watched entries</p>
+        <p
+          class="m-0 text-[0.88rem] font-semibold"
+          style="color: var(--ion-color-danger)"
+        >
+          Clear watch log
+        </p>
+        <p
+          class="m-0 mt-[2px] text-[0.7rem]"
+          style="color: var(--ion-color-medium)"
+        >
+          Remove all watched entries
+        </p>
       </div>
-      <ion-icon name="trash-outline" style="color: var(--ion-color-danger)"></ion-icon>
+      <ion-icon
+        name="trash-outline"
+        style="color: var(--ion-color-danger)"
+      ></ion-icon>
     </button>
 
     <button
-      class="flex w-full items-center justify-between rounded-xl border px-3 py-3 text-left transition-colors hover:bg-white/5"
+      class="settings-card flex w-full items-center justify-between rounded-xl border px-3 py-3 text-left transition-colors hover:bg-white/5"
       style="border-color: var(--ion-color-step-100)"
       (click)="clearAllData()"
     >
       <div>
-        <p class="m-0 text-[0.88rem] font-semibold" style="color: var(--ion-color-danger)">Clear all data</p>
-        <p class="m-0 mt-[2px] text-[0.7rem]" style="color: var(--ion-color-medium)">Reset everything including settings</p>
+        <p
+          class="m-0 text-[0.88rem] font-semibold"
+          style="color: var(--ion-color-danger)"
+        >
+          Clear all data
+        </p>
+        <p
+          class="m-0 mt-[2px] text-[0.7rem]"
+          style="color: var(--ion-color-medium)"
+        >
+          Reset everything including settings
+        </p>
       </div>
-      <ion-icon name="alert-circle-outline" style="color: var(--ion-color-danger)"></ion-icon>
+      <ion-icon
+        name="alert-circle-outline"
+        style="color: var(--ion-color-danger)"
+      ></ion-icon>
     </button>
   </div>
 
-  <div class="mx-4 border-t" style="border-color: var(--ion-color-step-100)"></div>
+  <div
+    class="mx-4 border-t"
+    style="border-color: var(--ion-color-step-100)"
+  ></div>
 
   <!-- ABOUT -->
   <div class="px-4 pb-2 pt-4">
-    <p class="mb-3 text-[0.7rem] font-bold uppercase tracking-[0.12em]" style="color: var(--ion-color-medium)">About</p>
+    <p
+      class="mb-3 text-[0.7rem] font-bold uppercase tracking-[0.12em]"
+      style="color: var(--ion-color-medium)"
+    >
+      About
+    </p>
 
-    <div class="mb-2 flex items-center justify-between rounded-xl border px-3 py-3" style="border-color: var(--ion-color-step-100)">
+    <div
+      class="settings-card mb-2 flex items-center justify-between rounded-xl border px-3 py-3"
+      style="border-color: var(--ion-color-step-100)"
+    >
       <span class="text-[0.88rem] font-semibold">App version</span>
-      <span class="text-[0.82rem]" style="color: var(--ion-color-medium)">{{ appVersion }}</span>
+      <span class="text-[0.82rem]" style="color: var(--ion-color-medium)"
+        >{{ appVersion }}</span
+      >
     </div>
 
-    <div class="mb-2 flex flex-col items-center rounded-xl border px-3 py-4" style="border-color: var(--ion-color-step-100)">
-      <a href="https://www.themoviedb.org" target="_blank" rel="noopener noreferrer" class="mb-1 block">
+    <div
+      class="settings-card mb-2 flex flex-col items-center rounded-xl border px-3 py-5"
+      style="border-color: var(--ion-color-step-100)"
+    >
+      <a
+        href="https://www.themoviedb.org"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="mb-1 block"
+      >
         <img
           src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_square_2-d537fb228cf3ded904ef09b136fe3fec72548ebc1fea3fbbd1ad9e36364db38b.svg"
           alt="TMDB"
-          class="h-6 opacity-70 transition-opacity hover:opacity-100"
+          class="h-9 opacity-90 transition-opacity hover:opacity-100"
         />
       </a>
-      <p class="m-0 text-center text-[0.7rem]" style="color: var(--ion-color-medium)">
+      <p
+        class="m-0 text-center text-[0.8rem]"
+        style="color: var(--ion-color-medium)"
+      >
         This product uses the TMDB API but is not endorsed or certified by
-        <a href="https://www.themoviedb.org" target="_blank" rel="noopener noreferrer" style="color: var(--ion-color-primary)">TMDB</a>.
+        <a
+          href="https://www.themoviedb.org"
+          target="_blank"
+          rel="noopener noreferrer"
+          style="color: var(--ion-color-primary)"
+          >TMDB</a
+        >.
       </p>
     </div>
 
     <a
-      href="#"
-      class="flex items-center justify-between rounded-xl border px-3 py-3 no-underline transition-colors hover:bg-white/5"
+      [href]="githubRepoUrl"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="settings-card flex items-center justify-between rounded-xl border px-3 py-3 no-underline transition-colors hover:bg-white/5"
       style="border-color: var(--ion-color-step-100)"
-      (click)="$event.preventDefault()"
     >
-      <span class="text-[0.88rem] font-semibold">Rate the app</span>
-      <ion-icon name="star-outline" style="color: var(--ion-color-medium)"></ion-icon>
+      <span
+        class="text-[0.88rem] font-semibold"
+        style="color: var(--ion-color-primary)"
+        >View GitHub Repository</span
+      >
+      <ion-icon
+        name="logo-github"
+        style="color: var(--ion-color-primary)"
+      ></ion-icon>
     </a>
   </div>
 
