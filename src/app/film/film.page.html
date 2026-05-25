@@ -47,8 +47,6 @@
         [src]="posterUrl"
         [alt]="movie.title"
         class="aspect-[2/3] w-24 min-w-24 shrink-0 overflow-hidden rounded-lg border-2 border-white/15 shadow-[0_4px_20px_rgba(0,0,0,0.6)]"
-        [class.opacity-50]="shouldFadePoster"
-        [class.grayscale]="shouldFadePoster"
         (click)="openPoster()"
       ></ion-img>
       <div class="min-w-0 flex-1">
@@ -419,6 +417,8 @@
           background: var(--ion-color-step-50, #1a1a1a);
           border-color: var(--ion-color-step-100, #222);
         "
+        [routerLink]="['/movie', movie.id, 'reviews']"
+        [queryParams]="{ reviewId: review.id }"
       >
         <div class="mb-2 flex items-center gap-2.5">
           <div

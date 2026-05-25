@@ -3,10 +3,10 @@ import { ActivatedRoute } from '@angular/router';
 import { TmdbService } from '../services/tmdb.service';
 
 @Component({
-    selector: 'app-reviews',
-    templateUrl: './reviews.page.html',
-    styleUrls: ['./reviews.page.scss'],
-    standalone: false
+  selector: 'app-reviews',
+  templateUrl: './reviews.page.html',
+  styleUrls: ['./reviews.page.scss'],
+  standalone: false,
 })
 export class ReviewsPage implements OnInit {
   mediaType: 'movie' | 'tv' = 'movie';
@@ -18,6 +18,8 @@ export class ReviewsPage implements OnInit {
 
   searchQuery = '';
   sortBy: 'newest' | 'oldest' | 'highest' | 'lowest' = 'newest';
+  private targetReviewId = '';
+  focusedReviewId = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -30,6 +32,8 @@ export class ReviewsPage implements OnInit {
       .map((s: any) => s.path);
     this.mediaType = segments.includes('movie') ? 'movie' : 'tv';
     this.mediaId = +this.route.snapshot.paramMap.get('id')!;
+    this.targetReviewId =
+      this.route.snapshot.queryParamMap.get('reviewId') || '';
 
     const obs =
       this.mediaType === 'movie'
@@ -41,6 +45,7 @@ export class ReviewsPage implements OnInit {
         this.allReviews = data.results || [];
         this.applyFilters();
         this.isLoading = false;
+        this.focusTargetReview();
       },
       error: () => {
         this.isLoading = false;
@@ -98,6 +103,41 @@ export class ReviewsPage implements OnInit {
     }
 
     this.filteredReviews = result;
+    this.focusTargetReview();
+  }
+
+  reviewElementId(id: any): string {
+    return `review-${String(id).replace(/[^a-zA-Z0-9_-]/g, '-')}`;
+  }
+
+  private focusTargetReview() {
+    if (
+      !this.targetReviewId ||
+      this.isLoading ||
+      !this.filteredReviews.length
+    ) {
+      return;
+    }
+    const found = this.filteredReviews.some(
+      (review) => String(review.id) === this.targetReviewId,
+    );
+    if (!found) {
+      return;
+    }
+
+    const elementId = this.reviewElementId(this.targetReviewId);
+    requestAnimationFrame(() => {
+      const el = document.getElementById(elementId);
+      if (!el) {
+        return;
+      }
+      this.focusedReviewId = this.targetReviewId;
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => {
+        this.focusedReviewId = '';
+      }, 1800);
+      this.targetReviewId = '';
+    });
   }
 
   getAvatarUrl(review: any): string {

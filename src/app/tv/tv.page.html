@@ -15,400 +15,372 @@
 <ion-content>
   <!-- Loading -->
   @if (isLoading) {
-    <div class="ion-padding">
-      <ion-skeleton-text
-        animated
-        style="width: 100%; height: 300px; border-radius: 0; margin-bottom: 12px"
-      ></ion-skeleton-text>
-      <ion-skeleton-text
-        animated
-        style="width: 60%; height: 28px; margin-bottom: 8px"
-      ></ion-skeleton-text>
-      <ion-skeleton-text
-        animated
-        style="width: 40%; height: 16px; margin-bottom: 12px"
-      ></ion-skeleton-text>
-      <ion-skeleton-text
-        animated
-        style="width: 100%; height: 80px"
-      ></ion-skeleton-text>
-    </div>
-  }
-
-  @if (!isLoading && show) {
-    <!-- Hero: backdrop with content overlaid (crossfading slideshow) -->
-    <div class="tv-hero">
-      <div
-        class="tv-hero__bg"
-        [class.active]="_bgToggle"
-        [style.backgroundImage]="backdropA ? 'url(' + backdropA + ')' : 'none'"
-      ></div>
-      <div
-        class="tv-hero__bg"
-        [class.active]="!_bgToggle"
-        [style.backgroundImage]="backdropB ? 'url(' + backdropB + ')' : 'none'"
-      ></div>
-      <div class="tv-hero__overlay"></div>
-      <div class="tv-hero__content">
-        <ion-img
-          [src]="posterUrl"
-          [alt]="show.name"
-          class="tv-poster"
-          [class.opacity-50]="shouldFadePoster"
-          [class.grayscale]="shouldFadePoster"
-          (click)="openPoster()"
-        ></ion-img>
-        <div class="tv-info">
-          <h1 class="tv-title">{{ show.name }}</h1>
-          @if (show.tagline) {
-            <p class="tv-tagline">
-              <i>{{ show.tagline }}</i>
-            </p>
+  <div class="ion-padding">
+    <ion-skeleton-text
+      animated
+      style="width: 100%; height: 300px; border-radius: 0; margin-bottom: 12px"
+    ></ion-skeleton-text>
+    <ion-skeleton-text
+      animated
+      style="width: 60%; height: 28px; margin-bottom: 8px"
+    ></ion-skeleton-text>
+    <ion-skeleton-text
+      animated
+      style="width: 40%; height: 16px; margin-bottom: 12px"
+    ></ion-skeleton-text>
+    <ion-skeleton-text
+      animated
+      style="width: 100%; height: 80px"
+    ></ion-skeleton-text>
+  </div>
+  } @if (!isLoading && show) {
+  <!-- Hero: backdrop with content overlaid (crossfading slideshow) -->
+  <div class="tv-hero">
+    <div
+      class="tv-hero__bg"
+      [class.active]="_bgToggle"
+      [style.backgroundImage]="backdropA ? 'url(' + backdropA + ')' : 'none'"
+    ></div>
+    <div
+      class="tv-hero__bg"
+      [class.active]="!_bgToggle"
+      [style.backgroundImage]="backdropB ? 'url(' + backdropB + ')' : 'none'"
+    ></div>
+    <div class="tv-hero__overlay"></div>
+    <div class="tv-hero__content">
+      <ion-img
+        [src]="posterUrl"
+        [alt]="show.name"
+        class="tv-poster"
+        (click)="openPoster()"
+      ></ion-img>
+      <div class="tv-info">
+        <h1 class="tv-title">{{ show.name }}</h1>
+        @if (show.tagline) {
+        <p class="tv-tagline">
+          <i>{{ show.tagline }}</i>
+        </p>
+        }
+        <div class="tv-badges-row">
+          @if (show.vote_average) {
+          <span class="tv-rating-badge"
+            >{{ show.vote_average | number:'1.1-1' }}</span
+          >
+          } @if (contentRating) {
+          <span class="tv-content-rating">{{ contentRating }}</span>
+          } @if (firstAirYear) {
+          <span class="tv-year">{{ firstAirYear }}</span>
+          } @if (show.number_of_seasons) {
+          <span class="tv-year"
+            >{{ show.number_of_seasons }} Season{{ show.number_of_seasons > 1 ?
+            's' : '' }}</span
+          >
+          } @if (userRating) {
+          <span class="tv-user-rating">★{{ userRating }}</span>
           }
-          <div class="tv-badges-row">
-            @if (show.vote_average) {
-              <span class="tv-rating-badge"
-                >{{ show.vote_average | number:'1.1-1' }}</span
-                >
-              }
-              @if (contentRating) {
-                <span class="tv-content-rating"
-                  >{{ contentRating }}</span
-                  >
-                }
-                @if (firstAirYear) {
-                  <span class="tv-year">{{ firstAirYear }}</span>
-                }
-                @if (show.number_of_seasons) {
-                  <span class="tv-year"
-                    >{{ show.number_of_seasons }} Season{{ show.number_of_seasons > 1
-                    ? 's' : '' }}</span
-                    >
-                  }
-                  @if (userRating) {
-                    <span class="tv-user-rating"
-                      >★{{ userRating }}</span
-                      >
-                    }
-                  </div>
-                  @if (show.genres?.length) {
-                    <div class="tv-genre-pills">
-                      @for (g of show.genres; track g) {
-                        <span class="tv-genre-pill"
-                          >{{ g.name }}</span
-                          >
-                        }
-                      </div>
-                    }
-                  </div>
-                </div>
-              </div>
-              <div class="tv-body">
-                <!-- Overview (moved: show synopsis right after CTA buttons) -->
-                @if (show.overview) {
-                  <div class="section">
-                    <p class="tv-overview">{{ show.overview }}</p>
-                  </div>
-                }
-                <!-- Networks -->
-                @if (show.networks?.length) {
-                  <div class="network-section">
-                    <div class="network-row">
-                      <span class="network-label">AVAILABLE ON</span>
-                      @for (net of show.networks | slice:0:3; track net) {
-                        <div
-                          class="network-item"
-                          >
-                          <div class="network-pill">
-                            @if ($any(net).logo_path) {
-                              <img
-                                [src]="'https://image.tmdb.org/t/p/w92' + $any(net).logo_path"
-                                [alt]="$any(net).name"
-                                class="network-logo"
-                                />
-                            }
-                            @if (!$any(net).logo_path) {
-                              <span>{{ $any(net).name }}</span>
-                            }
-                          </div>
-                        </div>
-                      }
-                    </div>
-                  </div>
-                }
-                <!-- Stats grid -->
-                <div class="section">
-                  <div class="stats-grid">
-                    @if (show.number_of_episodes) {
-                      <div class="stat-card">
-                        <p class="stat-value">{{ show.number_of_episodes }}</p>
-                        <p class="stat-label">
-                          Episode{{ show.number_of_episodes > 1 ? 's' : '' }}@if (episodeRuntime) {
-                          <span
-                            >
-                            · {{ episodeRuntime }}m</span
-                            >
-                          }
-                        </p>
-                      </div>
-                    }
-                    @if (show.vote_average) {
-                      <div class="stat-card">
-                        <p class="stat-value">
-                          {{ show.vote_average | number:'1.1-1' }}<span class="stat-sub">
-                          / 10</span
-                          >
-                        </p>
-                        <p class="stat-label">{{ show.vote_count | number }} votes</p>
-                      </div>
-                    }
-                    @if (show.first_air_date) {
-                      <div class="stat-card">
-                        <p class="stat-value stat-value--sm">
-                          {{ show.first_air_date | date:'mediumDate' }}
-                        </p>
-                        <p class="stat-label">First Aired</p>
-                      </div>
-                    }
-                    @if (show.last_air_date) {
-                      <div class="stat-card">
-                        <p class="stat-value stat-value--sm">
-                          {{ show.last_air_date | date:'mediumDate' }}
-                        </p>
-                        <p class="stat-label">Last Aired</p>
-                      </div>
-                    }
-                    @if (show.status) {
-                      <div class="stat-card">
-                        <p class="stat-value stat-value--sm">
-                          <span class="status-badge" [ngClass]="statusBadgeClass"
-                            >{{ show.status }}</span
-                            >
-                          </p>
-                          <p class="stat-label">Status</p>
-                        </div>
-                      }
-                      @if (show.origin_country?.length) {
-                        <div class="stat-card">
-                          <p class="stat-value stat-value--sm">
-                            {{ show.origin_country.join(', ') }}
-                          </p>
-                          <p class="stat-label">Country</p>
-                        </div>
-                      }
-                    </div>
-                  </div>
-                  <!-- Created by -->
-                  @if (creatorsWithPhotos.length) {
-                    <div class="section">
-                      <h2 class="section-title">Created By</h2>
-                      <div class="cast-scroll">
-                        @for (c of creatorsWithPhotos; track c) {
-                          <div class="cast-item">
-                            <div class="cast-avatar">
-                              <img
-                [src]="c.profile_path
+        </div>
+        @if (show.genres?.length) {
+        <div class="tv-genre-pills">
+          @for (g of show.genres; track g) {
+          <span class="tv-genre-pill">{{ g.name }}</span>
+          }
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+  <div class="tv-body">
+    <!-- Overview (moved: show synopsis right after CTA buttons) -->
+    @if (show.overview) {
+    <div class="section">
+      <p class="tv-overview">{{ show.overview }}</p>
+    </div>
+    }
+    <!-- Networks -->
+    @if (show.networks?.length) {
+    <div class="network-section">
+      <div class="network-row">
+        <span class="network-label">AVAILABLE ON</span>
+        @for (net of show.networks | slice:0:3; track net) {
+        <div class="network-item">
+          <div class="network-pill">
+            @if ($any(net).logo_path) {
+            <img
+              [src]="'https://image.tmdb.org/t/p/w92' + $any(net).logo_path"
+              [alt]="$any(net).name"
+              class="network-logo"
+            />
+            } @if (!$any(net).logo_path) {
+            <span>{{ $any(net).name }}</span>
+            }
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+    }
+    <!-- Stats grid -->
+    <div class="section">
+      <div class="stats-grid">
+        @if (show.number_of_episodes) {
+        <div class="stat-card">
+          <p class="stat-value">{{ show.number_of_episodes }}</p>
+          <p class="stat-label">
+            Episode{{ show.number_of_episodes > 1 ? 's' : '' }}@if
+            (episodeRuntime) {
+            <span> · {{ episodeRuntime }}m</span>
+            }
+          </p>
+        </div>
+        } @if (show.vote_average) {
+        <div class="stat-card">
+          <p class="stat-value">
+            {{ show.vote_average | number:'1.1-1' }}<span class="stat-sub">
+              / 10</span
+            >
+          </p>
+          <p class="stat-label">{{ show.vote_count | number }} votes</p>
+        </div>
+        } @if (show.first_air_date) {
+        <div class="stat-card">
+          <p class="stat-value stat-value--sm">
+            {{ show.first_air_date | date:'mediumDate' }}
+          </p>
+          <p class="stat-label">First Aired</p>
+        </div>
+        } @if (show.last_air_date) {
+        <div class="stat-card">
+          <p class="stat-value stat-value--sm">
+            {{ show.last_air_date | date:'mediumDate' }}
+          </p>
+          <p class="stat-label">Last Aired</p>
+        </div>
+        } @if (show.status) {
+        <div class="stat-card">
+          <p class="stat-value stat-value--sm">
+            <span class="status-badge" [ngClass]="statusBadgeClass"
+              >{{ show.status }}</span
+            >
+          </p>
+          <p class="stat-label">Status</p>
+        </div>
+        } @if (show.origin_country?.length) {
+        <div class="stat-card">
+          <p class="stat-value stat-value--sm">
+            {{ show.origin_country.join(', ') }}
+          </p>
+          <p class="stat-label">Country</p>
+        </div>
+        }
+      </div>
+    </div>
+    <!-- Created by -->
+    @if (creatorsWithPhotos.length) {
+    <div class="section">
+      <h2 class="section-title">Created By</h2>
+      <div class="cast-scroll">
+        @for (c of creatorsWithPhotos; track c) {
+        <div class="cast-item">
+          <div class="cast-avatar">
+            <img
+              [src]="c.profile_path
                   ? 'https://image.tmdb.org/t/p/w185' + c.profile_path
                   : 'assets/icon/favicon.png'"
-                                [alt]="c.name"
-                                class="cast-avatar__img"
-                                />
-                            </div>
-                            <p class="cast-name">{{ c.name }}</p>
-                            <p class="cast-character">Creator</p>
-                          </div>
-                        }
-                      </div>
-                    </div>
-                  }
-                  <!-- Cast -->
-                  @if (cast.length) {
-                    <div class="section">
-                      <h2 class="section-title">Cast</h2>
-                      <div class="cast-scroll">
-                        @for (person of cast; track person) {
-                          <div
-                            class="cast-item"
-                            [routerLink]="['/person', person.id]"
-                            >
-                            <div class="cast-avatar">
-                              <img
-                [src]="person.profile_path
+              [alt]="c.name"
+              class="cast-avatar__img"
+            />
+          </div>
+          <p class="cast-name">{{ c.name }}</p>
+          <p class="cast-character">Creator</p>
+        </div>
+        }
+      </div>
+    </div>
+    }
+    <!-- Cast -->
+    @if (cast.length) {
+    <div class="section">
+      <h2 class="section-title">Cast</h2>
+      <div class="cast-scroll">
+        @for (person of cast; track person) {
+        <div class="cast-item" [routerLink]="['/person', person.id]">
+          <div class="cast-avatar">
+            <img
+              [src]="person.profile_path
                   ? 'https://image.tmdb.org/t/p/w185' + person.profile_path
                   : 'assets/icon/favicon.png'"
-                                [alt]="person.name"
-                                class="cast-avatar__img"
-                                />
-                            </div>
-                            <p class="cast-name">{{ person.name }}</p>
-                            <p class="cast-character">{{ person.character }}</p>
-                          </div>
-                        }
-                      </div>
-                    </div>
-                  }
-                  <!-- Seasons -->
-                  @if (show.seasons?.length) {
-                    <div class="section seasons-section">
-                      <h2 class="section-title">Seasons</h2>
-                      <ion-list>
-                        @for (season of show.seasons; track season) {
-                          <ion-item
-                            [routerLink]="['/tv', show.id, 'season', season.season_number]"
-                            detail="true"
-                            >
-                            <ion-thumbnail slot="start">
-                              <ion-img
-                                [src]="season.poster_path ? 'https://image.tmdb.org/t/p/w92' + season.poster_path : 'assets/no-image.png'"
-                              ></ion-img>
-                            </ion-thumbnail>
-                            <ion-label>
-                              <h2>{{ season.name }}</h2>
-                              <p>
-                                {{ season.episode_count }} episodes · {{ season.air_date |
-                                date:'yyyy' }}
-                              </p>
-                            </ion-label>
-                            <ion-button
-                              slot="end"
-                              fill="clear"
-                              size="small"
-                              (click)="markSeasonWatched(season); $event.stopPropagation()"
-                              >
-                              <ion-icon
-                                slot="icon-only"
-                                name="checkmark-circle-outline"
-                              ></ion-icon>
-                            </ion-button>
-                          </ion-item>
-                        }
-                      </ion-list>
-                    </div>
-                  }
-                  <!-- Trailer -->
-                  @if (trailerKey) {
-                    <div class="section">
-                      <h2 class="section-title">Trailer</h2>
-                      <div class="trailer-wrap">
-                        <iframe
-                          [src]="'https://www.youtube.com/embed/' + trailerKey | safeUrl"
-                          frameborder="0"
-                          allowfullscreen
-                          style="width: 100%; aspect-ratio: 16/9; border-radius: 8px"
-                        ></iframe>
-                      </div>
-                    </div>
-                  }
-                  <!-- Photos removed: now shown as slideshow in header background -->
-                  <!-- Reviews -->
-                  @if (reviews.length) {
-                    <div class="section">
-                      <div class="section-header-row">
-                        <h2 class="section-title">Reviews</h2>
-                        @if (reviews.length > 3) {
-                          <a
-                            class="see-all-link"
-                            [routerLink]="['/tv', show.id, 'reviews']"
-                            >See All {{ reviews.length }}</a
-                            >
-                          }
-                        </div>
-                        @for (review of reviews | slice:0:3; track review) {
-                          <div class="review-card">
-                            <div class="review-header">
-                              <div class="review-avatar">
-                                <img
-                [src]="review.author_details?.avatar_path
+              [alt]="person.name"
+              class="cast-avatar__img"
+            />
+          </div>
+          <p class="cast-name">{{ person.name }}</p>
+          <p class="cast-character">{{ person.character }}</p>
+        </div>
+        }
+      </div>
+    </div>
+    }
+    <!-- Seasons -->
+    @if (show.seasons?.length) {
+    <div class="section seasons-section">
+      <h2 class="section-title">Seasons</h2>
+      <ion-list>
+        @for (season of show.seasons; track season) {
+        <ion-item
+          [routerLink]="['/tv', show.id, 'season', season.season_number]"
+          detail="true"
+        >
+          <ion-thumbnail slot="start">
+            <ion-img
+              [src]="season.poster_path ? 'https://image.tmdb.org/t/p/w92' + season.poster_path : 'assets/no-image.png'"
+            ></ion-img>
+          </ion-thumbnail>
+          <ion-label>
+            <h2>{{ season.name }}</h2>
+            <p>
+              {{ season.episode_count }} episodes · {{ season.air_date |
+              date:'yyyy' }}
+            </p>
+          </ion-label>
+          <ion-button
+            slot="end"
+            fill="clear"
+            size="small"
+            (click)="markSeasonWatched(season); $event.stopPropagation()"
+          >
+            <ion-icon
+              slot="icon-only"
+              name="checkmark-circle-outline"
+            ></ion-icon>
+          </ion-button>
+        </ion-item>
+        }
+      </ion-list>
+    </div>
+    }
+    <!-- Trailer -->
+    @if (trailerKey) {
+    <div class="section">
+      <h2 class="section-title">Trailer</h2>
+      <div class="trailer-wrap">
+        <iframe
+          [src]="'https://www.youtube.com/embed/' + trailerKey | safeUrl"
+          frameborder="0"
+          allowfullscreen
+          style="width: 100%; aspect-ratio: 16/9; border-radius: 8px"
+        ></iframe>
+      </div>
+    </div>
+    }
+    <!-- Photos removed: now shown as slideshow in header background -->
+    <!-- Reviews -->
+    @if (reviews.length) {
+    <div class="section">
+      <div class="section-header-row">
+        <h2 class="section-title">Reviews</h2>
+        @if (reviews.length > 3) {
+        <a class="see-all-link" [routerLink]="['/tv', show.id, 'reviews']"
+          >See All {{ reviews.length }}</a
+        >
+        }
+      </div>
+      @for (review of reviews | slice:0:3; track review) {
+      <div
+        class="review-card"
+        [routerLink]="['/tv', show.id, 'reviews']"
+        [queryParams]="{ reviewId: review.id }"
+      >
+        <div class="review-header">
+          <div class="review-avatar">
+            <img
+              [src]="review.author_details?.avatar_path
                   ? (review.author_details.avatar_path.startsWith('/https')
                       ? review.author_details.avatar_path.slice(1)
                       : 'https://image.tmdb.org/t/p/w45' + review.author_details.avatar_path)
                   : 'assets/icon/favicon.png'"
-                                  [alt]="review.author"
-                                  class="review-avatar__img"
-                                  />
-                              </div>
-                              <div class="review-author-meta">
-                                <span class="review-author">{{ review.author }}</span>
-                                @if (review.author_details?.rating) {
-                                  <span class="review-rating">
-                                    ⭐ {{ review.author_details.rating }}/10
-                                  </span>
-                                }
-                              </div>
-                              <span class="review-date"
-                                >{{ review.created_at | date:'mediumDate' }}</span
-                                >
-                              </div>
-                              <p class="review-content">{{ review.content }}</p>
-                            </div>
-                          }
-                        </div>
-                      }
-                      <!-- Recommendations -->
-                      @if (recommendations.length) {
-                        <div class="section">
-                          <h2 class="section-title">Recommended</h2>
-                          <div class="poster-grid">
-                            @for (t of recommendations; track t) {
-                              <app-poster-card
-                                [item]="t"
-                                mediaType="tv"
-                              ></app-poster-card>
-                            }
-                          </div>
-                        </div>
-                      }
-                      <!-- Similar -->
-                      @if (similar.length) {
-                        <div class="section">
-                          <h2 class="section-title">Similar Shows</h2>
-                          <div class="poster-grid">
-                            @for (t of similar; track t) {
-                              <app-poster-card
-                                [item]="t"
-                                mediaType="tv"
-                              ></app-poster-card>
-                            }
-                          </div>
-                        </div>
-                      }
-                    </div>
-                    <div
-                      class="sticky bottom-0 z-20 px-4 pb-[calc(env(safe-area-inset-bottom)+16px)] pt-3"
-                      style="background: rgba(8,8,8,0.78); backdrop-filter: blur(10px)"
-                    >
-                      <div class="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-2 py-2">
-                        <ion-button
-                          class="flex-1"
-                          shape="round"
-                          color="primary"
-                          (click)="openLogSheet()"
-                        >
-                          @if (isWatched()) {
-                            <span class="mr-2 inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
-                          }
-                          {{ isWatched() ? 'Edit log' : 'Log' }}
-                        </ion-button>
-                        <ion-button
-                          shape="round"
-                          fill="clear"
-                          [color]="isLiked() ? 'danger' : 'medium'"
-                          (click)="toggleLiked()"
-                        >
-                          <ion-icon
-                            slot="icon-only"
-                            [name]="isLiked() ? 'heart' : 'heart-outline'"
-                          ></ion-icon>
-                        </ion-button>
-                        <ion-button
-                          shape="round"
-                          fill="clear"
-                          color="medium"
-                          (click)="openListActionSheet()"
-                        >
-                          <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
-                        </ion-button>
-                      </div>
-                    </div>
-                  }
-                </ion-content>
+              [alt]="review.author"
+              class="review-avatar__img"
+            />
+          </div>
+          <div class="review-author-meta">
+            <span class="review-author">{{ review.author }}</span>
+            @if (review.author_details?.rating) {
+            <span class="review-rating">
+              ⭐ {{ review.author_details.rating }}/10
+            </span>
+            }
+          </div>
+          <span class="review-date"
+            >{{ review.created_at | date:'mediumDate' }}</span
+          >
+        </div>
+        <p class="review-content">{{ review.content }}</p>
+      </div>
+      }
+    </div>
+    }
+    <!-- Recommendations -->
+    @if (recommendations.length) {
+    <div class="section">
+      <h2 class="section-title">Recommended</h2>
+      <div class="poster-grid">
+        @for (t of recommendations; track t) {
+        <app-poster-card [item]="t" mediaType="tv"></app-poster-card>
+        }
+      </div>
+    </div>
+    }
+    <!-- Similar -->
+    @if (similar.length) {
+    <div class="section">
+      <h2 class="section-title">Similar Shows</h2>
+      <div class="poster-grid">
+        @for (t of similar; track t) {
+        <app-poster-card [item]="t" mediaType="tv"></app-poster-card>
+        }
+      </div>
+    </div>
+    }
+  </div>
+  <div
+    class="sticky bottom-0 z-20 px-4 pb-[calc(env(safe-area-inset-bottom)+16px)] pt-3"
+    style="background: rgba(8, 8, 8, 0.78); backdrop-filter: blur(10px)"
+  >
+    <div
+      class="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-2 py-2"
+    >
+      <ion-button
+        class="flex-1"
+        shape="round"
+        color="primary"
+        (click)="openLogSheet()"
+      >
+        @if (isWatched()) {
+        <span
+          class="mr-2 inline-flex h-2 w-2 rounded-full bg-emerald-500"
+        ></span>
+        } {{ isWatched() ? 'Edit log' : 'Log' }}
+      </ion-button>
+      <ion-button
+        shape="round"
+        fill="clear"
+        [color]="isLiked() ? 'danger' : 'medium'"
+        (click)="toggleLiked()"
+      >
+        <ion-icon
+          slot="icon-only"
+          [name]="isLiked() ? 'heart' : 'heart-outline'"
+        ></ion-icon>
+      </ion-button>
+      <ion-button
+        shape="round"
+        fill="clear"
+        color="medium"
+        (click)="openListActionSheet()"
+      >
+        <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+      </ion-button>
+    </div>
+  </div>
+  }
+</ion-content>

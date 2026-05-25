@@ -24,6 +24,65 @@
   --ion-tab-bar-background: #343a40;
   --ion-tab-bar-color-selected: #cf3c4f;
   --ion-item-border-color: #343a40;
+  --app-shell-surface: rgba(52, 58, 64, 0.9);
+  --app-shell-border: rgba(206, 212, 218, 0.14);
+  --app-toolbar-height: 56px;
+  --app-tabbar-height: 62px;
+}
+
+ion-header ion-toolbar {
+  --background: var(--app-shell-surface);
+  --color: var(--ion-text-color);
+  --min-height: var(--app-toolbar-height);
+  --padding-start: 10px;
+  --padding-end: 10px;
+  border-bottom: 1px solid var(--app-shell-border);
+  backdrop-filter: saturate(125%) blur(12px);
+}
+
+ion-header ion-title {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+ion-header ion-button,
+ion-header ion-back-button {
+  --color: var(--ion-text-color);
+}
+
+ion-tabs ion-tab-bar[slot="bottom"] {
+  --background: var(--app-shell-surface);
+  --border: 0;
+  height: calc(var(--app-tabbar-height) + var(--ion-safe-area-bottom, 0px));
+  padding: 6px 10px calc(6px + var(--ion-safe-area-bottom, 0px));
+  border-top: 1px solid var(--app-shell-border);
+  backdrop-filter: saturate(125%) blur(12px);
+}
+
+ion-tabs ion-tab-button {
+  --color: rgba(206, 212, 218, 0.72);
+  --color-selected: var(--ion-tab-bar-color-selected);
+  min-height: 48px;
+  margin: 0 2px;
+  border-radius: 12px;
+  transition:
+    background-color 180ms ease,
+    color 180ms ease;
+}
+
+ion-tabs ion-tab-button.tab-selected {
+  background: rgba(207, 60, 79, 0.14);
+}
+
+ion-tabs ion-tab-button ion-icon {
+  font-size: 1.16rem;
+}
+
+ion-tabs ion-tab-button ion-label {
+  font-size: 0.71rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
 }
 
 ion-modal.log-sheet-modal {

@@ -1,21 +1,24 @@
 :host {
-  --person-font: 'Sora', sans-serif;
-  --person-display: 'Fraunces', serif;
+  --person-font: "Sora", sans-serif;
+  --person-display: "Fraunces", serif;
   --person-surface: rgba(14, 16, 20, 0.82);
   --person-border: rgba(255, 255, 255, 0.08);
   --person-text-strong: #f6f7fb;
   --person-text-soft: rgba(246, 247, 251, 0.7);
 }
 
-ion-title {
-  font-family: var(--person-font);
-  font-weight: 700;
-}
-
 ion-content.person-content {
   --background:
-    radial-gradient(120% 70% at 10% -10%, rgba(56, 128, 255, 0.2), transparent 55%),
-    radial-gradient(120% 70% at 90% 0%, rgba(61, 216, 198, 0.18), transparent 55%),
+    radial-gradient(
+      120% 70% at 10% -10%,
+      rgba(56, 128, 255, 0.2),
+      transparent 55%
+    ),
+    radial-gradient(
+      120% 70% at 90% 0%,
+      rgba(61, 216, 198, 0.18),
+      transparent 55%
+    ),
     linear-gradient(180deg, #0f1114 0%, #0d0f12 100%);
 }
 
@@ -25,12 +28,16 @@ ion-content.person-content {
 }
 
 .person-hero::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0 16px auto;
   height: 120px;
   border-radius: 18px;
-  background: linear-gradient(135deg, rgba(56, 128, 255, 0.18), rgba(61, 216, 198, 0.2));
+  background: linear-gradient(
+    135deg,
+    rgba(56, 128, 255, 0.18),
+    rgba(61, 216, 198, 0.2)
+  );
   filter: blur(24px);
   opacity: 0.7;
   z-index: 0;
@@ -58,6 +65,7 @@ ion-content.person-content {
   overflow: hidden;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
   border: 1px solid rgba(255, 255, 255, 0.12);
+  cursor: pointer;
 }
 
 .person-info {
@@ -330,6 +338,7 @@ ion-content.person-content {
   border-radius: 8px;
   object-fit: cover;
   border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
 }
 
 .empty-state {

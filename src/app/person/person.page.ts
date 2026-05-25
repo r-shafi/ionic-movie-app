@@ -1,13 +1,15 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { ModalController } from '@ionic/angular';
 import { forkJoin } from 'rxjs';
 import { TmdbService } from '../services/tmdb.service';
+import { ImageViewerComponent } from '../shared-module/image-viewer/image-viewer.component';
 
 @Component({
-    selector: 'app-person',
-    templateUrl: './person.page.html',
-    styleUrls: ['./person.page.scss'],
-    standalone: false
+  selector: 'app-person',
+  templateUrl: './person.page.html',
+  styleUrls: ['./person.page.scss'],
+  standalone: false,
 })
 export class PersonPage implements OnInit {
   person: any;
@@ -23,6 +25,7 @@ export class PersonPage implements OnInit {
     private route: ActivatedRoute,
     private tmdb: TmdbService,
     private cdr: ChangeDetectorRef,
+    private modalCtrl: ModalController,
   ) {}
 
   ngOnInit() {
@@ -51,6 +54,40 @@ export class PersonPage implements OnInit {
     return this.person?.profile_path
       ? `https://image.tmdb.org/t/p/w342${this.person.profile_path}`
       : 'assets/no-image.png';
+  }
+
+  get fullProfileUrl(): string {
+    return this.person?.profile_path
+      ? `https://image.tmdb.org/t/p/original${this.person.profile_path}`
+      : 'assets/no-image.png';
+  }
+
+  async openPersonImage(src: string, alt: string) {
+    if (!src) {
+      return;
+    }
+    const modal = await this.modalCtrl.create({
+      component: ImageViewerComponent,
+      componentProps: { src, alt },
+    });
+    await modal.present();
+  }
+
+  async openProfileImage() {
+    await this.openPersonImage(
+      this.fullProfileUrl,
+      this.person?.name || 'Person',
+    );
+  }
+
+  async openGalleryImage(filePath: string) {
+    if (!filePath) {
+      return;
+    }
+    await this.openPersonImage(
+      `https://image.tmdb.org/t/p/original${filePath}`,
+      this.person?.name || 'Person',
+    );
   }
 
   get movieCredits(): any[] {

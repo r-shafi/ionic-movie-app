@@ -9,226 +9,221 @@
 
 <ion-content class="person-content">
   @if (isLoading) {
-    <div class="ion-padding">
-      <ion-skeleton-text
-        animated
+  <div class="ion-padding">
+    <ion-skeleton-text
+      animated
       style="
         width: 120px;
         height: 180px;
         border-radius: 8px;
         margin-bottom: 12px;
       "
-      ></ion-skeleton-text>
-      <ion-skeleton-text
-        animated
-        style="width: 60%; height: 24px; margin-bottom: 6px"
-      ></ion-skeleton-text>
-      <ion-skeleton-text
-        animated
-        style="width: 100%; height: 80px"
-      ></ion-skeleton-text>
-    </div>
-  }
-
-  @if (!isLoading && person) {
-    <section class="person-hero">
-      <div class="person-card">
-        <ion-img
-          [src]="profileUrl"
-          [alt]="person.name"
-          class="person-photo"
-        ></ion-img>
-        <div class="person-info">
-          <p class="person-kicker">
-            {{ person.known_for_department ? 'Known for ' + person.known_for_department : 'Profile' }}
-          </p>
-          <h1 class="person-name">{{ person.name }}</h1>
-          <div class="person-meta">
-            @if (totalCredits) {
-              <span class="meta-pill">Credits {{ totalCredits }}</span>
-            }
-            @if (socialLinks.length) {
-              @for (link of socialLinks; track link.url) {
-                <a class="social-chip" [href]="link.url" target="_blank" rel="noreferrer">
-                  <ion-icon [name]="link.icon"></ion-icon>
-                  <span>{{ link.label }}</span>
-                </a>
-              }
-            }
-          </div>
+    ></ion-skeleton-text>
+    <ion-skeleton-text
+      animated
+      style="width: 60%; height: 24px; margin-bottom: 6px"
+    ></ion-skeleton-text>
+    <ion-skeleton-text
+      animated
+      style="width: 100%; height: 80px"
+    ></ion-skeleton-text>
+  </div>
+  } @if (!isLoading && person) {
+  <section class="person-hero">
+    <div class="person-card">
+      <ion-img
+        [src]="profileUrl"
+        [alt]="person.name"
+        class="person-photo"
+        (click)="openProfileImage()"
+      ></ion-img>
+      <div class="person-info">
+        <p class="person-kicker">
+          {{ person.known_for_department ? 'Known for ' +
+          person.known_for_department : 'Profile' }}
+        </p>
+        <h1 class="person-name">{{ person.name }}</h1>
+        <div class="person-meta">
+          @if (totalCredits) {
+          <span class="meta-pill">Credits {{ totalCredits }}</span>
+          } @if (socialLinks.length) { @for (link of socialLinks; track
+          link.url) {
+          <a
+            class="social-chip"
+            [href]="link.url"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <ion-icon [name]="link.icon"></ion-icon>
+            <span>{{ link.label }}</span>
+          </a>
+          } }
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section class="person-facts">
-      @if (person.birthday) {
-        <div class="fact-card">
-          <p class="fact-label">Born</p>
-          <p class="fact-value">{{ person.birthday | date:'mediumDate' }}</p>
-        </div>
-      }
-      @if (person.deathday) {
-        <div class="fact-card">
-          <p class="fact-label">Died</p>
-          <p class="fact-value">
-            {{ person.deathday | date:'mediumDate' }}
-            @if (ageValue) {
-              <span class="fact-note">({{ ageValue }})</span>
-            }
-          </p>
-        </div>
-      } @else if (ageValue) {
-        <div class="fact-card">
-          <p class="fact-label">Age</p>
-          <p class="fact-value">{{ ageValue }}</p>
-        </div>
-      }
-      @if (person.place_of_birth) {
-        <div class="fact-card">
-          <p class="fact-label">From</p>
-          <p class="fact-value">{{ person.place_of_birth }}</p>
-        </div>
-      }
-    </section>
-
-    @if (person.biography) {
-      <section class="person-bio-card">
-        <p class="bio-title">Biography</p>
-        <p class="person-bio">{{ showFullBio ? person.biography : bioShort }}</p>
-        @if (person.biography?.length > 300) {
-          <ion-button
-            fill="clear"
-            size="small"
-            class="bio-toggle"
-            (click)="showFullBio = !showFullBio"
-          >
-            {{ showFullBio ? 'Show Less' : 'Read More' }}
-          </ion-button>
+  <section class="person-facts">
+    @if (person.birthday) {
+    <div class="fact-card">
+      <p class="fact-label">Born</p>
+      <p class="fact-value">{{ person.birthday | date:'mediumDate' }}</p>
+    </div>
+    } @if (person.deathday) {
+    <div class="fact-card">
+      <p class="fact-label">Died</p>
+      <p class="fact-value">
+        {{ person.deathday | date:'mediumDate' }} @if (ageValue) {
+        <span class="fact-note">({{ ageValue }})</span>
         }
-      </section>
+      </p>
+    </div>
+    } @else if (ageValue) {
+    <div class="fact-card">
+      <p class="fact-label">Age</p>
+      <p class="fact-value">{{ ageValue }}</p>
+    </div>
+    } @if (person.place_of_birth) {
+    <div class="fact-card">
+      <p class="fact-label">From</p>
+      <p class="fact-value">{{ person.place_of_birth }}</p>
+    </div>
     }
+  </section>
 
-    <div class="tabs-wrap">
-      <ion-segment
-        [value]="activeTab"
-        (ionChange)="activeTab = $any($event.detail.value)"
-        class="person-tabs"
+  @if (person.biography) {
+  <section class="person-bio-card">
+    <p class="bio-title">Biography</p>
+    <p class="person-bio">{{ showFullBio ? person.biography : bioShort }}</p>
+    @if (person.biography?.length > 300) {
+    <ion-button
+      fill="clear"
+      size="small"
+      class="bio-toggle"
+      (click)="showFullBio = !showFullBio"
+    >
+      {{ showFullBio ? 'Show Less' : 'Read More' }}
+    </ion-button>
+    }
+  </section>
+  }
+
+  <div class="tabs-wrap">
+    <ion-segment
+      [value]="activeTab"
+      (ionChange)="activeTab = $any($event.detail.value)"
+      class="person-tabs"
+    >
+      <ion-segment-button value="movies">
+        Movies
+        <span class="tab-count">{{ movieCount }}</span>
+      </ion-segment-button>
+      <ion-segment-button value="tv">
+        TV
+        <span class="tab-count">{{ tvCount }}</span>
+      </ion-segment-button>
+      <ion-segment-button value="photos">
+        Photos
+        <span class="tab-count">{{ photoCount }}</span>
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+
+  <div class="credit-filters">
+    <div class="filter-row">
+      <span class="filter-label">Role</span>
+      <div class="filter-chips">
+        <button
+          class="filter-pill"
+          [class.active]="creditRole === 'all'"
+          (click)="creditRole = 'all'"
+        >
+          All
+        </button>
+        <button
+          class="filter-pill"
+          [class.active]="creditRole === 'acting'"
+          (click)="creditRole = 'acting'"
+        >
+          Acting
+        </button>
+        <button
+          class="filter-pill"
+          [class.active]="creditRole === 'crew'"
+          (click)="creditRole = 'crew'"
+        >
+          Crew
+        </button>
+      </div>
+    </div>
+    <div class="filter-row">
+      <span class="filter-label">Sort</span>
+      <div class="filter-chips">
+        <button
+          class="filter-pill"
+          [class.active]="creditSort === 'newest'"
+          (click)="creditSort = 'newest'"
+        >
+          Newest
+        </button>
+        <button
+          class="filter-pill"
+          [class.active]="creditSort === 'oldest'"
+          (click)="creditSort = 'oldest'"
+        >
+          Oldest
+        </button>
+        <button
+          class="filter-pill"
+          [class.active]="creditSort === 'popular'"
+          (click)="creditSort = 'popular'"
+        >
+          Popular
+        </button>
+      </div>
+    </div>
+  </div>
+
+  @if (activeTab === 'movies') {
+  <div class="tab-content">
+    @if (movieCredits.length) {
+    <div class="poster-grid">
+      @for (m of movieCredits; track m.id) {
+      <app-poster-card [item]="m" mediaType="movie"></app-poster-card>
+      }
+    </div>
+    } @if (!movieCredits.length) {
+    <div class="empty-state">No movie credits yet.</div>
+    }
+  </div>
+  } @if (activeTab === 'tv') {
+  <div class="tab-content">
+    @if (tvCredits.length) {
+    <div class="poster-grid">
+      @for (t of tvCredits; track t.id) {
+      <app-poster-card [item]="t" mediaType="tv"></app-poster-card>
+      }
+    </div>
+    } @if (!tvCredits.length) {
+    <div class="empty-state">No TV credits yet.</div>
+    }
+  </div>
+  } @if (activeTab === 'photos') {
+  <div class="tab-content">
+    @if (images.length) {
+    <div class="photo-grid">
+      @for (img of images; track img.file_path) {
+      <ion-img
+        [src]="'https://image.tmdb.org/t/p/w185' + img.file_path"
+        class="person-image"
+        (click)="openGalleryImage(img.file_path)"
       >
-        <ion-segment-button value="movies">
-          Movies
-          <span class="tab-count">{{ movieCount }}</span>
-        </ion-segment-button>
-        <ion-segment-button value="tv">
-          TV
-          <span class="tab-count">{{ tvCount }}</span>
-        </ion-segment-button>
-        <ion-segment-button value="photos">
-          Photos
-          <span class="tab-count">{{ photoCount }}</span>
-        </ion-segment-button>
-      </ion-segment>
+      </ion-img>
+      }
     </div>
-
-    <div class="credit-filters">
-      <div class="filter-row">
-        <span class="filter-label">Role</span>
-        <div class="filter-chips">
-          <button
-            class="filter-pill"
-            [class.active]="creditRole === 'all'"
-            (click)="creditRole = 'all'"
-          >
-            All
-          </button>
-          <button
-            class="filter-pill"
-            [class.active]="creditRole === 'acting'"
-            (click)="creditRole = 'acting'"
-          >
-            Acting
-          </button>
-          <button
-            class="filter-pill"
-            [class.active]="creditRole === 'crew'"
-            (click)="creditRole = 'crew'"
-          >
-            Crew
-          </button>
-        </div>
-      </div>
-      <div class="filter-row">
-        <span class="filter-label">Sort</span>
-        <div class="filter-chips">
-          <button
-            class="filter-pill"
-            [class.active]="creditSort === 'newest'"
-            (click)="creditSort = 'newest'"
-          >
-            Newest
-          </button>
-          <button
-            class="filter-pill"
-            [class.active]="creditSort === 'oldest'"
-            (click)="creditSort = 'oldest'"
-          >
-            Oldest
-          </button>
-          <button
-            class="filter-pill"
-            [class.active]="creditSort === 'popular'"
-            (click)="creditSort = 'popular'"
-          >
-            Popular
-          </button>
-        </div>
-      </div>
-    </div>
-
-    @if (activeTab === 'movies') {
-      <div class="tab-content">
-        @if (movieCredits.length) {
-          <div class="poster-grid">
-            @for (m of movieCredits; track m.id) {
-              <app-poster-card [item]="m" mediaType="movie"></app-poster-card>
-            }
-          </div>
-        }
-        @if (!movieCredits.length) {
-          <div class="empty-state">No movie credits yet.</div>
-        }
-      </div>
+    } @if (!images.length) {
+    <div class="empty-state">No photos yet.</div>
     }
-    @if (activeTab === 'tv') {
-      <div class="tab-content">
-        @if (tvCredits.length) {
-          <div class="poster-grid">
-            @for (t of tvCredits; track t.id) {
-              <app-poster-card [item]="t" mediaType="tv"></app-poster-card>
-            }
-          </div>
-        }
-        @if (!tvCredits.length) {
-          <div class="empty-state">No TV credits yet.</div>
-        }
-      </div>
-    }
-    @if (activeTab === 'photos') {
-      <div class="tab-content">
-        @if (images.length) {
-          <div class="photo-grid">
-            @for (img of images; track img.file_path) {
-              <ion-img
-                [src]="'https://image.tmdb.org/t/p/w185' + img.file_path"
-                class="person-image"
-              >
-              </ion-img>
-            }
-          </div>
-        }
-        @if (!images.length) {
-          <div class="empty-state">No photos yet.</div>
-        }
-      </div>
-    }
-  }
+  </div>
+  } }
 </ion-content>

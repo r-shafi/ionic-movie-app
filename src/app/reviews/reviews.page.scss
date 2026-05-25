@@ -38,6 +38,14 @@
   border-radius: 10px;
   background: var(--ion-color-step-50, #1a1a1a);
   border: 1px solid var(--ion-color-step-100, #222);
+  transition:
+    border-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.review-card--focused {
+  border-color: rgba(var(--ion-color-primary-rgb), 0.62);
+  box-shadow: 0 0 0 1px rgba(var(--ion-color-primary-rgb), 0.38);
 }
 
 .review-header {
