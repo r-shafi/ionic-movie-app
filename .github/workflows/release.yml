@@ -1,0 +1,106 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release-apk:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ── Java ────────────────────────────────────────────────────────────────
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      # ── Node / pnpm ─────────────────────────────────────────────────────────
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+
+      - name: Enable corepack / pnpm
+        run: corepack enable pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # ── Ionic web build ─────────────────────────────────────────────────────
+      - name: Build Ionic app (production)
+        run: pnpm run build -- --configuration production
+
+      # ── Capacitor sync ──────────────────────────────────────────────────────
+      - name: Sync Capacitor Android platform
+        run: npx cap sync android
+
+      # ── Decode signing keystore ─────────────────────────────────────────────
+      # Store your keystore as a base-64 secret: KEYSTORE_BASE64
+      # Generate with: base64 -w 0 release.keystore > keystore.b64
+      - name: Decode keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/release.keystore
+
+      # ── Bump versionCode to match the numeric part of the tag (v1.2.3 → 10203)
+      # Strategy: MAJOR*10000 + MINOR*100 + PATCH
+      - name: Set versionCode from tag
+        id: version
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$TAG"
+          VERSION_CODE=$(( MAJOR * 10000 + MINOR * 100 + PATCH ))
+          echo "versionName=$TAG" >> "$GITHUB_OUTPUT"
+          echo "versionCode=$VERSION_CODE" >> "$GITHUB_OUTPUT"
+
+      - name: Patch build.gradle versionName and versionCode
+        run: |
+          sed -i \
+            "s/versionCode .*/versionCode ${{ steps.version.outputs.versionCode }}/" \
+            android/app/build.gradle
+          sed -i \
+            "s/versionName .*/versionName \"${{ steps.version.outputs.versionName }}\"/" \
+            android/app/build.gradle
+
+      # ── Build release APK ────────────────────────────────────────────────────
+      - name: Build release APK (unsigned)
+        working-directory: android
+        run: ./gradlew assembleRelease --no-daemon
+
+      # ── Sign with apksigner ──────────────────────────────────────────────────
+      - name: Sign APK
+        run: |
+          BUILD_TOOLS="$(ls $ANDROID_SDK_ROOT/build-tools | sort -V | tail -1)"
+          "$ANDROID_SDK_ROOT/build-tools/$BUILD_TOOLS/apksigner" sign \
+            --ks android/app/release.keystore \
+            --ks-key-alias "${{ secrets.KEY_ALIAS }}" \
+            --ks-pass pass:"${{ secrets.KEYSTORE_PASSWORD }}" \
+            --key-pass pass:"${{ secrets.KEY_PASSWORD }}" \
+            --out android/app/build/outputs/apk/release/open-movie-tracker-${{ steps.version.outputs.versionName }}.apk \
+            android/app/build/outputs/apk/release/app-release-unsigned.apk
+
+      # ── Verify signature ─────────────────────────────────────────────────────
+      - name: Verify APK signature
+        run: |
+          BUILD_TOOLS="$(ls $ANDROID_SDK_ROOT/build-tools | sort -V | tail -1)"
+          "$ANDROID_SDK_ROOT/build-tools/$BUILD_TOOLS/apksigner" verify \
+            android/app/build/outputs/apk/release/open-movie-tracker-${{ steps.version.outputs.versionName }}.apk
+
+      # ── Create GitHub Release ─────────────────────────────────────────────────
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Open Movie Tracker ${{ steps.version.outputs.versionName }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          files: |
+            android/app/build/outputs/apk/release/open-movie-tracker-${{ steps.version.outputs.versionName }}.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
