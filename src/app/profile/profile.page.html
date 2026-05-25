@@ -24,7 +24,7 @@
     ></div>
     <div class="absolute -bottom-10 left-4 flex items-end gap-3">
       <div
-        class="h-20 w-20 overflow-hidden rounded-full border-4 border-[#0b0b0b] bg-[#222]"
+        class="h-20 w-20 overflow-hidden rounded-full border-4 border-bg-base bg-bg-secondary"
       >
         @if (profile.avatarBase64) {
         <img [src]="profile.avatarBase64" class="h-full w-full object-cover" />
@@ -78,7 +78,7 @@
       <div class="favorite-item">
         <div
           [routerLink]="isEditingFavorites ? null : ['/' + (fav.media_type === 'tv' ? 'tv' : 'movie'), fav.id]"
-          class="relative aspect-[2/3] overflow-hidden rounded-lg bg-[#1a1a1a]"
+          class="relative aspect-[2/3] overflow-hidden rounded-lg bg-bg-base"
         >
           <img
             [src]="fav.poster_path ? 'https://image.tmdb.org/t/p/w185' + fav.poster_path : 'assets/no-image.png'"
@@ -123,7 +123,7 @@
     } @else {
     <div
       (click)="openAddFavorite()"
-      class="flex cursor-pointer items-center justify-center rounded-xl border border-dashed border-white/20 bg-[#1a1a1a] py-8"
+      class="flex cursor-pointer items-center justify-center rounded-xl border border-dashed border-white/20 bg-bg-base py-8"
       style="color: var(--ion-color-medium)"
     >
       <div class="text-center">
@@ -144,8 +144,8 @@
       <a
         class="rounded-xl border px-3 py-2.5 no-underline"
         style="
-          border-color: rgba(149, 170, 201, 0.28);
-          background: rgba(121, 147, 184, 0.14);
+          border-color: var(--app-border);
+          background: rgba(var(--app-bg-secondary-rgb), 0.3);
           backdrop-filter: blur(4px);
           color: var(--ion-text-color);
         "
@@ -158,7 +158,7 @@
           </div>
           <span
             class="rounded-full px-1.5 py-0.5 text-[0.67rem] font-extrabold"
-            style="background: rgba(255, 255, 255, 0.14)"
+            style="background: rgba(var(--app-bg-secondary-rgb), 0.3)"
           >
             {{ quickLinkCount(link.countGetter) }}
           </span>
@@ -179,64 +179,72 @@
         border-color: var(--ion-color-step-150);
         background: linear-gradient(
           145deg,
-          rgba(16, 24, 38, 0.85),
-          rgba(22, 33, 48, 0.85)
+          rgba(var(--app-bg-rgb), 0.85),
+          rgba(var(--app-bg-secondary-rgb), 0.85)
         );
       "
     >
       <p
         class="m-0 text-[0.68rem] uppercase tracking-[0.14em] font-bold"
-        style="color: #90a6c8"
+        style="color: var(--app-muted)"
       >
         Snapshot
       </p>
       <div class="mt-2 grid grid-cols-2 gap-2">
         <div
           class="rounded-xl px-3 py-2"
-          style="background: rgba(12, 49, 101, 0.35)"
+          style="background: rgba(var(--app-bg-secondary-rgb), 0.5)"
         >
           <p class="m-0 text-xl font-extrabold">
             {{ stats.totalHoursEstimated }}h
           </p>
-          <p class="m-0 text-[0.66rem]" style="color: #b7c5de">Total hours</p>
+          <p class="m-0 text-[0.66rem]" style="color: var(--app-muted)">
+            Total hours
+          </p>
         </div>
         <div
           class="rounded-xl px-3 py-2"
-          style="background: rgba(20, 69, 39, 0.35)"
+          style="background: rgba(var(--ion-color-success-rgb), 0.15)"
         >
           <p class="m-0 text-xl font-extrabold">{{ averageRatingDisplay }}</p>
-          <p class="m-0 text-[0.66rem]" style="color: #b7c5de">Avg rating</p>
+          <p class="m-0 text-[0.66rem]" style="color: var(--app-muted)">
+            Avg rating
+          </p>
         </div>
         <div
           class="rounded-xl px-3 py-2"
-          style="background: rgba(98, 42, 21, 0.35)"
+          style="background: rgba(var(--ion-color-danger-rgb), 0.15)"
         >
           <p class="m-0 text-xl font-extrabold">{{ ratedCoverageDisplay }}</p>
-          <p class="m-0 text-[0.66rem]" style="color: #b7c5de">
+          <p class="m-0 text-[0.66rem]" style="color: var(--app-muted)">
             Rated coverage
           </p>
         </div>
         <div
           class="rounded-xl px-3 py-2"
-          style="background: rgba(62, 38, 104, 0.35)"
+          style="background: rgba(var(--app-bg-secondary-rgb), 0.5)"
         >
           <p class="m-0 text-xl font-extrabold">{{ likedRatioDisplay }}</p>
-          <p class="m-0 text-[0.66rem]" style="color: #b7c5de">Liked ratio</p>
+          <p class="m-0 text-[0.66rem]" style="color: var(--app-muted)">
+            Liked ratio
+          </p>
         </div>
       </div>
       <div
         class="mt-3 rounded-xl px-3 py-2"
-        style="background: rgba(255, 255, 255, 0.04)"
+        style="background: rgba(var(--app-bg-secondary-rgb), 0.4)"
       >
         <div class="flex items-center justify-between gap-2">
           <div>
-            <p class="m-0 text-[0.68rem]" style="color: #9bb0cf">Peak month</p>
+            <p class="m-0 text-[0.68rem]" style="color: var(--app-muted)">
+              Peak month
+            </p>
             <p class="m-0 text-[0.86rem] font-semibold">
               {{ peakMonthLabel() }}
             </p>
           </div>
           <div class="text-right">
-            <p class="m-0 text-[0.68rem]" style="color: #9bb0cf">
+            <p class="m-0 text-[0.68rem]" style="color: var(--app-muted)">
               Movie/TV mix
             </p>
             <p class="m-0 text-[0.86rem] font-semibold">
@@ -296,7 +304,13 @@
             [style.height.%]="row.pct"
             tabindex="0"
             [attr.title]="momentumBarTooltip(row.label, row.count)"
-            style="background: linear-gradient(180deg, #4f95ff, #2a66d4)"
+            style="
+              background: linear-gradient(
+                180deg,
+                var(--ion-color-primary),
+                var(--ion-color-primary-shade)
+              );
+            "
           ></div>
           <span
             class="mt-1 text-[0.58rem]"
@@ -351,7 +365,7 @@
     >
       <img
         [src]="entryPoster(entry)"
-        class="h-[60px] w-[40px] shrink-0 overflow-hidden rounded object-cover bg-[#1a1a1a]"
+        class="h-[60px] w-[40px] shrink-0 overflow-hidden rounded object-cover bg-bg-base"
       />
       <div class="min-w-0 flex-1">
         <p class="m-0 truncate text-[0.85rem] font-bold">{{ entry.title }}</p>
@@ -446,7 +460,7 @@
         item.id) {
         <img
           [src]="listPoster(item)"
-          class="h-[60px] w-[40px] rounded object-cover bg-[#1a1a1a]"
+          class="h-[60px] w-[40px] rounded object-cover bg-bg-base"
         />
         }
       </div>

@@ -51,6 +51,21 @@
         (ionChange)="setFadeWatched($event.detail.checked)"
       ></ion-toggle>
     </div>
+
+    <div
+      class="settings-card mb-4 flex items-center justify-between rounded-xl border px-3 py-3"
+      style="border-color: var(--ion-color-step-100)"
+    >
+      <span class="text-[0.88rem] font-semibold">Accent color</span>
+      <ion-segment
+        [value]="settings.primaryColor"
+        (ionChange)="setPrimaryColor($any($event.detail.value))"
+        class="w-auto"
+      >
+        <ion-segment-button value="green">Green</ion-segment-button>
+        <ion-segment-button value="red">Red</ion-segment-button>
+      </ion-segment>
+    </div>
   </div>
 
   <div

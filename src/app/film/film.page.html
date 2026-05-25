@@ -27,7 +27,7 @@
   } @if (!isLoading && movie) {
   <!-- Hero: backdrop with content overlaid (crossfading slideshow) -->
   <div
-    class="relative flex min-h-[180px] w-full items-end bg-[#111] bg-cover bg-center bg-no-repeat"
+    class="relative flex min-h-[180px] w-full items-end bg-bg-base bg-cover bg-center bg-no-repeat"
   >
     <div
       class="film-hero__bg"
@@ -191,8 +191,8 @@
         <div
           class="rounded-[10px] border px-3 py-2.5"
           style="
-            background: var(--ion-color-step-50, #1a1a1a);
-            border-color: var(--ion-color-step-100, #222);
+            background: var(--ion-color-step-50);
+            border-color: var(--ion-color-step-100);
           "
         >
           <p class="m-0 mb-0.5 text-base font-extrabold leading-[1.2]">
@@ -206,8 +206,8 @@
         <div
           class="rounded-[10px] border px-3 py-2.5"
           style="
-            background: var(--ion-color-step-50, #1a1a1a);
-            border-color: var(--ion-color-step-100, #222);
+            background: var(--ion-color-step-50);
+            border-color: var(--ion-color-step-100);
           "
         >
           <p class="m-0 mb-0.5 text-base font-extrabold leading-[1.2]">
@@ -226,8 +226,8 @@
         <div
           class="rounded-[10px] border px-3 py-2.5"
           style="
-            background: var(--ion-color-step-50, #1a1a1a);
-            border-color: var(--ion-color-step-100, #222);
+            background: var(--ion-color-step-50);
+            border-color: var(--ion-color-step-100);
           "
         >
           <p class="m-0 mb-0.5 text-[0.78rem] font-bold leading-[1.2]">
@@ -241,8 +241,8 @@
         <div
           class="rounded-[10px] border px-3 py-2.5"
           style="
-            background: var(--ion-color-step-50, #1a1a1a);
-            border-color: var(--ion-color-step-100, #222);
+            background: var(--ion-color-step-50);
+            border-color: var(--ion-color-step-100);
           "
         >
           <p class="m-0 mb-0.5 text-[0.78rem] font-bold leading-[1.2]">
@@ -256,8 +256,8 @@
         <div
           class="rounded-[10px] border px-3 py-2.5"
           style="
-            background: var(--ion-color-step-50, #1a1a1a);
-            border-color: var(--ion-color-step-100, #222);
+            background: var(--ion-color-step-50);
+            border-color: var(--ion-color-step-100);
           "
         >
           <p class="m-0 mb-0.5 text-[0.78rem] font-bold leading-[1.2]">
@@ -271,8 +271,8 @@
         <div
           class="rounded-[10px] border px-3 py-2.5"
           style="
-            background: var(--ion-color-step-50, #1a1a1a);
-            border-color: var(--ion-color-step-100, #222);
+            background: var(--ion-color-step-50);
+            border-color: var(--ion-color-step-100);
           "
         >
           <p class="m-0 mb-0.5 text-[0.78rem] font-bold leading-[1.2]">
@@ -288,8 +288,8 @@
         <div
           class="rounded-[10px] border px-3 py-2.5"
           style="
-            background: var(--ion-color-step-50, #1a1a1a);
-            border-color: var(--ion-color-step-100, #222);
+            background: var(--ion-color-step-50);
+            border-color: var(--ion-color-step-100);
           "
         >
           <p class="m-0 mb-0.5 text-[0.78rem] font-bold leading-[1.2]">
@@ -414,8 +414,8 @@
       <div
         class="mx-4 mb-2.5 rounded-[10px] border px-3.5 py-3"
         style="
-          background: var(--ion-color-step-50, #1a1a1a);
-          border-color: var(--ion-color-step-100, #222);
+          background: var(--ion-color-step-50);
+          border-color: var(--ion-color-step-100);
         "
         [routerLink]="['/movie', movie.id, 'reviews']"
         [queryParams]="{ reviewId: review.id }"
@@ -423,7 +423,7 @@
         <div class="mb-2 flex items-center gap-2.5">
           <div
             class="h-9 w-9 shrink-0 overflow-hidden rounded-full"
-            style="background: var(--ion-color-step-150, #2a2a2a)"
+            style="background: var(--ion-color-step-150)"
           >
             <img
               [src]="review.author_details?.avatar_path

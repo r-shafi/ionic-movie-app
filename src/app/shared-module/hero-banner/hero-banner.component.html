@@ -1,7 +1,7 @@
 @if (!isLoading && current) {
   <div class="relative w-full cursor-pointer" (click)="navigate()">
     <div
-      class="relative h-[56vw] max-h-[420px] min-h-60 w-full overflow-hidden bg-[#111] bg-cover bg-center bg-no-repeat"
+      class="relative h-[56vw] max-h-[420px] min-h-60 w-full overflow-hidden bg-bg-base bg-cover bg-center bg-no-repeat"
       [style.backgroundImage]="
         backdropUrl ? 'url(' + backdropUrl + ')' : 'none'
       "
@@ -38,7 +38,7 @@
   <div class="relative w-full cursor-pointer">
     <div
       class="relative h-[56vw] max-h-[420px] min-h-60 w-full overflow-hidden bg-cover bg-center bg-no-repeat"
-      style="background: var(--ion-color-step-50, #1a1a1a)"
+      style="background: var(--ion-color-step-50)"
     >
       <div
         class="absolute inset-0 bg-gradient-to-b from-black/10 via-black/50 to-black/90"

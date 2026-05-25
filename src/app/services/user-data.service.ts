@@ -74,6 +74,7 @@ export interface AppSettings {
   excludeLanguages: string[];
   fadeWatched: boolean;
   defaultMediaTab: 'movies' | 'tv';
+  primaryColor: 'green' | 'red';
 }
 
 type SettingsRecord = AppSettings & {
@@ -485,6 +486,7 @@ export class UserDataService {
       excludeLanguages: [],
       fadeWatched: false,
       defaultMediaTab: 'movies',
+      primaryColor: 'green',
     };
   }
 

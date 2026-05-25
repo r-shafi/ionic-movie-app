@@ -51,8 +51,8 @@
         <button
           class="cursor-pointer rounded-[20px] border-[1.5px] px-3 py-1 text-[0.76rem] font-semibold transition-colors"
           [style.background]="trendWindow === 'day' ? 'var(--ion-color-primary)' : 'transparent'"
-          [style.border-color]="trendWindow === 'day' ? 'var(--ion-color-primary)' : 'var(--ion-color-step-250, #4d4d4d)'"
-          [style.color]="trendWindow === 'day' ? '#fff' : 'var(--ion-color-medium)'"
+          [style.border-color]="trendWindow === 'day' ? 'var(--ion-color-primary)' : 'var(--ion-color-step-250)'"
+          [style.color]="trendWindow === 'day' ? 'var(--ion-color-primary-contrast)' : 'var(--ion-color-medium)'"
           (click)="setTrendWindow('day')"
         >
           Today
@@ -60,8 +60,8 @@
         <button
           class="cursor-pointer rounded-[20px] border-[1.5px] px-3 py-1 text-[0.76rem] font-semibold transition-colors"
           [style.background]="trendWindow === 'week' ? 'var(--ion-color-primary)' : 'transparent'"
-          [style.border-color]="trendWindow === 'week' ? 'var(--ion-color-primary)' : 'var(--ion-color-step-250, #4d4d4d)'"
-          [style.color]="trendWindow === 'week' ? '#fff' : 'var(--ion-color-medium)'"
+          [style.border-color]="trendWindow === 'week' ? 'var(--ion-color-primary)' : 'var(--ion-color-step-250)'"
+          [style.color]="trendWindow === 'week' ? 'var(--ion-color-primary-contrast)' : 'var(--ion-color-medium)'"
           (click)="setTrendWindow('week')"
         >
           This Week
@@ -137,7 +137,7 @@
       @for (s of [0,1,2,3,4,5]; track s) {
       <div
         class="h-[90px] overflow-hidden rounded-xl"
-        style="background: var(--ion-color-step-50, #1a1a1a)"
+        style="background: var(--ion-color-step-50)"
       >
         <ion-skeleton-text
           animated

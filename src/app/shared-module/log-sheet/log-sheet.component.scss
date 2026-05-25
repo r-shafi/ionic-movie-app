@@ -1,13 +1,13 @@
 :host {
-  --sheet-bg: #070b14;
-  --sheet-card-bg: rgba(18, 27, 44, 0.72);
-  --sheet-border: rgba(130, 153, 188, 0.24);
-  --sheet-text: #e8edf7;
-  --sheet-muted: #9aa6bf;
+  --sheet-bg: var(--app-bg);
+  --sheet-card-bg: rgba(var(--app-bg-secondary-rgb), 0.9);
+  --sheet-border: var(--app-border);
+  --sheet-text: var(--app-text);
+  --sheet-muted: var(--app-muted);
 }
 
 ion-datetime {
-  --background: rgba(6, 15, 30, 0.6);
+  --background: rgba(var(--app-bg-rgb), 0.8);
   --color: var(--sheet-text);
   --border-radius: 12px;
   max-height: 200px;
@@ -96,15 +96,15 @@ ion-textarea {
 }
 
 .watched-toggle.active {
-  border-color: rgba(60, 198, 125, 0.8);
-  background: rgba(34, 197, 94, 0.18);
-  color: #d8fae8;
+  border-color: rgba(var(--ion-color-success-rgb), 0.8);
+  background: rgba(var(--ion-color-success-rgb), 0.18);
+  color: var(--app-text);
 }
 
 .watched-toggle.inactive {
-  border-color: rgba(130, 153, 188, 0.35);
-  background: rgba(255, 255, 255, 0.03);
-  color: rgba(232, 237, 247, 0.92);
+  border-color: var(--app-border);
+  background: rgba(var(--app-bg-secondary-rgb), 0.3);
+  color: var(--app-muted);
 }
 
 .options-card,
@@ -142,7 +142,7 @@ ion-textarea {
 
 .divider {
   height: 1px;
-  background: rgba(130, 153, 188, 0.24);
+  background: var(--app-border);
 }
 
 .pill-row {
@@ -151,7 +151,7 @@ ion-textarea {
 }
 
 .pill {
-  border: 1px solid rgba(130, 153, 188, 0.34);
+  border: 1px solid var(--app-border);
   border-radius: 999px;
   padding: 7px 11px;
   font-size: 0.76rem;
@@ -159,19 +159,19 @@ ion-textarea {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(var(--app-bg-secondary-rgb), 0.3);
   color: var(--sheet-text);
 }
 
 .pill.is-active {
-  border-color: rgba(83, 145, 255, 0.7);
-  background: rgba(31, 111, 255, 0.2);
+  border-color: rgba(var(--ion-color-primary-rgb), 0.7);
+  background: rgba(var(--ion-color-primary-rgb), 0.2);
 }
 
 .liked-pill.is-active {
-  border-color: rgba(239, 68, 68, 0.7);
-  background: rgba(239, 68, 68, 0.18);
-  color: #fecaca;
+  border-color: rgba(var(--ion-color-danger-rgb), 0.7);
+  background: rgba(var(--ion-color-danger-rgb), 0.18);
+  color: var(--app-text);
 }
 
 .section-block {
@@ -210,9 +210,9 @@ ion-textarea {
 }
 
 .log-sheet-footer {
-  --background: rgba(5, 10, 18, 0.92);
+  --background: rgba(var(--app-bg-rgb), 0.92);
   backdrop-filter: blur(12px);
-  border-top: 1px solid rgba(130, 153, 188, 0.24);
+  border-top: 1px solid var(--app-border);
 }
 
 .watchlist-toggle {
@@ -220,9 +220,9 @@ ion-textarea {
   --handle-height: 24px;
   --handle-max-height: 24px;
   --handle-spacing: 2px;
-  --handle-background: #e5e7eb;
-  --handle-background-checked: #ffffff;
-  --track-background: rgba(148, 163, 184, 0.35);
+  --handle-background: var(--app-bg-secondary);
+  --handle-background-checked: var(--ion-color-primary-contrast);
+  --track-background: var(--app-border);
   --track-background-checked: var(--ion-color-primary);
 }
 

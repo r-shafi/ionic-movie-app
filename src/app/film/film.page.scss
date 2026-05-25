@@ -1,7 +1,7 @@
 .film-hero__bg {
   position: absolute;
   inset: 0;
-  background: #111 center / cover no-repeat;
+  background: var(--ion-background-color) center / cover no-repeat;
   transition: opacity 600ms ease-in-out;
   opacity: 0;
   z-index: 0;

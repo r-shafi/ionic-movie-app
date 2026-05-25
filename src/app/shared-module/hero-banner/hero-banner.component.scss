@@ -1,12 +1,12 @@
 .hero__actions {
   ion-button {
-    --color: #222;
+    --color: var(--app-text);
     --color-activated: var(--ion-color-primary);
     font-size: 0.75rem;
   }
 
   .active-btn {
     --background: var(--ion-color-primary);
-    --color: #fff;
+    --color: var(--ion-color-primary-contrast);
   }
 }

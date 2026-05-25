@@ -17,15 +17,12 @@
 
 /* Keep only Ionic CSS variables below */
 :root {
-  --ion-background-color: #212529;
-  --ion-text-color: #ced4da;
-  --ion-tab-bar-color: #ced4da;
-  --ion-toolbar-background: #343a40;
-  --ion-tab-bar-background: #343a40;
-  --ion-tab-bar-color-selected: #cf3c4f;
-  --ion-item-border-color: #343a40;
-  --app-shell-surface: rgba(52, 58, 64, 0.9);
-  --app-shell-border: rgba(206, 212, 218, 0.14);
+  --ion-background-color: var(--app-bg);
+  --ion-text-color: var(--app-text);
+  --ion-tab-bar-color: var(--app-text);
+  --ion-toolbar-background: var(--app-shell-surface);
+  --ion-tab-bar-background: var(--app-shell-surface);
+  --ion-item-border-color: rgba(var(--app-bg-secondary-rgb), 0.7);
   --app-toolbar-height: 56px;
   --app-tabbar-height: 56px;
 }
@@ -72,7 +69,7 @@ ion-tabs ion-tab-button {
 }
 
 ion-tabs ion-tab-button.tab-selected {
-  background: rgba(207, 60, 79, 0.14);
+  background: rgba(var(--ion-color-primary-rgb), 0.14);
 }
 
 ion-tabs ion-tab-button ion-icon {
@@ -91,7 +88,7 @@ ion-modal.log-sheet-modal {
 }
 
 ion-modal.log-sheet-modal::part(content) {
-  background: #070b14;
+  background: var(--ion-background-color);
   box-shadow: 0 -24px 42px rgba(0, 0, 0, 0.5);
 }
 

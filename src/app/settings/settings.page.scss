@@ -3,6 +3,6 @@ ion-segment {
 }
 
 .settings-card {
-  background: rgba(18, 20, 26, 0.88);
+  background: var(--app-bg-secondary);
   backdrop-filter: blur(6px);
 }

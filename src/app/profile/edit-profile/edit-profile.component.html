@@ -12,48 +12,95 @@
 
 <ion-content class="ion-padding">
   <div class="mb-6">
-    <p class="mb-1 text-[0.75rem] font-bold uppercase tracking-[0.1em]" style="color: var(--ion-color-medium)">Cover Image</p>
+    <p
+      class="mb-1 text-[0.75rem] font-bold uppercase tracking-[0.1em]"
+      style="color: var(--ion-color-medium)"
+    >
+      Cover Image
+    </p>
     <div
       class="flex h-[120px] w-full cursor-pointer items-center justify-center rounded-xl bg-cover bg-center"
-      [style.backgroundImage]="coverBase64 ? 'url(' + coverBase64 + ')' : 'none'"
-      [class.bg-[#1a1a1a]]="!coverBase64"
+      [style.backgroundImage]="
+        coverBase64 ? 'url(' + coverBase64 + ')' : 'none'
+      "
+      [style.background]="
+        !coverBase64 ? 'var(--ion-background-color)' : undefined
+      "
       (click)="coverFileInput.click()"
     >
-      <input #coverFileInput type="file" accept="image/*" class="hidden" (change)="onCoverPick($event)" />
+      <input
+        #coverFileInput
+        type="file"
+        accept="image/*"
+        class="hidden"
+        (change)="onCoverPick($event)"
+      />
       @if (!coverBase64) {
-        <ion-icon name="camera-outline" class="text-2xl" style="color: var(--ion-color-medium)"></ion-icon>
+        <ion-icon
+          name="camera-outline"
+          class="text-2xl"
+          style="color: var(--ion-color-medium)"
+        ></ion-icon>
       }
     </div>
   </div>
 
   <div class="mb-6 flex flex-col items-center">
-    <p class="mb-1 self-start text-[0.75rem] font-bold uppercase tracking-[0.1em]" style="color: var(--ion-color-medium)">Avatar</p>
+    <p
+      class="mb-1 self-start text-[0.75rem] font-bold uppercase tracking-[0.1em]"
+      style="color: var(--ion-color-medium)"
+    >
+      Avatar
+    </p>
     <div
-      class="h-20 w-20 cursor-pointer overflow-hidden rounded-full bg-[#1a1a1a]"
+      class="h-20 w-20 cursor-pointer overflow-hidden rounded-full bg-bg-base"
       (click)="avatarFileInput.click()"
     >
-      <input #avatarFileInput type="file" accept="image/*" class="hidden" (change)="onAvatarPick($event)" />
+      <input
+        #avatarFileInput
+        type="file"
+        accept="image/*"
+        class="hidden"
+        (change)="onAvatarPick($event)"
+      />
       @if (avatarBase64) {
         <img [src]="avatarBase64" class="h-full w-full object-cover" />
       } @else {
-        <ion-icon name="person-circle-outline" class="h-full w-full text-[5rem]" style="color: var(--ion-color-medium)"></ion-icon>
+        <ion-icon
+          name="person-circle-outline"
+          class="h-full w-full text-[5rem]"
+          style="color: var(--ion-color-medium)"
+        ></ion-icon>
       }
     </div>
   </div>
 
   <div class="mb-4">
-    <ion-label class="mb-1 block text-[0.75rem] font-bold uppercase tracking-[0.1em]" style="color: var(--ion-color-medium)">Display Name</ion-label>
+    <ion-label
+      class="mb-1 block text-[0.75rem] font-bold uppercase tracking-[0.1em]"
+      style="color: var(--ion-color-medium)"
+      >Display Name</ion-label
+    >
     <ion-input [(ngModel)]="displayName" placeholder="Your name"></ion-input>
   </div>
 
   <div class="mb-4">
-    <ion-label class="mb-1 block text-[0.75rem] font-bold uppercase tracking-[0.1em]" style="color: var(--ion-color-medium)">Bio</ion-label>
+    <ion-label
+      class="mb-1 block text-[0.75rem] font-bold uppercase tracking-[0.1em]"
+      style="color: var(--ion-color-medium)"
+      >Bio</ion-label
+    >
     <ion-textarea
       [(ngModel)]="bio"
       [maxlength]="160"
       auto-grow="true"
       placeholder="Tell us about yourself…"
     ></ion-textarea>
-    <p class="m-0 mt-1 text-right text-[0.68rem]" style="color: var(--ion-color-medium)">{{ bio.length }}/160</p>
+    <p
+      class="m-0 mt-1 text-right text-[0.68rem]"
+      style="color: var(--ion-color-medium)"
+    >
+      {{ bio.length }}/160
+    </p>
   </div>
 </ion-content>

@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AlertController } from '@ionic/angular';
+import { applyPrimaryColor } from '../app.component';
 import { ToastService } from '../services/toast.service';
 import { AppSettings, UserDataService } from '../services/user-data.service';
 
@@ -53,6 +54,11 @@ export class SettingsPage {
 
   setSafeSearch(value: boolean) {
     this.userData.saveSetting('includeAdult', !value);
+  }
+
+  setPrimaryColor(color: 'green' | 'red') {
+    this.userData.saveSetting('primaryColor', color);
+    applyPrimaryColor(color);
   }
 
   exportData() {

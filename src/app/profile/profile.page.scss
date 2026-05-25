@@ -27,8 +27,8 @@ ion-segment {
   align-items: center;
   justify-content: center;
   border-radius: 8px;
-  border: 1px dashed rgba(255, 255, 255, 0.2);
-  background: #1a1a1a;
+  border: 1px dashed var(--app-border);
+  background: var(--app-bg);
   color: var(--ion-color-primary);
   aspect-ratio: 2 / 3;
 }
@@ -52,7 +52,7 @@ ion-segment {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  color: var(--ion-color-primary-contrast);
   background: rgba(var(--ion-color-primary-rgb), 0.85);
 }
 
@@ -82,7 +82,7 @@ ion-segment {
 .rating-pulse-bar {
   width: 100%;
   min-height: 8px;
-  background: linear-gradient(180deg, #5fa0ff, #2a66d4);
+  background: var(--ion-color-primary);
   transition: height 220ms ease;
 }
 
