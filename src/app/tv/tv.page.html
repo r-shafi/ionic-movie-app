@@ -54,6 +54,8 @@
           [src]="posterUrl"
           [alt]="show.name"
           class="tv-poster"
+          [class.opacity-50]="shouldFadePoster"
+          [class.grayscale]="shouldFadePoster"
           (click)="openPoster()"
         ></ion-img>
         <div class="tv-info">
@@ -102,56 +104,6 @@
                 </div>
               </div>
               <div class="tv-body">
-                <!-- Action bar -->
-                <div class="action-bar">
-                  <ion-button
-                    size="small"
-                    [fill]="isWatched() ? 'solid' : 'outline'"
-                    color="primary"
-                    (click)="toggleWatched()"
-                    >
-                    <ion-icon
-                      slot="start"
-                      [name]="isWatched() ? 'eye' : 'eye-outline'"
-                    ></ion-icon>
-                    {{ isWatched() ? 'Watched' : 'Watch' }}
-                  </ion-button>
-                  @if (trailerKey) {
-                    <ion-button
-                      size="small"
-                      fill="outline"
-                      color="medium"
-                      (click)="openTrailer()"
-                      >
-                      <ion-icon slot="start" name="play-circle-outline"></ion-icon>
-                      Trailer
-                    </ion-button>
-                  }
-                  <div class="action-icons">
-                    <ion-button
-                      fill="clear"
-                      size="small"
-                      [color]="isFavorite() ? 'danger' : 'medium'"
-                      (click)="toggleFavorite()"
-                      >
-                      <ion-icon
-                        slot="icon-only"
-                        [name]="isFavorite() ? 'heart' : 'heart-outline'"
-                      ></ion-icon>
-                    </ion-button>
-                    <ion-button
-                      fill="clear"
-                      size="small"
-                      [color]="isWatchlist() ? 'warning' : 'medium'"
-                      (click)="toggleWatchlist()"
-                      >
-                      <ion-icon
-                        slot="icon-only"
-                        [name]="isWatchlist() ? 'bookmark' : 'bookmark-outline'"
-                      ></ion-icon>
-                    </ion-button>
-                  </div>
-                </div>
                 <!-- Overview (moved: show synopsis right after CTA buttons) -->
                 @if (show.overview) {
                   <div class="section">
@@ -420,6 +372,43 @@
                           </div>
                         </div>
                       }
+                    </div>
+                    <div
+                      class="sticky bottom-0 z-20 px-4 pb-[calc(env(safe-area-inset-bottom)+16px)] pt-3"
+                      style="background: rgba(8,8,8,0.78); backdrop-filter: blur(10px)"
+                    >
+                      <div class="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-2 py-2">
+                        <ion-button
+                          class="flex-1"
+                          shape="round"
+                          color="primary"
+                          (click)="openLogSheet()"
+                        >
+                          @if (isWatched()) {
+                            <span class="mr-2 inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
+                          }
+                          {{ isWatched() ? 'Edit log' : 'Log' }}
+                        </ion-button>
+                        <ion-button
+                          shape="round"
+                          fill="clear"
+                          [color]="isLiked() ? 'danger' : 'medium'"
+                          (click)="toggleLiked()"
+                        >
+                          <ion-icon
+                            slot="icon-only"
+                            [name]="isLiked() ? 'heart' : 'heart-outline'"
+                          ></ion-icon>
+                        </ion-button>
+                        <ion-button
+                          shape="round"
+                          fill="clear"
+                          color="medium"
+                          (click)="openListActionSheet()"
+                        >
+                          <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+                        </ion-button>
+                      </div>
                     </div>
                   }
                 </ion-content>

@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ModalController } from '@ionic/angular';
+import { ActionSheetController, ModalController } from '@ionic/angular';
 import { forkJoin } from 'rxjs';
 import { ImageViewerComponent } from '../shared-module/image-viewer/image-viewer.component';
-import { ProfileService } from '../services/profile.service';
+import { LogSheetService } from '../shared-module/log-sheet/log-sheet.service';
 import { TmdbService } from '../services/tmdb.service';
+import { ToastService } from '../services/toast.service';
+import { UserDataService, WatchlistEntry } from '../services/user-data.service';
 
 @Component({
     selector: 'app-film',
@@ -32,7 +34,10 @@ export class FilmPage implements OnInit {
     private tmdb: TmdbService,
     private route: ActivatedRoute,
     private modalCtrl: ModalController,
-    public profileService: ProfileService,
+    private actionSheetCtrl: ActionSheetController,
+    private logSheet: LogSheetService,
+    private userData: UserDataService,
+    private toast: ToastService,
   ) {}
 
   ngOnInit() {
@@ -230,53 +235,87 @@ export class FilmPage implements OnInit {
   }
 
   get userRating(): number | null {
-    return (
-      this.profileService.getRating('movie', this.movie?.id)?.rating || null
-    );
+    if (!this.movie) {
+      return null;
+    }
+    return this.userData.getWatchedEntry('movie', this.movie.id)?.rating ?? null;
   }
 
   isWatched(): boolean {
-    return this.movie
-      ? this.profileService.isInWatched({ ...this.movie, media_type: 'movie' })
-      : false;
-  }
-  isFavorite(): boolean {
-    return this.movie
-      ? this.profileService.isInFavorites({
-          ...this.movie,
-          media_type: 'movie',
-        })
-      : false;
-  }
-  isWatchlist(): boolean {
-    return this.movie
-      ? this.profileService.isInWatchlist({
-          ...this.movie,
-          media_type: 'movie',
-        })
-      : false;
+    return this.movie ? this.userData.isWatched('movie', this.movie.id) : false;
   }
 
-  toggleWatched() {
-    if (this.movie) {
-      this.profileService.toggleWatched({ ...this.movie, media_type: 'movie' });
+  isLiked(): boolean {
+    if (!this.movie) {
+      return false;
     }
+    return this.userData.getWatchedEntry('movie', this.movie.id)?.liked ?? false;
   }
-  toggleFavorite() {
-    if (this.movie) {
-      this.profileService.toggleFavorite({
-        ...this.movie,
-        media_type: 'movie',
-      });
+
+  async openLogSheet() {
+    if (!this.movie) {
+      return;
     }
+    await this.logSheet.open({
+      id: this.movie.id,
+      media_type: 'movie',
+      title: this.movie.title || '',
+      poster_path: this.movie.poster_path || null,
+      release_date: this.movie.release_date,
+    });
   }
-  toggleWatchlist() {
-    if (this.movie) {
-      this.profileService.addToWatchlist({
-        ...this.movie,
-        media_type: 'movie',
-      });
+
+  toggleLiked() {
+    if (!this.movie) {
+      return;
     }
+    const existing = this.userData.getWatchedEntry('movie', this.movie.id);
+    this.userData.logEntry({
+      id: this.movie.id,
+      media_type: 'movie',
+      title: this.movie.title || '',
+      poster_path: this.movie.poster_path || null,
+      watchedAt: existing?.watchedAt || new Date().toISOString(),
+      rewatch: existing?.rewatch ?? false,
+      rating: existing?.rating ?? null,
+      review: existing?.review ?? '',
+      tags: existing?.tags ?? [],
+      liked: !(existing?.liked ?? false),
+      release_date: this.movie.release_date,
+    });
+  }
+
+  async openListActionSheet() {
+    if (!this.movie) {
+      return;
+    }
+    const lists = this.userData.getLists();
+    const watchlistItem = this.buildWatchlistItem();
+    const buttons = [
+      {
+        text: 'Add to Watchlist',
+        icon: 'bookmark-outline',
+        handler: () => {
+          this.userData.addToWatchlist(watchlistItem);
+          this.toast.showToast('Added to watchlist.');
+        },
+      },
+      ...lists.map((list) => ({
+        text: list.name,
+        icon: 'list-outline',
+        handler: () => {
+          this.userData.addToList(list.id, watchlistItem);
+          this.toast.showToast(`Added to "${list.name}".`);
+        },
+      })),
+      { text: 'Cancel', role: 'cancel' },
+    ];
+
+    const sheet = await this.actionSheetCtrl.create({
+      header: 'Add to list',
+      buttons,
+    });
+    await sheet.present();
   }
 
   openTrailer() {
@@ -299,5 +338,19 @@ export class FilmPage implements OnInit {
     } else {
       window.open(url, '_blank');
     }
+  }
+
+  get shouldFadePoster(): boolean {
+    return this.userData.getSettings().fadeWatched && this.isWatched();
+  }
+
+  private buildWatchlistItem(): Omit<WatchlistEntry, 'addedAt'> {
+    return {
+      id: this.movie.id,
+      media_type: 'movie',
+      title: this.movie.title || '',
+      poster_path: this.movie.poster_path || null,
+      release_date: this.movie.release_date,
+    };
   }
 }

@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ModalController } from '@ionic/angular';
+import { ActionSheetController, ModalController } from '@ionic/angular';
 import { forkJoin } from 'rxjs';
 import { ImageViewerComponent } from '../shared-module/image-viewer/image-viewer.component';
 import { ProfileService } from '../services/profile.service';
 import { TmdbService } from '../services/tmdb.service';
+import { LogSheetService } from '../shared-module/log-sheet/log-sheet.service';
+import { ToastService } from '../services/toast.service';
+import { UserDataService, WatchlistEntry } from '../services/user-data.service';
 
 @Component({
     selector: 'app-tv',
@@ -33,7 +36,11 @@ export class TvPage implements OnInit {
     private tmdb: TmdbService,
     private route: ActivatedRoute,
     private modalCtrl: ModalController,
+    private actionSheetCtrl: ActionSheetController,
     public profileService: ProfileService,
+    private logSheet: LogSheetService,
+    private userData: UserDataService,
+    private toast: ToastService,
   ) {}
 
   ngOnInit() {
@@ -258,39 +265,87 @@ export class TvPage implements OnInit {
   }
 
   get userRating(): number | null {
-    return this.profileService.getRating('tv', this.show?.id)?.rating || null;
+    if (!this.show) {
+      return null;
+    }
+    return this.userData.getWatchedEntry('tv', this.show.id)?.rating ?? null;
   }
 
   isWatched(): boolean {
-    return this.show
-      ? this.profileService.isInWatched({ ...this.show, media_type: 'tv' })
-      : false;
-  }
-  isFavorite(): boolean {
-    return this.show
-      ? this.profileService.isInFavorites({ ...this.show, media_type: 'tv' })
-      : false;
-  }
-  isWatchlist(): boolean {
-    return this.show
-      ? this.profileService.isInWatchlist({ ...this.show, media_type: 'tv' })
-      : false;
+    return this.show ? this.userData.isWatched('tv', this.show.id) : false;
   }
 
-  toggleWatched() {
-    if (this.show) {
-      this.profileService.toggleWatched({ ...this.show, media_type: 'tv' });
+  isLiked(): boolean {
+    if (!this.show) {
+      return false;
     }
+    return this.userData.getWatchedEntry('tv', this.show.id)?.liked ?? false;
   }
-  toggleFavorite() {
-    if (this.show) {
-      this.profileService.toggleFavorite({ ...this.show, media_type: 'tv' });
+
+  async openLogSheet() {
+    if (!this.show) {
+      return;
     }
+    await this.logSheet.open({
+      id: this.show.id,
+      media_type: 'tv',
+      title: this.show.name || '',
+      poster_path: this.show.poster_path || null,
+      first_air_date: this.show.first_air_date,
+    });
   }
-  toggleWatchlist() {
-    if (this.show) {
-      this.profileService.addToWatchlist({ ...this.show, media_type: 'tv' });
+
+  toggleLiked() {
+    if (!this.show) {
+      return;
     }
+    const existing = this.userData.getWatchedEntry('tv', this.show.id);
+    this.userData.logEntry({
+      id: this.show.id,
+      media_type: 'tv',
+      title: this.show.name || '',
+      poster_path: this.show.poster_path || null,
+      watchedAt: existing?.watchedAt || new Date().toISOString(),
+      rewatch: existing?.rewatch ?? false,
+      rating: existing?.rating ?? null,
+      review: existing?.review ?? '',
+      tags: existing?.tags ?? [],
+      liked: !(existing?.liked ?? false),
+      first_air_date: this.show.first_air_date,
+    });
+  }
+
+  async openListActionSheet() {
+    if (!this.show) {
+      return;
+    }
+    const lists = this.userData.getLists();
+    const watchlistItem = this.buildWatchlistItem();
+    const buttons = [
+      {
+        text: 'Add to Watchlist',
+        icon: 'bookmark-outline',
+        handler: () => {
+          this.userData.addToWatchlist(watchlistItem);
+          this.toast.showToast('Added to watchlist.');
+        },
+      },
+      ...lists.map((list) => ({
+        text: list.name,
+        icon: 'list-outline',
+        handler: () => {
+          this.userData.addToList(list.id, watchlistItem);
+          this.toast.showToast(`Added to "${list.name}".`);
+        },
+      })),
+      { text: 'Cancel', role: 'cancel' },
+    ];
+
+    const sheet = await this.actionSheetCtrl.create({
+      header: 'Add to list',
+      buttons,
+    });
+    await sheet.present();
   }
 
   isEpisodeWatched(seasonNum: number, epNum: number): boolean {
@@ -315,5 +370,19 @@ export class TvPage implements OnInit {
       season.season_number,
       epNums,
     );
+  }
+
+  get shouldFadePoster(): boolean {
+    return this.userData.getSettings().fadeWatched && this.isWatched();
+  }
+
+  private buildWatchlistItem(): Omit<WatchlistEntry, 'addedAt'> {
+    return {
+      id: this.show.id,
+      media_type: 'tv',
+      title: this.show.name || '',
+      poster_path: this.show.poster_path || null,
+      first_air_date: this.show.first_air_date,
+    };
   }
 }
