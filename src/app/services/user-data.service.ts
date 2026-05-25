@@ -156,8 +156,11 @@ export class UserDataService {
     const watched = this.getWatched();
     const key = `${entry.media_type}:${entry.id}`;
     const existing = watched[key];
-    const watchedAt = entry.watchedAt || existing?.watchedAt || new Date().toISOString();
-    const rating = this.normalizeRating(entry.rating ?? existing?.rating ?? null);
+    const watchedAt =
+      entry.watchedAt || existing?.watchedAt || new Date().toISOString();
+    const rating = this.normalizeRating(
+      entry.rating ?? existing?.rating ?? null,
+    );
     watched[key] = {
       id: entry.id,
       media_type: entry.media_type,
@@ -195,7 +198,9 @@ export class UserDataService {
       this.WATCHLIST_KEY,
       {},
     );
-    return Object.values(record).sort((a, b) => b.addedAt.localeCompare(a.addedAt));
+    return Object.values(record).sort((a, b) =>
+      b.addedAt.localeCompare(a.addedAt),
+    );
   }
 
   addToWatchlist(item: Omit<WatchlistEntry, 'addedAt'>): void {
@@ -234,16 +239,18 @@ export class UserDataService {
 
   getFavorites(): FavoriteEntry[] {
     const list = this.readJson<FavoriteEntry[]>(this.FAVORITES_KEY, []);
-    return list.slice(0, 6);
+    return list.slice(0, 4);
   }
 
   addFavorite(item: FavoriteEntry): void {
     const list = this.readJson<FavoriteEntry[]>(this.FAVORITES_KEY, []);
-    if (list.some((f) => f.id === item.id && f.media_type === item.media_type)) {
+    if (
+      list.some((f) => f.id === item.id && f.media_type === item.media_type)
+    ) {
       return;
     }
-    if (list.length >= 6) {
-      this.toast.showToast('Favorites are limited to 6 items.');
+    if (list.length >= 4) {
+      this.toast.showToast('Favorites are limited to 4 items.');
       return;
     }
     list.push(item);
@@ -252,7 +259,9 @@ export class UserDataService {
 
   removeFavorite(mediaType: string, id: number): void {
     const list = this.readJson<FavoriteEntry[]>(this.FAVORITES_KEY, []);
-    const next = list.filter((f) => !(f.id === id && f.media_type === mediaType));
+    const next = list.filter(
+      (f) => !(f.id === id && f.media_type === mediaType),
+    );
     this.writeJson(this.FAVORITES_KEY, next);
   }
 
@@ -261,7 +270,7 @@ export class UserDataService {
     const next: FavoriteEntry[] = [];
     ordered.forEach((item) => {
       const key = `${item.media_type}:${item.id}`;
-      if (!seen.has(key) && next.length < 6) {
+      if (!seen.has(key) && next.length < 4) {
         seen.add(key);
         next.push(item);
       }
@@ -273,7 +282,9 @@ export class UserDataService {
 
   getLists(): UserList[] {
     const record = this.readJson<Record<string, UserList>>(this.LISTS_KEY, {});
-    return Object.values(record).sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+    return Object.values(record).sort((a, b) =>
+      a.createdAt.localeCompare(b.createdAt),
+    );
   }
 
   getList(id: string): UserList | null {
@@ -315,7 +326,10 @@ export class UserDataService {
     if (exists) {
       return;
     }
-    const nextItem: WatchlistEntry = { ...item, addedAt: new Date().toISOString() };
+    const nextItem: WatchlistEntry = {
+      ...item,
+      addedAt: new Date().toISOString(),
+    };
     record[listId] = { ...list, items: [...list.items, nextItem] };
     this.writeJson(this.LISTS_KEY, record);
   }
@@ -342,7 +356,10 @@ export class UserDataService {
     return this.stripSettings(settings);
   }
 
-  saveSetting<K extends keyof AppSettings>(key: K, value: AppSettings[K]): void {
+  saveSetting<K extends keyof AppSettings>(
+    key: K,
+    value: AppSettings[K],
+  ): void {
     const settings = this.getSettingsRecord();
     const updated: SettingsRecord = { ...settings, [key]: value };
     this.writeJson(this.SETTINGS_KEY, updated);
@@ -472,7 +489,10 @@ export class UserDataService {
   }
 
   private getSettingsRecord(): SettingsRecord {
-    const stored = this.readJson<SettingsRecord | null>(this.SETTINGS_KEY, null);
+    const stored = this.readJson<SettingsRecord | null>(
+      this.SETTINGS_KEY,
+      null,
+    );
     if (!stored) {
       const fresh = this.buildDefaultSettings();
       this.writeJson(this.SETTINGS_KEY, fresh);
@@ -568,8 +588,14 @@ export class UserDataService {
     const favoriteMovies = this.readJson<any[]>('favoriteMovies', []);
     const favoriteTv = this.readJson<any[]>('favoriteTv', []);
     const watchlist = this.readJson<any[]>('watchlist', []);
-    const ratings = this.readJson<Record<string, LegacyUserRating>>('ratings', {});
-    const reviews = this.readJson<Record<string, LegacyUserReview>>('reviews', {});
+    const ratings = this.readJson<Record<string, LegacyUserRating>>(
+      'ratings',
+      {},
+    );
+    const reviews = this.readJson<Record<string, LegacyUserReview>>(
+      'reviews',
+      {},
+    );
     const customLists = this.readJson<any[]>('customLists', []);
     const legacySettings = this.readJson<any>('appSettings', null);
     const watchedEpisodes = this.readJson<Record<string, boolean>>(
@@ -583,12 +609,16 @@ export class UserDataService {
     ]);
 
     const itemIndex = new Map<string, any>();
-    [...watchedMovies, ...watchedTv, ...watchlist, ...favoriteMovies, ...favoriteTv].forEach(
-      (item) => {
-        const mt = item.media_type || (item.first_air_date ? 'tv' : 'movie');
-        itemIndex.set(`${mt}:${item.id}`, item);
-      },
-    );
+    [
+      ...watchedMovies,
+      ...watchedTv,
+      ...watchlist,
+      ...favoriteMovies,
+      ...favoriteTv,
+    ].forEach((item) => {
+      const mt = item.media_type || (item.first_air_date ? 'tv' : 'movie');
+      itemIndex.set(`${mt}:${item.id}`, item);
+    });
 
     const watched: Record<string, WatchedEntry> = {};
     const applyEntry = (item: any, mediaType: 'movie' | 'tv') => {
@@ -600,7 +630,10 @@ export class UserDataService {
       const legacyRating = ratings[ratingKey];
       const legacyReview = reviews[ratingKey];
       const watchedAt =
-        item.date_added || legacyReview?.date || legacyRating?.date || new Date().toISOString();
+        item.date_added ||
+        legacyReview?.date ||
+        legacyRating?.date ||
+        new Date().toISOString();
       const rating = legacyRating?.rating ?? legacyReview?.rating ?? null;
       watched[key] = {
         id: item.id,
@@ -639,9 +672,8 @@ export class UserDataService {
 
     const watchlistRecord: Record<string, WatchlistEntry> = {};
     watchlist.forEach((item) => {
-      const mediaType = (item.media_type || (item.first_air_date ? 'tv' : 'movie')) as
-        | 'movie'
-        | 'tv';
+      const mediaType = (item.media_type ||
+        (item.first_air_date ? 'tv' : 'movie')) as 'movie' | 'tv';
       const key = `${mediaType}:${item.id}`;
       watchlistRecord[key] = {
         id: item.id,
@@ -667,21 +699,21 @@ export class UserDataService {
         title: t.title || t.name || '',
         poster_path: t.poster_path || null,
       })),
-    ].slice(0, 6);
+    ].slice(0, 4);
 
     const listsRecord: Record<string, UserList> = {};
     customLists.forEach((list) => {
       const listId = list.id || crypto.randomUUID();
       const items: WatchlistEntry[] = (list.items || []).map((item: any) => {
-        const mediaType = (item.media_type || (item.first_air_date ? 'tv' : 'movie')) as
-          | 'movie'
-          | 'tv';
+        const mediaType = (item.media_type ||
+          (item.first_air_date ? 'tv' : 'movie')) as 'movie' | 'tv';
         return {
           id: item.id,
           media_type: mediaType,
           title: item.title || item.name || '',
           poster_path: item.poster_path || null,
-          addedAt: item.date_added || list.createdAt || new Date().toISOString(),
+          addedAt:
+            item.date_added || list.createdAt || new Date().toISOString(),
           release_date: item.release_date,
           first_air_date: item.first_air_date,
         };
@@ -699,8 +731,11 @@ export class UserDataService {
       ...this.buildDefaultSettings(),
       ...(legacySettings || {}),
       fadeWatched: false,
-      defaultMediaTab: (legacySettings?.defaultMediaTab as 'movies' | 'tv') || 'movies',
-      episodeWatched: Object.keys(watchedEpisodes).length ? watchedEpisodes : undefined,
+      defaultMediaTab:
+        (legacySettings?.defaultMediaTab as 'movies' | 'tv') || 'movies',
+      episodeWatched: Object.keys(watchedEpisodes).length
+        ? watchedEpisodes
+        : undefined,
     };
 
     const profile: UserProfile = {

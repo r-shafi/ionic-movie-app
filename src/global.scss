@@ -27,7 +27,7 @@
   --app-shell-surface: rgba(52, 58, 64, 0.9);
   --app-shell-border: rgba(206, 212, 218, 0.14);
   --app-toolbar-height: 56px;
-  --app-tabbar-height: 62px;
+  --app-tabbar-height: 56px;
 }
 
 ion-header ion-toolbar {
@@ -55,7 +55,7 @@ ion-tabs ion-tab-bar[slot="bottom"] {
   --background: var(--app-shell-surface);
   --border: 0;
   height: calc(var(--app-tabbar-height) + var(--ion-safe-area-bottom, 0px));
-  padding: 6px 10px calc(6px + var(--ion-safe-area-bottom, 0px));
+  padding: 4px 10px calc(4px + var(--ion-safe-area-bottom, 0px));
   border-top: 1px solid var(--app-shell-border);
   backdrop-filter: saturate(125%) blur(12px);
 }
@@ -63,7 +63,7 @@ ion-tabs ion-tab-bar[slot="bottom"] {
 ion-tabs ion-tab-button {
   --color: rgba(206, 212, 218, 0.72);
   --color-selected: var(--ion-tab-bar-color-selected);
-  min-height: 48px;
+  min-height: 44px;
   margin: 0 2px;
   border-radius: 12px;
   transition:
@@ -76,11 +76,11 @@ ion-tabs ion-tab-button.tab-selected {
 }
 
 ion-tabs ion-tab-button ion-icon {
-  font-size: 1.16rem;
+  font-size: 1.08rem;
 }
 
 ion-tabs ion-tab-button ion-label {
-  font-size: 0.71rem;
+  font-size: 0.67rem;
   font-weight: 600;
   letter-spacing: 0.03em;
 }

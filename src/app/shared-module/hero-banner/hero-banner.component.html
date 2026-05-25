@@ -2,14 +2,24 @@
   <div class="relative w-full cursor-pointer" (click)="navigate()">
     <div
       class="relative h-[56vw] max-h-[420px] min-h-60 w-full overflow-hidden bg-[#111] bg-cover bg-center bg-no-repeat"
-      [style.backgroundImage]="backdropUrl ? 'url(' + backdropUrl + ')' : 'none'"
-      >
-      <div class="absolute inset-0 bg-gradient-to-b from-black/10 via-black/50 to-black/90"></div>
+      [style.backgroundImage]="
+        backdropUrl ? 'url(' + backdropUrl + ')' : 'none'
+      "
+    >
+      <div
+        class="absolute inset-0 bg-gradient-to-b from-black/10 via-black/50 to-black/90"
+      ></div>
       <div class="absolute inset-x-0 bottom-0 p-4">
-        <span class="mb-1.5 inline-block text-[0.7rem] font-bold uppercase tracking-[0.08em]" style="color: var(--ion-color-primary)">{{
-          current.media_type === "tv" ? "TV Series" : "Movie"
-        }}</span>
-        <h1 class="m-0 mb-1 text-[clamp(1.3rem,5vw,2rem)] font-extrabold leading-[1.2] text-white [text-shadow:0_2px_8px_rgba(0,0,0,0.6)]">{{ current.title || current.name }}</h1>
+        <span
+          class="mb-1.5 inline-block text-[0.7rem] font-bold uppercase tracking-[0.08em]"
+          style="color: var(--ion-color-primary)"
+          >{{ current.media_type === "tv" ? "TV Series" : "Movie" }}</span
+        >
+        <h1
+          class="m-0 mb-1 text-[clamp(1.3rem,5vw,2rem)] font-extrabold leading-[1.2] text-white [text-shadow:0_2px_8px_rgba(0,0,0,0.6)]"
+        >
+          {{ current.title || current.name }}
+        </h1>
         <p class="m-0 mb-2.5 text-[0.85rem] text-white/80">
           {{ getYear(current) }}
           @if (current.vote_average) {
@@ -18,76 +28,21 @@
             </span>
           }
         </p>
-        <div class="hero__actions flex flex-wrap gap-1.5" (click)="$event.stopPropagation()">
-          <ion-button
-            size="small"
-            fill="solid"
-            color="light"
-            [class.active-btn]="isWatched()"
-            (click)="toggleWatched($event)"
-            >
-            <ion-icon
-              slot="start"
-              [name]="isWatched() ? 'eye' : 'eye-outline'"
-            ></ion-icon>
-            Watched
-          </ion-button>
-          <ion-button
-            size="small"
-            fill="solid"
-            color="light"
-            [class.active-btn]="isFavorite()"
-            (click)="toggleFavorite($event)"
-            >
-            <ion-icon
-              slot="start"
-              [name]="isFavorite() ? 'heart' : 'heart-outline'"
-            ></ion-icon>
-            Favorite
-          </ion-button>
-          <ion-button
-            size="small"
-            fill="solid"
-            color="light"
-            [class.active-btn]="isWatchlist()"
-            (click)="toggleWatchlist($event)"
-            >
-            <ion-icon
-              slot="start"
-              [name]="isWatchlist() ? 'bookmark' : 'bookmark-outline'"
-            ></ion-icon>
-            Watchlist
-          </ion-button>
-        </div>
       </div>
     </div>
-    <!-- Dot indicators -->
-    @if (items.length > 1) {
-      <div
-        class="flex justify-center gap-1.5 bg-black/30 py-2"
-        (click)="$event.stopPropagation()"
-        >
-        @for (item of items; track item; let i = $index) {
-          <span
-            class="h-1.5 cursor-pointer rounded-full transition-[background,width] duration-300"
-            [class.w-[18px]]="i === currentIndex"
-            [class.w-1.5]="i !== currentIndex"
-            [class.rounded-[3px]]="i === currentIndex"
-            [style.background]="i === currentIndex ? 'var(--ion-color-primary)' : 'rgba(255, 255, 255, 0.4)'"
-            (click)="goTo(i)"
-            >
-          </span>
-        }
-      </div>
-    }
   </div>
 }
 
 <!-- Skeleton -->
 @if (isLoading) {
   <div class="relative w-full cursor-pointer">
-    <div class="relative h-[56vw] max-h-[420px] min-h-60 w-full overflow-hidden bg-cover bg-center bg-no-repeat" style="background: var(--ion-color-step-50, #1a1a1a)">
-      <div class="absolute inset-0 bg-gradient-to-b from-black/10 via-black/50 to-black/90"></div>
+    <div
+      class="relative h-[56vw] max-h-[420px] min-h-60 w-full overflow-hidden bg-cover bg-center bg-no-repeat"
+      style="background: var(--ion-color-step-50, #1a1a1a)"
+    >
+      <div
+        class="absolute inset-0 bg-gradient-to-b from-black/10 via-black/50 to-black/90"
+      ></div>
       <div class="absolute inset-x-0 bottom-0 p-4">
         <ion-skeleton-text
           animated

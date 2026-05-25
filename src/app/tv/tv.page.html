@@ -90,6 +90,47 @@
     </div>
   </div>
   <div class="tv-body">
+    <div class="px-4 pt-3">
+      <div
+        class="flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-1.5 py-1.5"
+      >
+        <ion-button
+          class="flex-1"
+          shape="round"
+          color="primary"
+          size="small"
+          (click)="openLogSheet()"
+        >
+          @if (isWatched()) {
+          <span
+            class="mr-2 inline-flex h-2 w-2 rounded-full bg-emerald-500"
+          ></span>
+          } {{ isWatched() ? 'Edit log' : 'Log' }}
+        </ion-button>
+        <ion-button
+          shape="round"
+          fill="clear"
+          size="small"
+          [color]="isLiked() ? 'danger' : 'medium'"
+          (click)="toggleLiked()"
+        >
+          <ion-icon
+            slot="icon-only"
+            [name]="isLiked() ? 'heart' : 'heart-outline'"
+          ></ion-icon>
+        </ion-button>
+        <ion-button
+          shape="round"
+          fill="clear"
+          size="small"
+          color="medium"
+          (click)="openListActionSheet()"
+        >
+          <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+
     <!-- Overview (moved: show synopsis right after CTA buttons) -->
     @if (show.overview) {
     <div class="section">
@@ -341,46 +382,6 @@
       </div>
     </div>
     }
-  </div>
-  <div
-    class="sticky bottom-0 z-20 px-4 pb-[calc(env(safe-area-inset-bottom)+16px)] pt-3"
-    style="background: rgba(8, 8, 8, 0.78); backdrop-filter: blur(10px)"
-  >
-    <div
-      class="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-2 py-2"
-    >
-      <ion-button
-        class="flex-1"
-        shape="round"
-        color="primary"
-        (click)="openLogSheet()"
-      >
-        @if (isWatched()) {
-        <span
-          class="mr-2 inline-flex h-2 w-2 rounded-full bg-emerald-500"
-        ></span>
-        } {{ isWatched() ? 'Edit log' : 'Log' }}
-      </ion-button>
-      <ion-button
-        shape="round"
-        fill="clear"
-        [color]="isLiked() ? 'danger' : 'medium'"
-        (click)="toggleLiked()"
-      >
-        <ion-icon
-          slot="icon-only"
-          [name]="isLiked() ? 'heart' : 'heart-outline'"
-        ></ion-icon>
-      </ion-button>
-      <ion-button
-        shape="round"
-        fill="clear"
-        color="medium"
-        (click)="openListActionSheet()"
-      >
-        <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
-      </ion-button>
-    </div>
   </div>
   }
 </ion-content>
