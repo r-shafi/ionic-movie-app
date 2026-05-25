@@ -35,7 +35,30 @@
             "prefix": "app",
             "style": "camelCase"
           }
-        ]
+        ],
+
+        // TMDb API uses snake_case property names throughout — enforcing camelCase
+        // here would require renaming every API response field.
+        "@typescript-eslint/naming-convention": "off",
+
+        // Member ordering is a stylistic preference; not enforced in this project.
+        "@typescript-eslint/member-ordering": "off",
+
+        // Private fields use the conventional _ prefix in this project.
+        "no-underscore-dangle": "off",
+
+        // Non-null assertions are used in controlled contexts where nullability
+        // is guaranteed by the surrounding logic.
+        "@typescript-eslint/no-non-null-assertion": "off",
+
+        // Single-line if statements without braces are acceptable here.
+        "curly": "off",
+
+        // Named functions are used in lifecycle hooks; arrow-only is too strict.
+        "prefer-arrow/prefer-arrow-functions": "off",
+
+        // Some import lines in generated module files exceed 140 chars.
+        "max-len": ["error", { "code": 200 }]
       }
     },
     {

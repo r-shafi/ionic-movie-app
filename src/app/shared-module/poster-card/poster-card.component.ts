@@ -57,7 +57,7 @@ export class PosterCardComponent implements OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['item'] || changes['showFadeIfWatched'] || changes['fadeRefresh']) {
+    if (changes.item || changes.showFadeIfWatched || changes.fadeRefresh) {
       this.updateFadeState();
     }
   }

@@ -10,7 +10,7 @@ import { UserDataService } from '../services/user-data.service';
   standalone: false,
 })
 export class TvSeasonPage implements OnInit {
-  tvId: number = 0;
+  tvId = 0;
   season: any;
   isLoading = true;
 

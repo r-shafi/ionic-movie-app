@@ -128,14 +128,14 @@ export class DiscoverPage implements OnInit {
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
-      const mode = params['mode'];
+      const mode = params.mode;
 
       if (mode === 'list') {
         this.viewMode = 'list';
         this.showBrowseFilters = false;
-        this.listTitle = params['title'] || 'Results';
-        this.activeTab = (params['tab'] as 'movies' | 'tv') || 'movies';
-        this.sortBy = params['sort'] || 'popularity.desc';
+        this.listTitle = params.title || 'Results';
+        this.activeTab = (params.tab as 'movies' | 'tv') || 'movies';
+        this.sortBy = params.sort || 'popularity.desc';
         this.selectedGenre = null;
         this.selectedYear = null;
         this.currentPage = 1;
@@ -145,8 +145,8 @@ export class DiscoverPage implements OnInit {
       } else if (mode === 'browse') {
         this.viewMode = 'browse';
         this.showBrowseFilters = false;
-        this.activeTab = (params['tab'] as 'movies' | 'tv') || 'movies';
-        this.sortBy = params['sort'] || 'popularity.desc';
+        this.activeTab = (params.tab as 'movies' | 'tv') || 'movies';
+        this.sortBy = params.sort || 'popularity.desc';
         this.selectedGenre = null;
         this.selectedYear = null;
         this.currentPage = 1;

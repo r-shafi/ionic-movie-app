@@ -138,10 +138,10 @@ export class MovieCardComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['movie'] && this.movie) {
+    if (changes.movie && this.movie) {
       this.refreshFromService();
     }
-    if (changes['movie'] || changes['showFadeIfWatched'] || changes['fadeRefresh']) {
+    if (changes.movie || changes.showFadeIfWatched || changes.fadeRefresh) {
       this.updateFadeState();
     }
   }
