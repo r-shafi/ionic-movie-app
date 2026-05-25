@@ -1,0 +1,27 @@
+<div class="flex items-center gap-1">
+  @for (star of stars; track star) {
+    <button
+      type="button"
+      class="relative h-7 w-7 p-0"
+      [disabled]="readonly"
+      (click)="selectRating($event, star)"
+      [attr.aria-label]="'Rate ' + star"
+    >
+      <ion-icon
+        name="star-outline"
+        class="absolute inset-0 text-[22px]"
+        style="color: var(--ion-color-medium)"
+      ></ion-icon>
+      <div
+        class="absolute inset-0 overflow-hidden"
+        [style.width.%]="fillPercent(star)"
+      >
+        <ion-icon
+          name="star"
+          class="text-[22px]"
+          style="color: var(--ion-color-warning)"
+        ></ion-icon>
+      </div>
+    </button>
+  }
+</div>

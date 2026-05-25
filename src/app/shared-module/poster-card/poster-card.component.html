@@ -1,4 +1,11 @@
-<div class="w-full cursor-pointer" (click)="navigate()">
+<div
+  class="w-full cursor-pointer"
+  (click)="handleClick($event)"
+  (touchstart)="onTouchStart()"
+  (touchend)="onTouchEnd()"
+  (touchcancel)="onTouchEnd()"
+  (touchmove)="onTouchEnd()"
+>
   <div
     class="relative aspect-[2/3] w-full overflow-hidden rounded-lg"
     style="background: var(--ion-color-step-100, #1e1e1e)"

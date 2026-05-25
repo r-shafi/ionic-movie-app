@@ -6,16 +6,16 @@
         ? 'https://image.tmdb.org/t/p/w185' + movie.poster_path
         : 'assets/no-image.png'
     }}"
-    [routerLink]="
-      movie.media_type === 'tv' ? ['/tv', movie.id] : ['/movie', movie.id]
-    "
+    (click)="handleNavigate($event)"
+    (touchstart)="onTouchStart()"
+    (touchend)="onTouchEnd()"
+    (touchcancel)="onTouchEnd()"
+    (touchmove)="onTouchEnd()"
   ></ion-img>
   <section class="details ion-padding-start">
     <h1
       class="ion-no-margin cursor-pointer text-[clamp(24px,2.5vw,44px)]"
-      [routerLink]="
-        movie.media_type === 'tv' ? ['/tv', movie.id] : ['/movie', movie.id]
-      "
+      (click)="handleNavigate($event)"
     >
       {{ movie.title || movie.name }}
     </h1>

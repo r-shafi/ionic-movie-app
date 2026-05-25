@@ -1,5 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import { LogSheetService } from 'src/app/shared-module/log-sheet/log-sheet.service';
 import { ProfileService } from 'src/app/services/profile.service';
 
 @Component({
@@ -8,13 +10,17 @@ import { ProfileService } from 'src/app/services/profile.service';
     styleUrls: ['./poster-card.component.scss'],
     standalone: false
 })
-export class PosterCardComponent {
+export class PosterCardComponent implements OnDestroy {
   @Input() item: any;
   @Input() mediaType: 'movie' | 'tv' = 'movie';
+  longPressThreshold = 500;
+  private longPressTimer: ReturnType<typeof setTimeout> | null = null;
+  private suppressClick = false;
 
   constructor(
     private router: Router,
     private profileService: ProfileService,
+    private logSheet: LogSheetService,
   ) {}
 
   get posterUrl(): string {
@@ -39,8 +45,60 @@ export class PosterCardComponent {
     return this.profileService.getRating(mt, this.item.id)?.rating || null;
   }
 
+  handleClick(event: Event) {
+    if (this.suppressClick) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.suppressClick = false;
+      return;
+    }
+    this.navigate();
+  }
+
   navigate() {
     const mt = this.item?.media_type || this.mediaType;
     this.router.navigate([mt === 'tv' ? '/tv' : '/movie', this.item.id]);
+  }
+
+  onTouchStart() {
+    this.suppressClick = false;
+    this.longPressTimer = setTimeout(() => {
+      this.suppressClick = true;
+      this.triggerLongPress();
+    }, this.longPressThreshold);
+  }
+
+  onTouchEnd() {
+    if (this.longPressTimer) {
+      clearTimeout(this.longPressTimer);
+      this.longPressTimer = null;
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.longPressTimer) {
+      clearTimeout(this.longPressTimer);
+      this.longPressTimer = null;
+    }
+  }
+
+  private async triggerLongPress() {
+    if (!this.item) {
+      return;
+    }
+    try {
+      await Haptics.impact({ style: ImpactStyle.Medium });
+    } catch {
+      // Ignore haptics errors on unsupported platforms.
+    }
+    const mediaType = (this.item.media_type || this.mediaType) as 'movie' | 'tv';
+    await this.logSheet.open({
+      id: this.item.id,
+      media_type: mediaType,
+      title: this.item.title || this.item.name || '',
+      poster_path: this.item.poster_path || null,
+      release_date: this.item.release_date,
+      first_air_date: this.item.first_air_date,
+    });
   }
 }
