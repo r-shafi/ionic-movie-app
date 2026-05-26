@@ -3,10 +3,9 @@ Categories:
 
 License: MIT
 AuthorName: R. Shafi
-# TODO: set to your real GitHub username/URL
-SourceCode: https://github.com/r-shafi/ionic-movie-app
-IssueTracker: https://github.com/r-shafi/ionic-movie-app/issues
-Changelog: https://github.com/r-shafi/ionic-movie-app/releases
+SourceCode: https://github.com/r-shafi/open-movie-tracker
+IssueTracker: https://github.com/r-shafi/open-movie-tracker/issues
+Changelog: https://github.com/r-shafi/open-movie-tracker/releases
 
 AutoName: Open Movie Tracker
 
@@ -43,7 +42,7 @@ AntiFeatures:
 
 RepoType: git
 # TODO: replace with the real clone URL once the repo is public
-Repo: https://github.com/r-shafi/ionic-movie-app.git
+Repo: https://github.com/r-shafi/open-movie-tracker.git
 
 Builds:
   - versionName: "0.0.1"
