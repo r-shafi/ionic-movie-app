@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.6.0](https://github.com/r-shafi/open-movie-tracker/compare/v0.5.0...v0.6.0) (2026-05-26)
+
+
+### Features
+
+* Enable JSON module resolution in TypeScript configuration ([c3960fa](https://github.com/r-shafi/open-movie-tracker/commit/c3960fa6243d5ed0257685fb0353772104c3ae4b))
+* Enhance profile statistics display with rating and momentum charts ([ebd75ac](https://github.com/r-shafi/open-movie-tracker/commit/ebd75ac100546636021c3c968b681b741cae4884))
+* Replace logo assets and remove unused SVG files ([292b6ba](https://github.com/r-shafi/open-movie-tracker/commit/292b6baac4a90f233a3711be9598a1de4b2ece6a))
+* Update favicon references to use logo.png ([7366283](https://github.com/r-shafi/open-movie-tracker/commit/736628397de6a64fcac056e7b9b7374f3fb80d75))
+* Update medium color variables for improved contrast on dark surfaces ([8419abb](https://github.com/r-shafi/open-movie-tracker/commit/8419abbac880b71b25e9336b282dc366457fb8b1))
+* Update metadata with correct GitHub repository links ([d0c2bb2](https://github.com/r-shafi/open-movie-tracker/commit/d0c2bb282dd28c05a33abb69a92e5754f047c3a3))
+* Update settings page with dynamic app version and correct GitHub repository URL ([3b3e25f](https://github.com/r-shafi/open-movie-tracker/commit/3b3e25fad6eac3df0af65a1f8608b047a3d09b74))
+
 ## [0.5.0](https://github.com/r-shafi/open-movie-tracker/compare/v0.4.0...v0.5.0) (2026-05-26)
 
 
