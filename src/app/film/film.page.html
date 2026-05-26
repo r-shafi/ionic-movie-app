@@ -325,7 +325,6 @@
             @if (c.profile_path) {
             <img
               [src]="'https://image.tmdb.org/t/p/w185' + c.profile_path"
-              [alt]="c.name"
               class="block h-full w-full object-cover"
               loading="lazy"
             />
@@ -370,7 +369,6 @@
             @if (person.profile_path) {
             <img
               [src]="'https://image.tmdb.org/t/p/w185' + person.profile_path"
-              [alt]="person.name"
               class="block h-full w-full object-cover"
               loading="lazy"
             />

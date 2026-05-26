@@ -228,12 +228,11 @@
               class="avatar-fallback"
             ></ion-icon>
             @if (c.profile_path) {
-            <img
-              [src]="'https://image.tmdb.org/t/p/w185' + c.profile_path"
-              [alt]="c.name"
-              class="cast-avatar__img"
-              loading="lazy"
-            />
+              <img
+                [src]="'https://image.tmdb.org/t/p/w185' + c.profile_path"
+                class="cast-avatar__img"
+                loading="lazy"
+              />
             }
           </div>
           <p class="cast-name">{{ c.name }}</p>
@@ -256,12 +255,11 @@
               class="avatar-fallback"
             ></ion-icon>
             @if (person.profile_path) {
-            <img
-              [src]="'https://image.tmdb.org/t/p/w185' + person.profile_path"
-              [alt]="person.name"
-              class="cast-avatar__img"
-              loading="lazy"
-            />
+              <img
+                [src]="'https://image.tmdb.org/t/p/w185' + person.profile_path"
+                class="cast-avatar__img"
+                loading="lazy"
+              />
             }
           </div>
           <p class="cast-name">{{ person.name }}</p>
