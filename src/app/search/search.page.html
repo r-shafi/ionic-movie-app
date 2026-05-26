@@ -6,15 +6,12 @@
       (ionChange)="onSearchSubmit()"
       showCancelButton="focus"
       placeholder="Movies, TV shows, people..."
-      [disabled]="isOffline"
     ></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  @if (isOffline) {
-  <p class="ion-text-center ion-padding">No internet connection.</p>
-  } @if (query) { @if (isLoading) {
+  @if (query) { @if (isLoading) {
   <ion-list>
     @for (s of [0,1,2,3,4,5]; track s) {
     <ion-item>
@@ -65,7 +62,7 @@
     <ion-icon name="search-outline" class="mb-3 text-5xl"></ion-icon>
     <p>No results for "{{ query }}"</p>
   </div>
-  } } @if (!query && !isOffline) { @if (isLoadingDiscover) {
+  } } @if (!query) { @if (isLoadingDiscover) {
   <div class="px-6 py-4">
     <div class="mb-3.5 flex items-center justify-between">
       <ion-skeleton-text animated class="h-3.5 w-20"></ion-skeleton-text>

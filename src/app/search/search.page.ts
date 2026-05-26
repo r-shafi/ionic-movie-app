@@ -1,21 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subject, forkJoin } from 'rxjs';
+import { Subject, Subscription, forkJoin } from 'rxjs';
 import {
   debounceTime,
   distinctUntilChanged,
   filter,
   switchMap,
 } from 'rxjs/operators';
+import { NetworkService } from '../services/network.service';
 import { TmdbService } from '../services/tmdb.service';
 
 @Component({
-    selector: 'app-search',
-    templateUrl: './search.page.html',
-    styleUrls: ['./search.page.scss'],
-    standalone: false
+  selector: 'app-search',
+  templateUrl: './search.page.html',
+  styleUrls: ['./search.page.scss'],
+  standalone: false,
 })
-export class SearchPage implements OnInit {
+export class SearchPage implements OnInit, OnDestroy {
   query = '';
   results: any[] = [];
   isLoading = false;
@@ -30,6 +31,7 @@ export class SearchPage implements OnInit {
 
   private readonly STORAGE_KEY = 'recentSearches';
   private searchSubject = new Subject<string>();
+  private networkSub = Subscription.EMPTY;
 
   readonly genreColors: Record<number, string> = {
     28: 'linear-gradient(135deg, #ff6b6b, #ee0979)',
@@ -94,6 +96,7 @@ export class SearchPage implements OnInit {
   constructor(
     private tmdb: TmdbService,
     private router: Router,
+    private network: NetworkService,
   ) {
     this.searchSubject
       .pipe(
@@ -119,12 +122,17 @@ export class SearchPage implements OnInit {
   }
 
   ngOnInit() {
+    this.networkSub = this.network.isOnline$.subscribe((isOnline) => {
+      this.isOffline = !isOnline;
+    });
     this.recentSearches = JSON.parse(
       localStorage.getItem(this.STORAGE_KEY) || '[]',
     );
-    if (!this.isOffline) {
-      this.loadDiscoverSections();
-    }
+    this.loadDiscoverSections();
+  }
+
+  ngOnDestroy() {
+    this.networkSub.unsubscribe();
   }
 
   loadDiscoverSections() {

@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { forkJoin } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { forkJoin, Subscription } from 'rxjs';
+import { NetworkService } from '../services/network.service';
 import { TmdbService } from '../services/tmdb.service';
 
 @Component({
-    selector: 'app-home',
-    templateUrl: './home.page.html',
-    standalone: false
+  selector: 'app-home',
+  templateUrl: './home.page.html',
+  standalone: false,
 })
-export class HomePage implements OnInit {
+export class HomePage implements OnInit, OnDestroy {
   trendingMovies: any[] = [];
   trendingTv: any[] = [];
   popularMovies: any[] = [];
@@ -21,11 +22,22 @@ export class HomePage implements OnInit {
   heroItems: any[] = [];
   isLoading = true;
   isOffline = !navigator.onLine;
+  private networkSub = Subscription.EMPTY;
 
-  constructor(private tmdb: TmdbService) {}
+  constructor(
+    private tmdb: TmdbService,
+    private network: NetworkService,
+  ) {}
 
   ngOnInit() {
+    this.networkSub = this.network.isOnline$.subscribe((isOnline) => {
+      this.isOffline = !isOnline;
+    });
     this.loadData();
+  }
+
+  ngOnDestroy() {
+    this.networkSub.unsubscribe();
   }
 
   loadData(event?: any) {
