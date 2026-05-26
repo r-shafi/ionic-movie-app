@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.2.0](https://github.com/r-shafi/open-movie-tracker/compare/open-movie-tracker-v0.1.0...open-movie-tracker-v0.2.0) (2026-05-26)
+
+
+### Features
+
+* Add commitlint and husky for improved commit message validation ([118ff69](https://github.com/r-shafi/open-movie-tracker/commit/118ff694492876f5feb294a80a19fe545c0d1fc4))
+* Add commitlint configuration for standardized commit messages ([adbe4e3](https://github.com/r-shafi/open-movie-tracker/commit/adbe4e33009b6ff3acd6e146fe51fa6bd77175f9))
+* Add Husky hooks for commit message linting and pre-commit checks ([c01fd69](https://github.com/r-shafi/open-movie-tracker/commit/c01fd696750d5364769043c4f4f3e462b940c5a8))
+* Add release process documentation and commit guidelines ([c4ea531](https://github.com/r-shafi/open-movie-tracker/commit/c4ea531f9d6ab449d385a97db797b5612d444c07))
+* Add script to increment versionCode in build.gradle ([b6d49b6](https://github.com/r-shafi/open-movie-tracker/commit/b6d49b61ba82c6201f49422e27359a3972652406))
+* Refactor release workflows for automated tagging ([df81771](https://github.com/r-shafi/open-movie-tracker/commit/df817712cb393f2c0f3c09a755194b29c2b53f66))
+* Update .gitignore to include additional Android signing files ([b086a4b](https://github.com/r-shafi/open-movie-tracker/commit/b086a4be7208dfb28653d1130420b2ebf3f04156))
+* Update CI workflows for improved validation and release process ([0c83fab](https://github.com/r-shafi/open-movie-tracker/commit/0c83fabe3d8b857675ed7614a0be163c5acfb654))
+* Update version name and modify .gitignore for keystore files ([1ed3894](https://github.com/r-shafi/open-movie-tracker/commit/1ed3894d534e671dd0293eaeea579512f27a987d))
+
 ## [0.1.0](https://github.com/r-shafi/open-movie-tracker/compare/open-movie-tracker-v0.0.1...open-movie-tracker-v0.1.0) (2026-05-25)
 
 
