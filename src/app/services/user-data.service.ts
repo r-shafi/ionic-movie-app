@@ -366,6 +366,66 @@ export class UserDataService {
     this.writeJson(this.SETTINGS_KEY, updated);
   }
 
+  // ── Bookmarked Lists ─────────────────────────────────────────────────────
+
+  private readonly BOOKMARKED_LISTS_KEY = 'mva_bookmarked_lists';
+  private readonly RECENT_LISTS_KEY = 'mva_recent_lists';
+
+  bookmarkList(list: any): void {
+    const bookmarks = this.readJson<any[]>(this.BOOKMARKED_LISTS_KEY, []);
+    if (!bookmarks.some(b => b.id === list.id)) {
+      bookmarks.unshift({
+        id: list.id,
+        name: list.name,
+        description: list.description || '',
+        item_count: list.item_count || 0,
+        favorite_count: list.favorite_count || 0,
+        poster_path: list.poster_path || null,
+        creator_username: list.created_by?.username || list.creator_username || '',
+        items: list.items || [],
+      });
+      this.writeJson(this.BOOKMARKED_LISTS_KEY, bookmarks);
+    }
+  }
+
+  unbookmarkList(listId: number): void {
+    const bookmarks = this.readJson<any[]>(this.BOOKMARKED_LISTS_KEY, []);
+    const next = bookmarks.filter(b => b.id !== listId);
+    this.writeJson(this.BOOKMARKED_LISTS_KEY, next);
+  }
+
+  isListBookmarked(listId: number): boolean {
+    const bookmarks = this.readJson<any[]>(this.BOOKMARKED_LISTS_KEY, []);
+    return bookmarks.some(b => b.id === listId);
+  }
+
+  getBookmarkedLists(): any[] {
+    return this.readJson<any[]>(this.BOOKMARKED_LISTS_KEY, []);
+  }
+
+  recordListView(list: any): void {
+    let recent = this.readJson<any[]>(this.RECENT_LISTS_KEY, []);
+    recent = recent.filter(r => r.id !== list.id);
+    recent.unshift({
+      id: list.id,
+      name: list.name,
+      description: list.description || '',
+      item_count: list.item_count || 0,
+      favorite_count: list.favorite_count || 0,
+      poster_path: list.poster_path || null,
+      creator_username: list.created_by?.username || list.creator_username || '',
+      items: list.items || [],
+    });
+    if (recent.length > 10) {
+      recent = recent.slice(0, 10);
+    }
+    this.writeJson(this.RECENT_LISTS_KEY, recent);
+  }
+
+  getRecentlyViewedLists(): any[] {
+    return this.readJson<any[]>(this.RECENT_LISTS_KEY, []);
+  }
+
   // Analytics
 
   getStats(): {

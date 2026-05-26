@@ -350,6 +350,20 @@ export class TmdbService {
     return this.get(`/person/${id}/images`);
   }
 
+  // ── Lists ─────────────────────────────────────────────────────────────────
+
+  getMovieLists(id: number | string, page = 1): Observable<any> {
+    return this.get(`/movie/${id}/lists`, { page });
+  }
+
+  getTvLists(id: number | string, page = 1): Observable<any> {
+    return this.get(`/tv/${id}/lists`, { page });
+  }
+
+  getListDetail(id: number | string): Observable<any> {
+    return this.get(`/list/${id}`);
+  }
+
   // ── Search ─────────────────────────────────────────────────────────────────
 
   searchMulti(query: string, page = 1): Observable<any> {
