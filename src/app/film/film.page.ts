@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ActionSheetController, ModalController } from '@ionic/angular';
-import { forkJoin } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { ImageViewerComponent } from '../shared-module/image-viewer/image-viewer.component';
 import { LogSheetService } from '../shared-module/log-sheet/log-sheet.service';
 import { TmdbService } from '../services/tmdb.service';
@@ -29,6 +30,8 @@ export class FilmPage implements OnInit {
   recommendations: any[] = [];
   reviews: any[] = [];
   isLoading = true;
+  featuredLists: any[] = [];
+  allListsCount = 0;
 
   constructor(
     private tmdb: TmdbService,
@@ -50,6 +53,7 @@ export class FilmPage implements OnInit {
       similar: this.tmdb.getMovieSimilar(id),
       recommendations: this.tmdb.getMovieRecommendations(id),
       reviews: this.tmdb.getMovieReviews(id),
+      lists: this.tmdb.getMovieLists(id).pipe(catchError(() => of({ results: [], total_results: 0 }))),
     }).subscribe({
       next: (data: any) => {
         this.movie = data.movie;
@@ -74,6 +78,19 @@ export class FilmPage implements OnInit {
           (i: any) => ({ ...i, media_type: 'movie' }),
         );
         this.reviews = data.reviews?.results || [];
+        this.allListsCount = data.lists?.total_results || 0;
+        const top3 = (data.lists?.results || []).slice(0, 3);
+        if (top3.length) {
+          forkJoin(top3.map((l: any) => this.tmdb.getListDetail(l.id).pipe(catchError(() => of({ items: [], created_by: null }))))).subscribe(
+            (details: any) => {
+              this.featuredLists = top3.map((list: any, i: number) => ({
+                ...list,
+                creator_username: details[i]?.created_by?.username || '',
+                items: details[i]?.items || [],
+              }));
+            },
+          );
+        }
         this.isLoading = false;
       },
       error: () => {
@@ -342,6 +359,41 @@ export class FilmPage implements OnInit {
 
   get shouldFadePoster(): boolean {
     return this.userData.getSettings().fadeWatched && this.isWatched();
+  }
+
+  // ── Lists section ─────────────────────────────────────────────────────
+
+  toggleListBookmark(list: any) {
+    if (this.userData.isListBookmarked(list.id)) {
+      this.userData.unbookmarkList(list.id);
+    } else {
+      this.userData.bookmarkList(list);
+    }
+  }
+
+  isListBookmarked(listId: number): boolean {
+    return this.userData.isListBookmarked(listId);
+  }
+
+  formatCount(n: number): string {
+    if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+    if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+    return String(n);
+  }
+
+  getListCoverPosters(list: any): string[] {
+    if (list.poster_path) {
+      return [`https://image.tmdb.org/t/p/w185${list.poster_path}`];
+    }
+    return (list.items || [])
+      .filter((i: any) => i.poster_path)
+      .slice(0, 4)
+      .map((i: any) => `https://image.tmdb.org/t/p/w92${i.poster_path}`);
+  }
+
+  getPlaceholderSlots(list: any): number[] {
+    const count = 4 - this.getListCoverPosters(list).length;
+    return count > 0 ? Array(count).fill(0) : [];
   }
 
   private buildWatchlistItem(): Omit<WatchlistEntry, 'addedAt'> {
