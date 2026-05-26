@@ -2,7 +2,6 @@ import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { forkJoin } from 'rxjs';
-import { SettingsService } from '../services/settings.service';
 import { DiscoverParams, TmdbService } from '../services/tmdb.service';
 
 @Component({
@@ -121,7 +120,6 @@ export class DiscoverPage implements OnInit {
 
   constructor(
     private tmdb: TmdbService,
-    private settingsService: SettingsService,
     private route: ActivatedRoute,
     private location: Location,
   ) {}
@@ -271,7 +269,6 @@ export class DiscoverPage implements OnInit {
 
   loadBrowse() {
     this.isLoadingBrowse = true;
-    const { excludeLanguages } = this.settingsService.getSettings();
     const params: DiscoverParams = {
       sort_by: this.sortBy,
       page: this.currentPage,
@@ -293,12 +290,7 @@ export class DiscoverPage implements OnInit {
 
     obs.subscribe({
       next: (r: any) => {
-        let results: any[] = r.results || [];
-        if (excludeLanguages?.length) {
-          results = results.filter(
-            (item: any) => !excludeLanguages.includes(item.original_language),
-          );
-        }
+        const results: any[] = r.results || [];
         this.browseResults =
           this.currentPage === 1
             ? results
