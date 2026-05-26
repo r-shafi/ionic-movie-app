@@ -32,3 +32,10 @@ android/app/release.keystore
 android/.gradle/
 android/app/build/
 android/build/
+
+# Android signing — never commit these
+*.keystore
+*.jks
+*.p12
+local.properties
+android/local.properties
