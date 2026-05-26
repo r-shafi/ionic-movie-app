@@ -64,10 +64,52 @@ ion-segment {
   background: rgba(var(--ion-color-danger-rgb), 0.85);
 }
 
+.chart-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.chart-subtitle {
+  color: var(--ion-color-step-250);
+  font-size: 0.68rem;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+}
+
+.chart-scale-pill {
+  flex-shrink: 0;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--ion-color-step-350);
+  background: rgba(var(--app-bg-secondary-rgb), 0.56);
+  border: 1px solid rgba(var(--ion-color-light-rgb), 0.08);
+}
+
+.chart-grid-lines {
+  pointer-events: none;
+  position: absolute;
+  inset: 0 0 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.chart-grid-lines span {
+  border-top: 1px dashed rgba(var(--ion-color-light-rgb), 0.09);
+}
+
 .rating-pulse-bars {
+  position: relative;
   display: flex;
   align-items: flex-end;
   height: 156px;
+  gap: 6px;
 }
 
 .rating-pulse-col {
@@ -79,15 +121,150 @@ ion-segment {
   height: 100%;
 }
 
-.rating-pulse-bar {
+.rating-pulse-track {
   width: 100%;
+  height: calc(100% - 16px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.rating-pulse-bar {
+  width: 78%;
+  max-width: 18px;
   min-height: 8px;
-  background: var(--ion-color-primary);
-  transition: height 220ms ease;
+  border-radius: 10px 10px 4px 4px;
+  position: relative;
+  background: linear-gradient(
+    180deg,
+    rgba(var(--ion-color-primary-rgb), 0.96),
+    rgba(var(--ion-color-primary-rgb), 0.72)
+  );
+  box-shadow: 0 6px 14px rgba(var(--ion-color-primary-rgb), 0.26);
+  transition:
+    height 260ms ease,
+    filter 180ms ease;
+}
+
+.rating-pulse-bar--peak {
+  background: linear-gradient(
+    180deg,
+    rgba(var(--ion-color-success-rgb), 0.96),
+    rgba(var(--ion-color-success-rgb), 0.72)
+  );
+  box-shadow: 0 8px 18px rgba(var(--ion-color-success-rgb), 0.24);
+}
+
+.rating-pulse-bar:focus-visible,
+.momentum-bar:focus-visible {
+  outline: 2px solid rgba(var(--ion-color-light-rgb), 0.7);
+  outline-offset: 2px;
+}
+
+.rating-pulse-bar:hover,
+.momentum-bar:hover {
+  filter: brightness(1.08);
+}
+
+.chart-bar-value {
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.58rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ion-color-step-250);
 }
 
 .rating-pulse-label {
   margin-top: 6px;
+  font-size: 0.56rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ion-color-medium);
+}
+
+.momentum-bars {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 132px;
+}
+
+.momentum-col {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.momentum-track {
+  width: 100%;
+  height: calc(100% - 16px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.momentum-bar {
+  width: 76%;
+  max-width: 30px;
+  min-height: 8px;
+  border-radius: 12px 12px 4px 4px;
+  position: relative;
+  background: linear-gradient(
+    180deg,
+    rgba(var(--ion-color-primary-rgb), 0.98),
+    rgba(var(--ion-color-primary-rgb), 0.66)
+  );
+  box-shadow: 0 8px 18px rgba(var(--ion-color-primary-rgb), 0.22);
+  transition:
+    height 260ms ease,
+    filter 180ms ease;
+}
+
+.momentum-bar--peak {
+  background: linear-gradient(
+    180deg,
+    rgba(var(--ion-color-success-rgb), 0.95),
+    rgba(var(--ion-color-success-rgb), 0.68)
+  );
+  box-shadow: 0 10px 18px rgba(var(--ion-color-success-rgb), 0.24);
+}
+
+.momentum-label {
+  margin-top: 6px;
   font-size: 0.58rem;
   color: var(--ion-color-medium);
+}
+
+.chart-empty {
+  border: 1px dashed rgba(var(--ion-color-light-rgb), 0.12);
+  background: rgba(var(--app-bg-secondary-rgb), 0.3);
+  border-radius: 12px;
+  padding: 18px 10px;
+  text-align: center;
+  color: var(--ion-color-medium);
+  font-size: 0.72rem;
+}
+
+@media (max-width: 360px) {
+  .rating-pulse-bars {
+    gap: 4px;
+  }
+
+  .rating-pulse-label,
+  .momentum-label {
+    font-size: 0.52rem;
+  }
+
+  .chart-scale-pill {
+    font-size: 0.56rem;
+    padding: 2px 6px;
+  }
 }

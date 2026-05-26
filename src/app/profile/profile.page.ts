@@ -314,25 +314,72 @@ export class ProfilePage {
     return `${this.monthLabel(best.month)} ${best.month.split('-')[0]}`;
   }
 
-  ratingRows(): Array<{ label: string; count: number; pct: number }> {
-    const keys = [5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1, 0.5];
+  ratingRows(): Array<{
+    label: string;
+    count: number;
+    pct: number;
+    isPeak: boolean;
+  }> {
+    const keys = [5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1, 0.5].reverse();
     const rows = keys.map((value) => {
       const label = value.toFixed(1);
       const count = this.stats.ratingsDistribution[label] || 0;
       return { label, count };
     });
     const max = Math.max(...rows.map((row) => row.count), 1);
-    return rows.map((row) => ({ ...row, pct: (row.count / max) * 100 }));
+    const hasData = rows.some((row) => row.count > 0);
+    return rows.map((row) => ({
+      ...row,
+      pct: (row.count / max) * 100,
+      isPeak: hasData && row.count === max,
+    }));
   }
 
-  monthMomentumRows(): Array<{ label: string; count: number; pct: number }> {
+  monthMomentumRows(): Array<{
+    label: string;
+    count: number;
+    pct: number;
+    isPeak: boolean;
+  }> {
     const latest = this.stats.watchedByMonth.slice(-6);
     const max = Math.max(...latest.map((row) => row.count), 1);
+    const hasData = latest.some((row) => row.count > 0);
     return latest.map((row) => ({
       label: this.monthLabel(row.month),
       count: row.count,
       pct: (row.count / max) * 100,
+      isPeak: hasData && row.count === max,
     }));
+  }
+
+  get hasRatingData(): boolean {
+    return this.ratingRows().some((row) => row.count > 0);
+  }
+
+  get hasMomentumData(): boolean {
+    return this.monthMomentumRows().some((row) => row.count > 0);
+  }
+
+  get ratingPeakSummary(): string {
+    const peak = this.ratingRows()
+      .filter((row) => row.count > 0)
+      .sort((a, b) => b.count - a.count)[0];
+    if (!peak) {
+      return 'No rating data yet';
+    }
+    const suffix = peak.count === 1 ? 'log' : 'logs';
+    return `Most common: ${peak.label}★ (${peak.count} ${suffix})`;
+  }
+
+  get momentumPeakSummary(): string {
+    const peak = this.monthMomentumRows()
+      .filter((row) => row.count > 0)
+      .sort((a, b) => b.count - a.count)[0];
+    if (!peak) {
+      return 'No monthly data yet';
+    }
+    const suffix = peak.count === 1 ? 'title' : 'titles';
+    return `Top month: ${peak.label} (${peak.count} ${suffix})`;
   }
 
   ratingBarTooltip(label: string, count: number): string {

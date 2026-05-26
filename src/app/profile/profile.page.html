@@ -268,19 +268,45 @@
         background: var(--ion-color-step-50);
       "
     >
-      <div class="rating-pulse-bars">
+      <div class="chart-meta-row">
+        <p class="chart-subtitle m-0">{{ ratingPeakSummary }}</p>
+        <span class="chart-scale-pill">0-5.0★</span>
+      </div>
+
+      @if (hasRatingData) {
+      <div
+        class="rating-pulse-bars"
+        role="img"
+        aria-label="Distribution of your ratings from 0.5 to 5.0 stars"
+      >
+        <div class="chart-grid-lines" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
         @for (row of ratingRows(); track row.label) {
         <div class="rating-pulse-col">
-          <div
-            class="rating-pulse-bar"
-            tabindex="0"
-            [attr.title]="ratingBarTooltip(row.label, row.count)"
-            [style.height.%]="row.pct"
-          ></div>
+          <div class="rating-pulse-track">
+            <div
+              class="rating-pulse-bar"
+              [class.rating-pulse-bar--peak]="row.isPeak"
+              tabindex="0"
+              [attr.title]="ratingBarTooltip(row.label, row.count)"
+              [style.height.%]="row.pct"
+            >
+              @if (row.count > 0) {
+              <span class="chart-bar-value">{{ row.count }}</span>
+              }
+            </div>
+          </div>
           <span class="rating-pulse-label">{{ row.label }}</span>
         </div>
         }
       </div>
+      } @else {
+      <p class="chart-empty m-0">Rate a few titles to unlock this chart.</p>
+      }
     </div>
 
     <p
@@ -296,30 +322,47 @@
         background: var(--ion-color-step-50);
       "
     >
-      <div class="flex h-28 items-end gap-2">
+      <div class="chart-meta-row">
+        <p class="chart-subtitle m-0">{{ momentumPeakSummary }}</p>
+        <span class="chart-scale-pill">Last 6 months</span>
+      </div>
+
+      @if (hasMomentumData) {
+      <div
+        class="momentum-bars"
+        role="img"
+        aria-label="Titles watched in the last six months"
+      >
+        <div class="chart-grid-lines" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
         @for (row of monthMomentumRows(); track row.label) {
-        <div class="flex flex-1 flex-col items-center justify-end h-full">
-          <div
-            class="w-full rounded-t-lg transition-all"
-            [style.height.%]="row.pct"
-            tabindex="0"
-            [attr.title]="momentumBarTooltip(row.label, row.count)"
-            style="
-              background: linear-gradient(
-                180deg,
-                var(--ion-color-primary),
-                var(--ion-color-primary-shade)
-              );
-            "
-          ></div>
-          <span
-            class="mt-1 text-[0.58rem]"
-            style="color: var(--ion-color-medium)"
-            >{{ row.label }}</span
-          >
+        <div class="momentum-col">
+          <div class="momentum-track">
+            <div
+              class="momentum-bar"
+              [class.momentum-bar--peak]="row.isPeak"
+              [style.height.%]="row.pct"
+              tabindex="0"
+              [attr.title]="momentumBarTooltip(row.label, row.count)"
+            >
+              @if (row.count > 0) {
+              <span class="chart-bar-value">{{ row.count }}</span>
+              }
+            </div>
+          </div>
+          <span class="momentum-label">{{ row.label }}</span>
         </div>
         }
       </div>
+      } @else {
+      <p class="chart-empty m-0">
+        Watch more titles this month to build momentum.
+      </p>
+      }
     </div>
 
     @if (stats.topGenres.length) {
