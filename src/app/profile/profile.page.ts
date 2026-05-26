@@ -121,6 +121,10 @@ export class ProfilePage {
     return this.userData.getLists();
   }
 
+  get bookmarkedLists(): any[] {
+    return this.userData.getBookmarkedLists() || [];
+  }
+
   get recentActivityEntries(): WatchedEntry[] {
     return this.watchedEntries.slice(0, 5);
   }
@@ -562,6 +566,34 @@ export class ProfilePage {
     const year = d.getFullYear();
     const month = `${d.getMonth() + 1}`.padStart(2, '0');
     return `${year}-${month}`;
+  }
+
+  getListCoverPosters(list: any): string[] {
+    if (list.poster_path) {
+      return [`https://image.tmdb.org/t/p/w185${list.poster_path}`];
+    }
+    return (list.items || [])
+      .filter((i: any) => i.poster_path)
+      .slice(0, 4)
+      .map((i: any) => `https://image.tmdb.org/t/p/w92${i.poster_path}`);
+  }
+
+  getPlaceholderSlots(list: any): number[] {
+    const count = 4 - this.getListCoverPosters(list).length;
+    return count > 0 ? Array(count).fill(0) : [];
+  }
+
+  toggleListBookmark(list: any, event: Event) {
+    event.stopPropagation();
+    if (this.userData.isListBookmarked(list.id)) {
+      this.userData.unbookmarkList(list.id);
+    } else {
+      this.userData.bookmarkList(list);
+    }
+  }
+
+  isListBookmarked(listId: number): boolean {
+    return this.userData.isListBookmarked(listId);
   }
 
   private formatPercent(value: number, total: number): string {
