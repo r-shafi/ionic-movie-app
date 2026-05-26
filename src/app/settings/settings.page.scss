@@ -7,3 +7,189 @@ ion-segment {
   backdrop-filter: blur(6px);
   color: var(--app-text);
 }
+
+.settings-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.settings-stack--toggle {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.settings-stack--toggle .settings-stack__header {
+  flex: 1;
+  min-width: 0;
+}
+
+.settings-stack--toggle .settings-stack__action {
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.settings-stack__header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.settings-stack__action {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.settings-stack__action--end {
+  justify-content: flex-end;
+}
+
+.settings-language-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.settings-language-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.settings-language-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--ion-color-step-150);
+  background: rgba(var(--app-bg-rgb), 0.35);
+  color: var(--app-text);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  transition:
+    border-color 120ms ease,
+    background-color 120ms ease,
+    color 120ms ease;
+}
+
+.settings-language-chip ion-icon {
+  font-size: 0.9rem;
+  color: var(--ion-color-medium);
+}
+
+.settings-language-chip:hover {
+  border-color: var(--ion-color-danger);
+  color: var(--ion-color-danger);
+}
+
+.settings-language-chip:hover ion-icon {
+  color: var(--ion-color-danger);
+}
+
+.settings-language-helper {
+  margin: 0;
+  color: var(--ion-color-medium);
+  font-size: 0.72rem;
+}
+
+.combobox-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.combobox-input-wrap {
+  position: relative;
+  width: 100%;
+  border: 1px solid var(--ion-color-step-150);
+  border-radius: 10px;
+  background: rgba(var(--app-bg-rgb), 0.55);
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.combobox-input {
+  display: block;
+  width: 100%;
+  --padding-start: 34px;
+  --padding-end: 36px;
+  --padding-top: 10px;
+  --padding-bottom: 10px;
+  --background: transparent;
+}
+
+.combobox-input-wrap.is-open {
+  border-color: var(--ion-color-primary);
+  box-shadow: 0 0 0 2px rgba(var(--ion-color-primary-rgb), 0.15);
+}
+
+.combobox-search {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ion-color-medium);
+  pointer-events: none;
+  font-size: 0.96rem;
+}
+
+.combobox-chevron {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ion-color-medium);
+  pointer-events: none;
+  transition: transform 140ms ease;
+}
+
+.combobox-input-wrap.is-open .combobox-chevron {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.settings-language-list {
+  max-height: 220px;
+  overflow: auto;
+}
+
+.combobox-dropdown {
+  position: relative;
+  width: 100%;
+  margin-top: 6px;
+  background: var(--app-bg-secondary);
+  border: 1px solid var(--ion-color-step-100);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.2);
+}
+
+.settings-language-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--ion-color-step-100);
+}
+
+.settings-language-row:last-child {
+  border-bottom: 0;
+}
+
+.settings-language-row--button {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  text-align: left;
+  color: inherit;
+  transition: background-color 120ms ease;
+}
+
+.settings-language-row--button:hover {
+  background: rgba(var(--ion-color-primary-rgb), 0.08);
+}

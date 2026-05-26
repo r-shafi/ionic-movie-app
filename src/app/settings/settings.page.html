@@ -18,26 +18,10 @@
     </p>
 
     <div
-      class="settings-card mb-4 flex items-center justify-between rounded-xl border px-3 py-3"
+      class="settings-card settings-stack settings-stack--toggle mb-4 rounded-xl border px-3 py-3"
       style="border-color: var(--ion-color-step-100)"
     >
-      <span class="text-[0.88rem] font-semibold">Theme</span>
-      <ion-segment
-        [value]="settings.theme"
-        (ionChange)="setTheme($any($event.detail.value))"
-        class="w-auto"
-      >
-        <ion-segment-button value="system">System</ion-segment-button>
-        <ion-segment-button value="light">Light</ion-segment-button>
-        <ion-segment-button value="dark">Dark</ion-segment-button>
-      </ion-segment>
-    </div>
-
-    <div
-      class="settings-card mb-4 flex items-center justify-between rounded-xl border px-3 py-3"
-      style="border-color: var(--ion-color-step-100)"
-    >
-      <div>
+      <div class="settings-stack__header">
         <p class="m-0 text-[0.88rem] font-semibold">Fade watched</p>
         <p
           class="m-0 mt-[2px] text-[0.7rem]"
@@ -46,25 +30,36 @@
           Dims poster art for titles you've logged
         </p>
       </div>
-      <ion-toggle
-        [checked]="settings.fadeWatched"
-        (ionChange)="setFadeWatched($event.detail.checked)"
-      ></ion-toggle>
+      <div class="settings-stack__action settings-stack__action--end">
+        <ion-toggle
+          [checked]="settings.fadeWatched"
+          (ionChange)="setFadeWatched($event.detail.checked)"
+        ></ion-toggle>
+      </div>
     </div>
 
     <div
-      class="settings-card mb-4 flex items-center justify-between rounded-xl border px-3 py-3"
+      class="settings-card settings-stack mb-4 rounded-xl border px-3 py-3"
       style="border-color: var(--ion-color-step-100)"
     >
-      <span class="text-[0.88rem] font-semibold">Accent color</span>
-      <ion-segment
-        [value]="settings.primaryColor"
-        (ionChange)="setPrimaryColor($any($event.detail.value))"
-        class="w-auto"
-      >
-        <ion-segment-button value="green">Green</ion-segment-button>
-        <ion-segment-button value="red">Red</ion-segment-button>
-      </ion-segment>
+      <div class="settings-stack__header">
+        <p class="m-0 text-[0.88rem] font-semibold">Accent color</p>
+        <p
+          class="m-0 mt-[2px] text-[0.7rem]"
+          style="color: var(--ion-color-medium)"
+        >
+          Choose your preferred app highlight color
+        </p>
+      </div>
+      <div class="settings-stack__action">
+        <ion-segment
+          [value]="settings.primaryColor"
+          (ionChange)="setPrimaryColor($any($event.detail.value))"
+        >
+          <ion-segment-button value="green">Green</ion-segment-button>
+          <ion-segment-button value="red">Red</ion-segment-button>
+        </ion-segment>
+      </div>
     </div>
   </div>
 
@@ -83,25 +78,34 @@
     </p>
 
     <div
-      class="settings-card mb-4 flex items-center justify-between rounded-xl border px-3 py-3"
+      class="settings-card settings-stack mb-4 rounded-xl border px-3 py-3"
       style="border-color: var(--ion-color-step-100)"
     >
-      <span class="text-[0.88rem] font-semibold">Default media tab</span>
-      <ion-segment
-        [value]="settings.defaultMediaTab"
-        (ionChange)="setDefaultMediaTab($any($event.detail.value))"
-        class="w-auto"
-      >
-        <ion-segment-button value="movies">Movies</ion-segment-button>
-        <ion-segment-button value="tv">TV Shows</ion-segment-button>
-      </ion-segment>
+      <div class="settings-stack__header">
+        <p class="m-0 text-[0.88rem] font-semibold">Default media tab</p>
+        <p
+          class="m-0 mt-[2px] text-[0.7rem]"
+          style="color: var(--ion-color-medium)"
+        >
+          Choose which tab opens first in media views
+        </p>
+      </div>
+      <div class="settings-stack__action">
+        <ion-segment
+          [value]="settings.defaultMediaTab"
+          (ionChange)="setDefaultMediaTab($any($event.detail.value))"
+        >
+          <ion-segment-button value="movies">Movies</ion-segment-button>
+          <ion-segment-button value="tv">TV Shows</ion-segment-button>
+        </ion-segment>
+      </div>
     </div>
 
     <div
-      class="settings-card mb-4 flex items-center justify-between rounded-xl border px-3 py-3"
+      class="settings-card settings-stack settings-stack--toggle mb-4 rounded-xl border px-3 py-3"
       style="border-color: var(--ion-color-step-100)"
     >
-      <div>
+      <div class="settings-stack__header">
         <p class="m-0 text-[0.88rem] font-semibold">Safe search</p>
         <p
           class="m-0 mt-[2px] text-[0.7rem]"
@@ -110,10 +114,99 @@
           Exclude adult content from search
         </p>
       </div>
-      <ion-toggle
-        [checked]="safeSearch"
-        (ionChange)="setSafeSearch($event.detail.checked)"
-      ></ion-toggle>
+      <div class="settings-stack__action settings-stack__action--end">
+        <ion-toggle
+          [checked]="safeSearch"
+          (ionChange)="setSafeSearch($event.detail.checked)"
+        ></ion-toggle>
+      </div>
+    </div>
+
+    <div
+      class="settings-card settings-stack mb-4 rounded-xl border px-3 py-3"
+      style="border-color: var(--ion-color-step-100)"
+    >
+      <div class="settings-stack__header">
+        <p class="m-0 text-[0.88rem] font-semibold">Blocked languages</p>
+        <p
+          class="m-0 mt-[2px] text-[0.7rem]"
+          style="color: var(--ion-color-medium)"
+        >
+          Hide titles by original language from lists and search results
+        </p>
+      </div>
+
+      @if (blockedLanguageItems.length) {
+      <div class="settings-language-chips mb-1.5">
+        @for (item of blockedLanguageItems; track item.code) {
+        <button
+          class="settings-language-chip"
+          (click)="removeLanguageBlock(item.code)"
+          type="button"
+          aria-label="Remove {{ item.label }} language block"
+        >
+          <span>{{ item.label }}</span>
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+        }
+      </div>
+      <p class="settings-language-helper">Tap a language chip to remove it.</p>
+      }
+
+      <div class="settings-stack__action settings-language-picker">
+        <div class="combobox-wrap">
+          <div
+            class="combobox-input-wrap"
+            [class.is-open]="isLanguageComboboxOpen"
+          >
+            <ion-icon name="search-outline" class="combobox-search"></ion-icon>
+            <ion-input
+              class="combobox-input"
+              [(ngModel)]="languageSearchQuery"
+              placeholder="Search by language name or code"
+              (ionFocus)="openLanguageCombobox()"
+              (ionBlur)="onLanguageComboboxBlur()"
+            ></ion-input>
+            <ion-icon
+              name="chevron-down-outline"
+              class="combobox-chevron"
+            ></ion-icon>
+          </div>
+
+          @if (isLanguageComboboxOpen) {
+          <div class="settings-language-list combobox-dropdown rounded-lg">
+            @for (lang of filteredLanguageOptions; track lang.code) {
+            <button
+              class="settings-language-row settings-language-row--button"
+              type="button"
+              (click)="selectLanguageToBlock(lang)"
+            >
+              <div class="min-w-0">
+                <p class="m-0 text-[0.83rem] font-semibold">{{ lang.label }}</p>
+                <p
+                  class="m-0 text-[0.68rem]"
+                  style="color: var(--ion-color-medium)"
+                >
+                  {{ lang.code.toUpperCase() }}
+                </p>
+              </div>
+              <ion-icon
+                name="add-outline"
+                style="color: var(--ion-color-medium)"
+              ></ion-icon>
+            </button>
+            } @if (!filteredLanguageOptions.length) {
+            <p
+              class="m-0 px-3 py-3 text-[0.78rem]"
+              style="color: var(--ion-color-medium)"
+            >
+              No matching language found.
+            </p>
+            }
+          </div>
+          }
+        </div>
+      </div>
     </div>
   </div>
 
@@ -132,11 +225,11 @@
     </p>
 
     <button
-      class="settings-card mb-2 flex w-full items-center justify-between rounded-xl border px-3 py-3 text-left transition-colors hover:bg-white/5"
+      class="settings-card settings-stack settings-stack--toggle mb-2 w-full rounded-xl border px-3 py-3 text-left transition-colors hover:bg-white/5"
       style="border-color: var(--ion-color-step-100)"
       (click)="exportData()"
     >
-      <div>
+      <div class="settings-stack__header">
         <p class="m-0 text-[0.88rem] font-semibold">Export my data</p>
         <p
           class="m-0 mt-[2px] text-[0.7rem]"
@@ -145,18 +238,20 @@
           Download a JSON backup of all your data
         </p>
       </div>
-      <ion-icon
-        name="download-outline"
-        style="color: var(--ion-color-medium)"
-      ></ion-icon>
+      <div class="settings-stack__action settings-stack__action--end">
+        <ion-icon
+          name="download-outline"
+          style="color: var(--ion-color-medium)"
+        ></ion-icon>
+      </div>
     </button>
 
     <button
-      class="settings-card mb-2 flex w-full items-center justify-between rounded-xl border px-3 py-3 text-left transition-colors hover:bg-white/5"
+      class="settings-card settings-stack settings-stack--toggle mb-2 w-full rounded-xl border px-3 py-3 text-left transition-colors hover:bg-white/5"
       style="border-color: var(--ion-color-step-100)"
       (click)="importData()"
     >
-      <div>
+      <div class="settings-stack__header">
         <p class="m-0 text-[0.88rem] font-semibold">Import data</p>
         <p
           class="m-0 mt-[2px] text-[0.7rem]"
@@ -165,18 +260,20 @@
           Restore from a previously exported JSON file
         </p>
       </div>
-      <ion-icon
-        name="cloud-upload-outline"
-        style="color: var(--ion-color-medium)"
-      ></ion-icon>
+      <div class="settings-stack__action settings-stack__action--end">
+        <ion-icon
+          name="cloud-upload-outline"
+          style="color: var(--ion-color-medium)"
+        ></ion-icon>
+      </div>
     </button>
 
     <button
-      class="settings-card mb-2 flex w-full items-center justify-between rounded-xl border px-3 py-3 text-left transition-colors hover:bg-white/5"
+      class="settings-card settings-stack settings-stack--toggle mb-2 w-full rounded-xl border px-3 py-3 text-left transition-colors hover:bg-white/5"
       style="border-color: var(--ion-color-step-100)"
       (click)="clearWatchLog()"
     >
-      <div>
+      <div class="settings-stack__header">
         <p
           class="m-0 text-[0.88rem] font-semibold"
           style="color: var(--ion-color-danger)"
@@ -190,18 +287,20 @@
           Remove all watched entries
         </p>
       </div>
-      <ion-icon
-        name="trash-outline"
-        style="color: var(--ion-color-danger)"
-      ></ion-icon>
+      <div class="settings-stack__action settings-stack__action--end">
+        <ion-icon
+          name="trash-outline"
+          style="color: var(--ion-color-danger)"
+        ></ion-icon>
+      </div>
     </button>
 
     <button
-      class="settings-card flex w-full items-center justify-between rounded-xl border px-3 py-3 text-left transition-colors hover:bg-white/5"
+      class="settings-card settings-stack settings-stack--toggle w-full rounded-xl border px-3 py-3 text-left transition-colors hover:bg-white/5"
       style="border-color: var(--ion-color-step-100)"
       (click)="clearAllData()"
     >
-      <div>
+      <div class="settings-stack__header">
         <p
           class="m-0 text-[0.88rem] font-semibold"
           style="color: var(--ion-color-danger)"
@@ -215,10 +314,12 @@
           Reset everything including settings
         </p>
       </div>
-      <ion-icon
-        name="alert-circle-outline"
-        style="color: var(--ion-color-danger)"
-      ></ion-icon>
+      <div class="settings-stack__action settings-stack__action--end">
+        <ion-icon
+          name="alert-circle-outline"
+          style="color: var(--ion-color-danger)"
+        ></ion-icon>
+      </div>
     </button>
   </div>
 
@@ -237,14 +338,44 @@
     </p>
 
     <div
-      class="settings-card mb-2 flex items-center justify-between rounded-xl border px-3 py-3"
+      class="settings-card settings-stack settings-stack--toggle mb-2 rounded-xl border px-3 py-3"
       style="border-color: var(--ion-color-step-100)"
     >
-      <span class="text-[0.88rem] font-semibold">App version</span>
-      <span class="text-[0.82rem]" style="color: var(--ion-color-medium)"
-        >{{ appVersion }}</span
-      >
+      <div class="settings-stack__header">
+        <p class="m-0 text-[0.88rem] font-semibold">App version</p>
+      </div>
+      <div class="settings-stack__action settings-stack__action--end">
+        <span class="text-[0.82rem]" style="color: var(--ion-color-medium)"
+          >{{ appVersion }}</span
+        >
+      </div>
     </div>
+
+    <button
+      class="settings-card settings-stack settings-stack--toggle mb-2 w-full rounded-xl border px-3 py-3 text-left transition-colors hover:bg-white/5"
+      style="border-color: var(--ion-color-step-100)"
+      (click)="checkForUpdates()"
+    >
+      <div class="settings-stack__header">
+        <p class="m-0 text-[0.88rem] font-semibold">Check for updates</p>
+        <p
+          class="m-0 mt-[2px] text-[0.7rem]"
+          style="color: var(--ion-color-medium)"
+        >
+          Check GitHub releases for newer versions
+        </p>
+      </div>
+      <div class="settings-stack__action settings-stack__action--end">
+        @if (!isCheckingForUpdate) {
+        <ion-icon
+          name="refresh-outline"
+          style="color: var(--ion-color-medium)"
+        ></ion-icon>
+        } @if (isCheckingForUpdate) {
+        <ion-spinner name="dots"></ion-spinner>
+        }
+      </div>
+    </button>
 
     <div
       class="settings-card mb-2 flex flex-col items-center rounded-xl border px-3 py-5"
@@ -272,8 +403,10 @@
           target="_blank"
           rel="noopener noreferrer"
           style="color: var(--ion-color-primary)"
-          >TMDB</a
-        >.
+        >
+          TMDB
+        </a>
+        .
       </p>
     </div>
 
@@ -281,18 +414,23 @@
       [href]="githubRepoUrl"
       target="_blank"
       rel="noopener noreferrer"
-      class="settings-card flex items-center justify-between rounded-xl border px-3 py-3 no-underline transition-colors hover:bg-white/5"
+      class="settings-card settings-stack settings-stack--toggle mb-2 rounded-xl border px-3 py-3 no-underline transition-colors hover:bg-white/5"
       style="border-color: var(--ion-color-step-100)"
     >
-      <span
-        class="text-[0.88rem] font-semibold"
-        style="color: var(--ion-color-primary)"
-        >View GitHub Repository</span
-      >
-      <ion-icon
-        name="logo-github"
-        style="color: var(--ion-color-primary)"
-      ></ion-icon>
+      <div class="settings-stack__header">
+        <span
+          class="text-[0.88rem] font-semibold"
+          style="color: var(--ion-color-primary)"
+        >
+          View GitHub Repository
+        </span>
+      </div>
+      <div class="settings-stack__action settings-stack__action--end">
+        <ion-icon
+          name="logo-github"
+          style="color: var(--ion-color-primary)"
+        ></ion-icon>
+      </div>
     </a>
   </div>
 
