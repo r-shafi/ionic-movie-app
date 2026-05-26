@@ -221,7 +221,7 @@
       <h2 class="section-title">Created By</h2>
       <div class="cast-scroll">
         @for (c of creatorsWithPhotos; track c) {
-        <div class="cast-item">
+        <div class="cast-item" [routerLink]="['/person', c.id]">
           <div class="cast-avatar">
             <ion-icon
               name="person-circle-outline"
