@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/r-shafi/open-movie-tracker/compare/open-movie-tracker-v0.2.0...open-movie-tracker-v0.3.0) (2026-05-26)
+
+
+### Features
+
+* Update release workflow to use dynamic APK name and remove package name from config ([4f4046a](https://github.com/r-shafi/open-movie-tracker/commit/4f4046af42f709152e05341a5bddd6f00437eb99))
+
 ## [0.2.0](https://github.com/r-shafi/open-movie-tracker/compare/open-movie-tracker-v0.1.0...open-movie-tracker-v0.2.0) (2026-05-26)
 
 
