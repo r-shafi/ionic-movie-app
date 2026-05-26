@@ -1,8 +1,9 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { DiscoverParams, TmdbService } from '../services/tmdb.service';
+import { UserDataService } from '../services/user-data.service';
 
 @Component({
   selector: 'app-discover',
@@ -41,6 +42,9 @@ export class DiscoverPage implements OnInit {
   // Genres
   movieGenres: any[] = [];
   tvGenres: any[] = [];
+
+  // Lists
+  recentlyViewedLists: any[] = [];
 
   readonly currentYear = new Date().getFullYear();
   readonly years: number[] = Array.from(
@@ -122,6 +126,8 @@ export class DiscoverPage implements OnInit {
     private tmdb: TmdbService,
     private route: ActivatedRoute,
     private location: Location,
+    private userData: UserDataService,
+    private router: Router,
   ) {}
 
   ngOnInit() {
@@ -181,6 +187,7 @@ export class DiscoverPage implements OnInit {
         this.upcoming = data.upcoming.results;
         this.airingToday = data.airingToday.results;
         this.popularTv = data.popularTv.results;
+        this.loadLists();
         this.isLoadingExplore = false;
       },
       error: () => {
@@ -190,6 +197,7 @@ export class DiscoverPage implements OnInit {
   }
 
   ionViewWillEnter() {
+    this.loadLists();
     const mode = this.route.snapshot.queryParamMap.get('mode');
     if (!mode && this.viewMode !== 'explore') {
       this.viewMode = 'explore';
@@ -411,5 +419,50 @@ export class DiscoverPage implements OnInit {
       return;
     }
     this.setYear(null);
+  }
+
+  // ── Lists sections ─────────────────────────────────────────────────────
+
+  private loadLists() {
+    this.recentlyViewedLists = (this.userData.getRecentlyViewedLists() || []).slice(0, 10);
+  }
+
+  openList(list: any) {
+    this.router.navigate(['/list', list.id]);
+  }
+
+  getListCoverPosters(list: any): string[] {
+    if (list.poster_path) {
+      return [`https://image.tmdb.org/t/p/w185${list.poster_path}`];
+    }
+    return (list.items || [])
+      .filter((i: any) => i.poster_path)
+      .slice(0, 4)
+      .map((i: any) => `https://image.tmdb.org/t/p/w92${i.poster_path}`);
+  }
+
+  getPlaceholderSlots(list: any): number[] {
+    const count = 4 - this.getListCoverPosters(list).length;
+    return count > 0 ? Array(count).fill(0) : [];
+  }
+
+  toggleListBookmark(list: any, event: Event) {
+    event.stopPropagation();
+    if (this.userData.isListBookmarked(list.id)) {
+      this.userData.unbookmarkList(list.id);
+    } else {
+      this.userData.bookmarkList(list);
+    }
+    this.loadLists();
+  }
+
+  isListBookmarked(listId: number): boolean {
+    return this.userData.isListBookmarked(listId);
+  }
+
+  formatCount(n: number): string {
+    if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+    if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+    return String(n);
   }
 }
