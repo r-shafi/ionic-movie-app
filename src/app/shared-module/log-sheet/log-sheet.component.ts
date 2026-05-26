@@ -34,7 +34,6 @@ export class LogSheetComponent implements OnInit {
   @Input() item!: LogSheetItem;
 
   existing: WatchedEntry | null = null;
-  hasWatched = false;
   rating: number | null = null;
   liked = false;
   rewatch = false;
@@ -65,7 +64,6 @@ export class LogSheetComponent implements OnInit {
       this.item.media_type,
       this.item.id,
     );
-    this.hasWatched = !!this.existing;
     this.watchlistEnabled = this.userData.isOnWatchlist(
       this.item.media_type,
       this.item.id,
@@ -144,10 +142,7 @@ export class LogSheetComponent implements OnInit {
   }
 
   get saveLabel(): string {
-    if (this.hasWatched) {
-      return this.existing ? 'Save Log' : 'Save Entry';
-    }
-    return 'Save';
+    return this.existing ? 'Save Log' : 'Save Entry';
   }
 
   addTag(): void {
@@ -217,24 +212,20 @@ export class LogSheetComponent implements OnInit {
 
     const watchlistItem = this.buildWatchlistItem();
 
-    if (this.hasWatched) {
-      this.userData.logEntry({
-        id: this.item.id,
-        media_type: this.item.media_type,
-        title: this.item.title,
-        poster_path: this.item.poster_path,
-        watchedAt: this.watchedAt,
-        rewatch: this.rewatch,
-        rating: this.rating,
-        review: this.review || '',
-        tags: this.tags,
-        liked: this.liked,
-        release_date: this.item.release_date,
-        first_air_date: this.item.first_air_date,
-      });
-    } else if (this.existing) {
-      this.userData.removeWatched(this.item.media_type, this.item.id);
-    }
+    this.userData.logEntry({
+      id: this.item.id,
+      media_type: this.item.media_type,
+      title: this.item.title,
+      poster_path: this.item.poster_path,
+      watchedAt: this.watchedAt,
+      rewatch: this.rewatch,
+      rating: this.rating,
+      review: this.review || '',
+      tags: this.tags,
+      liked: this.liked,
+      release_date: this.item.release_date,
+      first_air_date: this.item.first_air_date,
+    });
 
     if (this.watchlistEnabled) {
       this.userData.addToWatchlist(watchlistItem);
@@ -265,15 +256,7 @@ export class LogSheetComponent implements OnInit {
     });
 
     await this.modalCtrl.dismiss();
-    if (this.hasWatched) {
-      this.toast.showToast('Log saved.');
-      return;
-    }
-    if (this.watchlistEnabled || this.selectedListIds.length) {
-      this.toast.showToast('Saved to your lists.');
-      return;
-    }
-    this.toast.showToast('Saved.');
+    this.toast.showToast('Log saved.');
   }
 
   async removeLog(): Promise<void> {

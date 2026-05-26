@@ -11,18 +11,7 @@
           {{ item?.media_type === "tv" ? "TV Series" : "Movie" }}
         </p>
 
-        <button
-          type="button"
-          class="watched-toggle"
-          [class.active]="hasWatched"
-          [class.inactive]="!hasWatched"
-          (click)="hasWatched = !hasWatched"
-        >
-          <ion-icon
-            [name]="hasWatched ? 'checkmark-circle' : 'ellipse-outline'"
-          ></ion-icon>
-          <span>{{ hasWatched ? "Watched" : "Mark as watched" }}</span>
-        </button>
+
       </div>
     </section>
 
@@ -53,7 +42,6 @@
       </div>
     </section>
 
-    @if (hasWatched) {
       <section class="sheet-card log-card">
         <div class="pill-row">
           <button
@@ -157,7 +145,6 @@
           </button>
         </div>
       </section>
-    }
 
     @if (existing) {
       <ion-button
