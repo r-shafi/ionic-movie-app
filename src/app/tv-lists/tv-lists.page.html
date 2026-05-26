@@ -1,0 +1,118 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tv/{{tvId}}"></ion-back-button>
+    </ion-buttons>
+    <ion-title>All Lists</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Loading skeleton (initial only) -->
+  @if (isLoading && currentPage === 1) {
+    <div class="skeleton-wrap">
+      @for (s of [0,1,2,3,4]; track s) {
+        <div class="sk-row">
+          <div class="sk-cover">
+            <ion-skeleton-text animated class="sk-cover-fill"></ion-skeleton-text>
+          </div>
+          <div class="sk-body">
+            <ion-skeleton-text animated class="sk-line sk-line--title"></ion-skeleton-text>
+            <ion-skeleton-text animated class="sk-line sk-line--sub"></ion-skeleton-text>
+            <ion-skeleton-text animated class="sk-line sk-line--meta"></ion-skeleton-text>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  @if (lists.length) {
+    <!-- Result count -->
+    @if (totalResults > 0) {
+      <div class="result-count">{{ totalResults }} list{{ totalResults === 1 ? '' : 's' }}</div>
+    }
+
+    <!-- Sort chips -->
+    <div class="sort-rail">
+      @for (opt of sortOptions; track opt.value) {
+        <button
+          class="sort-chip"
+          [class.sort-chip--active]="sortBy === opt.value"
+          (click)="setSortBy($any(opt).value)"
+        >{{ opt.label }}</button>
+      }
+    </div>
+
+    <!-- List rows -->
+    <div class="list-rows">
+      @for (list of sortedLists; track list.id) {
+        <div class="list-row" (click)="openList(list)">
+          <!-- Cover thumbnail -->
+          <div class="row-cover">
+            @if (getListCoverItems(list).length) {
+              <div class="cover-grid">
+                @for (url of getListCoverItems(list); track $index) {
+                  <div class="cover-cell">
+                    <img [src]="url" loading="lazy" />
+                  </div>
+                }
+                @for (p of getPlaceholderSlots(list); track $index) {
+                  <div class="cover-cell cover-cell--blank"></div>
+                }
+              </div>
+            } @else {
+              <div class="cover-fallback"></div>
+            }
+          </div>
+
+          <!-- Info -->
+          <div class="row-info">
+            <span class="row-name">{{ list.name }}</span>
+            <span class="row-creator">TMDB</span>
+            <div class="row-meta">
+              <span>{{ list.item_count || 0 }} {{ (list.item_count || 0) === 1 ? 'film' : 'films' }}</span>
+              <span class="meta-sep">·</span>
+              <ion-icon name="heart" class="meta-icon"></ion-icon>
+              <span>{{ formatCount(list.favorite_count) }}</span>
+              <span class="meta-sep">·</span>
+              <ion-icon name="chatbubble" class="meta-icon"></ion-icon>
+              <span>{{ formatCount(0) }}</span>
+            </div>
+            @if (list.description) {
+              <span class="row-desc">{{ list.description }}</span>
+            }
+          </div>
+
+          <!-- Bookmark -->
+          <button
+            class="row-bookmark"
+            [class.bookmarked]="isBookmarked(list.id)"
+            [class.bookmark-pulse]="animatedBookmarkId === list.id"
+            (click)="toggleBookmark(list, $event)"
+          >
+            <ion-icon [name]="isBookmarked(list.id) ? 'bookmark' : 'bookmark-outline'"></ion-icon>
+          </button>
+        </div>
+      }
+    </div>
+
+    <!-- Load more -->
+    @if (hasMore) {
+      <div class="load-more-wrap">
+        <ion-button fill="outline" expand="block" [disabled]="isLoading" (click)="loadMore()">
+          @if (isLoading) {
+            <ion-spinner name="crescent" slot="start"></ion-spinner>
+          }
+          {{ isLoading ? 'Loading...' : 'Load More' }}
+        </ion-button>
+      </div>
+    }
+  }
+
+  @if (!isLoading && !lists.length) {
+    <div class="empty-state">
+      <ion-icon name="film-outline"></ion-icon>
+      <p>No lists found.</p>
+    </div>
+  }
+</ion-content>
