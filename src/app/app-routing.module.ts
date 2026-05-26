@@ -42,6 +42,20 @@ const routes: Routes = [
       import('./settings/settings.module').then((m) => m.SettingsPageModule),
   },
   {
+    path: 'movie/:id/lists',
+    loadChildren: () =>
+      import('./film-lists/film-lists.module').then(
+        (m) => m.FilmListsPageModule,
+      ),
+  },
+  {
+    path: 'tv/:id/lists',
+    loadChildren: () =>
+      import('./tv-lists/tv-lists.module').then(
+        (m) => m.TvListsPageModule,
+      ),
+  },
+  {
     path: 'list/:id',
     loadChildren: () =>
       import('./list-detail/list-detail.module').then(
