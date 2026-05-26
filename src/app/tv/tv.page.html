@@ -223,13 +223,18 @@
         @for (c of creatorsWithPhotos; track c) {
         <div class="cast-item">
           <div class="cast-avatar">
+            <ion-icon
+              name="person-circle-outline"
+              class="avatar-fallback"
+            ></ion-icon>
+            @if (c.profile_path) {
             <img
-              [src]="c.profile_path
-                  ? 'https://image.tmdb.org/t/p/w185' + c.profile_path
-                  : 'assets/icon/logo.png'"
+              [src]="'https://image.tmdb.org/t/p/w185' + c.profile_path"
               [alt]="c.name"
               class="cast-avatar__img"
+              loading="lazy"
             />
+            }
           </div>
           <p class="cast-name">{{ c.name }}</p>
           <p class="cast-character">Creator</p>
@@ -246,13 +251,18 @@
         @for (person of cast; track person) {
         <div class="cast-item" [routerLink]="['/person', person.id]">
           <div class="cast-avatar">
+            <ion-icon
+              name="person-circle-outline"
+              class="avatar-fallback"
+            ></ion-icon>
+            @if (person.profile_path) {
             <img
-              [src]="person.profile_path
-                  ? 'https://image.tmdb.org/t/p/w185' + person.profile_path
-                  : 'assets/icon/logo.png'"
+              [src]="'https://image.tmdb.org/t/p/w185' + person.profile_path"
               [alt]="person.name"
               class="cast-avatar__img"
+              loading="lazy"
             />
+            }
           </div>
           <p class="cast-name">{{ person.name }}</p>
           <p class="cast-character">{{ person.character }}</p>
@@ -333,15 +343,22 @@
       >
         <div class="review-header">
           <div class="review-avatar">
+            <ion-icon
+              name="person-circle-outline"
+              class="avatar-fallback avatar-fallback--sm"
+            ></ion-icon>
+            @if (review.author_details?.avatar_path) {
             <img
               [src]="review.author_details?.avatar_path
                 ? (review.author_details.avatar_path.startsWith('/https')
                   ? review.author_details.avatar_path.slice(1)
                   : 'https://image.tmdb.org/t/p/w45' + review.author_details.avatar_path)
-                : 'assets/icon/logo.png'"
+                : ''"
               [alt]="review.author"
               class="review-avatar__img"
+              loading="lazy"
             />
+            }
           </div>
           <div class="review-author-meta">
             <span class="review-author">{{ review.author }}</span>

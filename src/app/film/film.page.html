@@ -315,16 +315,21 @@
           [routerLink]="['/person', c.id]"
         >
           <div
-            class="mx-auto mb-1 h-16 w-16 overflow-hidden rounded-full"
+            class="avatar-wrap mx-auto mb-1 h-16 w-16 overflow-hidden rounded-full"
             style="background: var(--ion-color-step-100)"
           >
+            <ion-icon
+              name="person-circle-outline"
+              class="avatar-fallback"
+            ></ion-icon>
+            @if (c.profile_path) {
             <img
-              [src]="c.profile_path
-                  ? 'https://image.tmdb.org/t/p/w185' + c.profile_path
-                  : 'assets/icon/logo.png'"
+              [src]="'https://image.tmdb.org/t/p/w185' + c.profile_path"
               [alt]="c.name"
               class="block h-full w-full object-cover"
+              loading="lazy"
             />
+            }
           </div>
           <p
             class="m-0 mb-0.5 overflow-hidden text-[0.72rem] font-bold [-webkit-box-orient:vertical] [-webkit-line-clamp:2] [display:-webkit-box]"
@@ -355,16 +360,21 @@
           [routerLink]="['/person', person.id]"
         >
           <div
-            class="mx-auto mb-1 h-16 w-16 overflow-hidden rounded-full"
+            class="avatar-wrap mx-auto mb-1 h-16 w-16 overflow-hidden rounded-full"
             style="background: var(--ion-color-step-100)"
           >
+            <ion-icon
+              name="person-circle-outline"
+              class="avatar-fallback"
+            ></ion-icon>
+            @if (person.profile_path) {
             <img
-              [src]="person.profile_path
-                  ? 'https://image.tmdb.org/t/p/w185' + person.profile_path
-                  : 'assets/icon/logo.png'"
+              [src]="'https://image.tmdb.org/t/p/w185' + person.profile_path"
               [alt]="person.name"
               class="block h-full w-full object-cover"
+              loading="lazy"
             />
+            }
           </div>
           <p
             class="m-0 mb-0.5 overflow-hidden text-[0.72rem] font-bold [-webkit-box-orient:vertical] [-webkit-line-clamp:2] [display:-webkit-box]"
@@ -422,18 +432,25 @@
       >
         <div class="mb-2 flex items-center gap-2.5">
           <div
-            class="h-9 w-9 shrink-0 overflow-hidden rounded-full"
+            class="avatar-wrap avatar-wrap--sm h-9 w-9 shrink-0 overflow-hidden rounded-full"
             style="background: var(--ion-color-step-150)"
           >
+            <ion-icon
+              name="person-circle-outline"
+              class="avatar-fallback avatar-fallback--sm"
+            ></ion-icon>
+            @if (review.author_details?.avatar_path) {
             <img
               [src]="review.author_details?.avatar_path
                 ? (review.author_details.avatar_path.startsWith('/https')
                   ? review.author_details.avatar_path.slice(1)
                   : 'https://image.tmdb.org/t/p/w45' + review.author_details.avatar_path)
-                : 'assets/icon/logo.png'"
+                : ''"
               [alt]="review.author"
               class="block h-full w-full object-cover"
+              loading="lazy"
             />
+            }
           </div>
           <div class="flex min-w-0 flex-1 flex-col">
             <span class="truncate text-[0.82rem] font-bold"

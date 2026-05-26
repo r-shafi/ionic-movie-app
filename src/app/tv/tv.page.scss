@@ -404,12 +404,15 @@
   overflow: hidden;
   margin: 0 auto 4px;
   background: var(--ion-color-step-100);
+  position: relative;
 
   &__img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
+    position: absolute;
+    inset: 0;
   }
 }
 
@@ -479,13 +482,27 @@
   overflow: hidden;
   flex-shrink: 0;
   background: var(--ion-color-step-150);
+  position: relative;
 
   &__img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
+    position: absolute;
+    inset: 0;
   }
+}
+
+.avatar-fallback {
+  width: 100%;
+  height: 100%;
+  color: rgba(var(--ion-color-medium-rgb), 0.7);
+}
+
+.avatar-fallback--sm {
+  width: 36px;
+  height: 36px;
 }
 
 .review-author-meta {
