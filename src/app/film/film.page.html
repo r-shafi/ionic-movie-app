@@ -321,7 +321,7 @@
             <img
               [src]="c.profile_path
                   ? 'https://image.tmdb.org/t/p/w185' + c.profile_path
-                  : 'assets/icon/favicon.png'"
+                  : 'assets/icon/logo.png'"
               [alt]="c.name"
               class="block h-full w-full object-cover"
             />
@@ -361,7 +361,7 @@
             <img
               [src]="person.profile_path
                   ? 'https://image.tmdb.org/t/p/w185' + person.profile_path
-                  : 'assets/icon/favicon.png'"
+                  : 'assets/icon/logo.png'"
               [alt]="person.name"
               class="block h-full w-full object-cover"
             />
@@ -427,10 +427,10 @@
           >
             <img
               [src]="review.author_details?.avatar_path
-                  ? (review.author_details.avatar_path.startsWith('/https')
-                      ? review.author_details.avatar_path.slice(1)
-                      : 'https://image.tmdb.org/t/p/w45' + review.author_details.avatar_path)
-                  : 'assets/icon/favicon.png'"
+                ? (review.author_details.avatar_path.startsWith('/https')
+                  ? review.author_details.avatar_path.slice(1)
+                  : 'https://image.tmdb.org/t/p/w45' + review.author_details.avatar_path)
+                : 'assets/icon/logo.png'"
               [alt]="review.author"
               class="block h-full w-full object-cover"
             />

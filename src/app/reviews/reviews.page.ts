@@ -142,7 +142,7 @@ export class ReviewsPage implements OnInit {
 
   getAvatarUrl(review: any): string {
     const avatar = review.author_details?.avatar_path;
-    if (!avatar) return 'assets/icon/favicon.png';
+    if (!avatar) return 'assets/icon/logo.png';
     return avatar.startsWith('/https')
       ? avatar.slice(1)
       : `https://image.tmdb.org/t/p/w45${avatar}`;
