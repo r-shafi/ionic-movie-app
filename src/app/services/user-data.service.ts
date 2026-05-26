@@ -374,6 +374,10 @@ export class UserDataService {
   bookmarkList(list: any): void {
     const bookmarks = this.readJson<any[]>(this.BOOKMARKED_LISTS_KEY, []);
     if (!bookmarks.some(b => b.id === list.id)) {
+      const coverItems = (list.items || [])
+        .filter((i: any) => i.poster_path)
+        .slice(0, 4)
+        .map((i: any) => ({ id: i.id, poster_path: i.poster_path, media_type: i.media_type }));
       bookmarks.unshift({
         id: list.id,
         name: list.name,
@@ -382,7 +386,7 @@ export class UserDataService {
         favorite_count: list.favorite_count || 0,
         poster_path: list.poster_path || null,
         creator_username: list.created_by?.username || list.creator_username || '',
-        items: list.items || [],
+        items: coverItems,
       });
       this.writeJson(this.BOOKMARKED_LISTS_KEY, bookmarks);
     }
@@ -406,6 +410,10 @@ export class UserDataService {
   recordListView(list: any): void {
     let recent = this.readJson<any[]>(this.RECENT_LISTS_KEY, []);
     recent = recent.filter(r => r.id !== list.id);
+    const coverItems = (list.items || [])
+      .filter((i: any) => i.poster_path)
+      .slice(0, 4)
+      .map((i: any) => ({ id: i.id, poster_path: i.poster_path, media_type: i.media_type }));
     recent.unshift({
       id: list.id,
       name: list.name,
@@ -414,7 +422,7 @@ export class UserDataService {
       favorite_count: list.favorite_count || 0,
       poster_path: list.poster_path || null,
       creator_username: list.created_by?.username || list.creator_username || '',
-      items: list.items || [],
+      items: coverItems,
     });
     if (recent.length > 10) {
       recent = recent.slice(0, 10);

@@ -360,8 +360,8 @@ export class TmdbService {
     return this.get(`/tv/${id}/lists`, { page });
   }
 
-  getListDetail(id: number | string): Observable<any> {
-    return this.get(`/list/${id}`);
+  getListDetail(id: number | string, page = 1): Observable<any> {
+    return this.get(`/list/${id}`, { page });
   }
 
   // ── Search ─────────────────────────────────────────────────────────────────
