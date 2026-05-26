@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.10.0](https://github.com/r-shafi/open-movie-tracker/compare/v0.9.0...v0.10.0) (2026-05-26)
+
+
+### Features
+
+* Add bookmarked lists section with toggle functionality in profile page ([335bed2](https://github.com/r-shafi/open-movie-tracker/commit/335bed270922d334c9bfe240135ba691d3f39fde))
+* Add featured lists section with bookmarking functionality in film and TV pages ([4dcd187](https://github.com/r-shafi/open-movie-tracker/commit/4dcd1877999337b38a193aea4e77e47c0ebbd25a))
+* Add film and TV lists pages with routing, loading skeletons, and bookmarking functionality ([d000811](https://github.com/r-shafi/open-movie-tracker/commit/d000811e5f73c4e01120118f634a6f38b6cf31b0))
+* Add functionality for managing bookmarked and recently viewed lists ([b593627](https://github.com/r-shafi/open-movie-tracker/commit/b593627e8fa5d756f748dd237556a7bb7922c816))
+* Add Recently Viewed Lists section with bookmarking functionality ([37dc047](https://github.com/r-shafi/open-movie-tracker/commit/37dc0478acf7e362d28886f10e363f3cd743f3e8))
+* Add routes for film and TV lists pages ([9d95369](https://github.com/r-shafi/open-movie-tracker/commit/9d9536993fa9f15d1e25d49b324fadd5e168f6db))
+* Add routing to cast items in the TV show details page ([38c6a19](https://github.com/r-shafi/open-movie-tracker/commit/38c6a19a7340770791938a4d6833bb615279115b))
+* Enhance list detail page with loading skeletons and cover collage ([39a138c](https://github.com/r-shafi/open-movie-tracker/commit/39a138ce4d35edf853c4e4edb71398a087c7a26a))
+* Remove alt attributes from image tags in film and TV pages ([941040c](https://github.com/r-shafi/open-movie-tracker/commit/941040c313acc584d33c9430e2bc86294130f701))
+* Remove watched toggle functionality and related styles from log sheet component ([e36f864](https://github.com/r-shafi/open-movie-tracker/commit/e36f8642afb671da901fcb50ceed6d6750564eb2))
+
 ## [0.9.0](https://github.com/r-shafi/open-movie-tracker/compare/v0.8.0...v0.9.0) (2026-05-26)
 
 
