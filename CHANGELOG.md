@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/r-shafi/open-movie-tracker/compare/v0.4.0...v0.5.0) (2026-05-26)
+
+
+### Features
+
+* Add permissions for actions and trigger APK build step ([a62848a](https://github.com/r-shafi/open-movie-tracker/commit/a62848aa79b92303c29479d7f4e67ea1e0b9adb6))
+
 ## [0.4.0](https://github.com/r-shafi/open-movie-tracker/compare/v0.3.0...v0.4.0) (2026-05-26)
 
 
