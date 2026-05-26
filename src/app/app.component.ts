@@ -1,4 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
+import { Subscription, filter } from 'rxjs';
+import { UpdateService } from './services/update.service';
 import { UserDataService } from './services/user-data.service';
 
 export function applyPrimaryColor(color: 'green' | 'red'): void {
@@ -26,8 +30,57 @@ export function applyPrimaryColor(color: 'green' | 'red'): void {
   styleUrls: ['app.component.scss'],
   standalone: false,
 })
-export class AppComponent {
-  constructor(private userData: UserDataService) {
+export class AppComponent implements OnInit, OnDestroy {
+  private routeSub = Subscription.EMPTY;
+
+  constructor(
+    private userData: UserDataService,
+    private router: Router,
+    private alertCtrl: AlertController,
+    private updateService: UpdateService,
+  ) {
     applyPrimaryColor(this.userData.getSettings().primaryColor);
+  }
+
+  ngOnInit(): void {
+    this.routeSub = this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        requestAnimationFrame(() => {
+          const content = document.querySelector('ion-content') as any;
+          if (content?.scrollToTop) {
+            content.scrollToTop(0);
+          }
+          window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+        });
+      });
+
+    this.checkForUpdates();
+  }
+
+  ngOnDestroy(): void {
+    this.routeSub.unsubscribe();
+  }
+
+  private checkForUpdates(): void {
+    this.updateService.checkForUpdate().subscribe(async (update) => {
+      if (!update) {
+        return;
+      }
+      const alert = await this.alertCtrl.create({
+        header: 'Update available',
+        message: `Version ${update.latestVersion} is available. You're on ${update.currentVersion}.`,
+        buttons: [
+          { text: 'Later', role: 'cancel' },
+          {
+            text: 'Update now',
+            handler: () => {
+              window.open(update.releaseUrl, '_blank');
+            },
+          },
+        ],
+      });
+      await alert.present();
+    });
   }
 }
