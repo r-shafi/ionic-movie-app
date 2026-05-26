@@ -1,10 +1,10 @@
-Initial release of Open Movie Tracker.
-
-- Browse trending movies and TV shows
-- Search by title
-- Track Watched, Favourites, and Watchlist
-- Movie and TV detail pages with cast, crew, and reviews
-- Discover page with genre, year, language, and rating filters
-- Person filmography pages
-- Customisable theme colour
-- Local storage only — no account or cloud sync required
+Version 0.11.0
+• Redesigned home, discover, and search pages
+• Movie and TV detail pages with backdrop slideshow and cast
+• Profile with stats dashboard, charts, and activity feed
+• Watched, watchlist, favourites, diary, and reviews pages
+• Custom user-created lists and TV season tracking
+• Person pages with filmography
+• Settings with theme, language, and data export
+• Bottom log sheet for rating, review, and list management
+• All data stored locally, no account required

@@ -1,24 +1,42 @@
-Open Movie Tracker is a free and open-source app for discovering and tracking movies and TV shows. All data is sourced from The Movie Database (TMDb).
+Open Movie Tracker is a free, open-source app for tracking movies and TV shows — a privacy-first alternative to apps like Letterboxd. No account or sign-in is required; all your data stays on your device. Metadata is sourced from The Movie Database (TMDb).
 
-<b>Features</b>
+MOVIES & TV SHOWS
+• Browse trending, popular, top rated, now playing, and upcoming movies
+• Browse popular, top rated, airing today, and on-air TV shows
+• View detail pages with overview, cast, trailers, posters, and backdrop slideshows
+• Full TV show support with season overviews and episode-level watched tracking
+• Person pages with complete filmography, biography, and social links
 
-• Browse trending movies and TV shows on the Home screen
-• Search for any movie or TV show by title
-• View full details: overview, cast, crew, ratings, seasons, and episodes
-• Add titles to your Watched list, Favourites, or Watchlist
-• Manage up to 4 pinned Favourite titles on your Profile
-• Browse by person — see an actor or director's full filmography
-• Filter and discover titles by genre, year, language, and rating
-• Read user reviews directly within the app
-• Dark/Light theme with a customisable primary colour
-• All data stored locally — no account required, no cloud sync, no tracking
+SEARCH & DISCOVERY
+• Search movies, TV shows, and people with instant multi-type results
+• Filter by genre, year, language, and rating on the Discover page
+• Browse and bookmark community lists from TMDb
 
-<b>Privacy</b>
+TRACKING
+• Watched history with date, rating, and review logging
+• Watchlist and Favorites management
+• Custom lists to organise titles however you want
+• Like individual entries and view them in a dedicated page
+• Episode-level tracking with the ability to mark single episodes or entire seasons
+• Diary view showing your watch history grouped by month and year
 
-Open Movie Tracker does not collect any personal data. It does not use analytics, crash reporters, or advertising SDKs. The only network requests made are to the TMDb public API to fetch movie and TV metadata.
+PROFILE & STATISTICS
+• Personal profile with display name, bio, avatar, and cover image
+• Statistics dashboard with total watched, hours estimated, average rating, and movie/TV mix
+• Rating distribution, 6-month momentum, and top genres charts
+• Activity feed with full chronological history
 
-<b>Open Source</b>
+PERSONALISATION
+• Dark and light themes with system follow option
+• Choose between green and red accent colours
+• Language, region, and safe search settings
+• Filter out content in specific languages
+• Fade watched items visually
 
+PRIVACY
+Open Movie Tracker does not collect any personal data. It contains no analytics, crash reporters, or advertising SDKs. The only network requests are to the TMDb public API to fetch movie and TV metadata. All your watched history, ratings, reviews, lists, and settings are stored locally on your device — nothing ever leaves without your knowledge.
+
+Open Source
 The full source code is available on GitHub under the MIT licence. Contributions are welcome.
 
 Movie and TV data provided by The Movie Database (TMDb). This product uses the TMDb API but is not endorsed or certified by TMDb.
