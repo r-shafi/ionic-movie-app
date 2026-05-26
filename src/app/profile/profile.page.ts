@@ -30,6 +30,10 @@ export class ProfilePage {
   isEditingFavorites = false;
   activityPage = 0;
   readonly pageSize = 20;
+
+  ionViewWillEnter() {
+    this.cdr.markForCheck();
+  }
   readonly quickLinks = [
     {
       label: 'Watched',
