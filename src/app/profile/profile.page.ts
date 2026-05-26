@@ -3,13 +3,18 @@ import {
   ChangeDetectorRef,
   Component,
 } from '@angular/core';
-import { AlertController, ModalController } from '@ionic/angular';
+import {
+  ActionSheetController,
+  AlertController,
+  ModalController,
+} from '@ionic/angular';
 import {
   FavoriteEntry,
   UserDataService,
   UserList,
   WatchedEntry,
 } from '../services/user-data.service';
+import { ImageViewerComponent } from '../shared-module/image-viewer/image-viewer.component';
 import { AddFavoriteModalComponent } from './add-favorite-modal/add-favorite-modal.component';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
 
@@ -76,6 +81,7 @@ export class ProfilePage {
     public userData: UserDataService,
     private modalCtrl: ModalController,
     private alertCtrl: AlertController,
+    private actionSheetCtrl: ActionSheetController,
     private cdr: ChangeDetectorRef,
   ) {}
 
@@ -162,6 +168,86 @@ export class ProfilePage {
     await modal.present();
     await modal.onDidDismiss();
     this.cdr.markForCheck();
+  }
+
+  async openCoverActions() {
+    await this.openImageActionSheet('cover');
+  }
+
+  async openAvatarActions() {
+    await this.openImageActionSheet('avatar');
+  }
+
+  private async openImageActionSheet(type: 'avatar' | 'cover') {
+    const src =
+      type === 'avatar' ? this.profile.avatarBase64 : this.profile.coverBase64;
+    const label = type === 'avatar' ? 'Avatar' : 'Cover image';
+
+    const buttons: any[] = [];
+    if (src) {
+      buttons.push({
+        text: `View ${label.toLowerCase()}`,
+        icon: 'eye-outline',
+        handler: () => this.viewImage(src, label),
+      });
+    }
+    buttons.push({
+      text: `Change ${label.toLowerCase()}`,
+      icon: 'image-outline',
+      handler: () => this.pickImage(type),
+    });
+    if (src) {
+      buttons.push({
+        text: `Remove ${label.toLowerCase()}`,
+        role: 'destructive',
+        icon: 'trash-outline',
+        handler: () => {
+          const patch =
+            type === 'avatar' ? { avatarBase64: null } : { coverBase64: null };
+          this.userData.saveProfile(patch);
+          this.cdr.markForCheck();
+        },
+      });
+    }
+    buttons.push({ text: 'Cancel', role: 'cancel' });
+
+    const sheet = await this.actionSheetCtrl.create({
+      header: label,
+      buttons,
+    });
+    await sheet.present();
+  }
+
+  private async viewImage(src: string, alt: string) {
+    const modal = await this.modalCtrl.create({
+      component: ImageViewerComponent,
+      componentProps: { src, alt },
+    });
+    await modal.present();
+  }
+
+  private pickImage(type: 'avatar' | 'cover') {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (event: Event) => {
+      const file = (event.target as HTMLInputElement).files?.[0];
+      if (!file) {
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = reader.result as string;
+        const patch =
+          type === 'avatar'
+            ? { avatarBase64: result }
+            : { coverBase64: result };
+        this.userData.saveProfile(patch);
+        this.cdr.markForCheck();
+      };
+      reader.readAsDataURL(file);
+    };
+    input.click();
   }
 
   async openAddFavorite() {

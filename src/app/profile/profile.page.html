@@ -16,15 +16,17 @@
   <!-- Cover + Avatar -->
   <div class="relative w-full">
     <div
-      class="h-[140px] w-full bg-cover bg-center"
+      class="h-[140px] w-full cursor-pointer bg-cover bg-center"
       [style.backgroundImage]="profile.coverBase64 ? 'url(' + profile.coverBase64 + ')' : 'none'"
       [class.bg-gradient-to-b]="!profile.coverBase64"
       [class.from-indigo-800]="!profile.coverBase64"
       [class.to-purple-900]="!profile.coverBase64"
+      (click)="openCoverActions()"
     ></div>
     <div class="absolute -bottom-10 left-4 flex items-end gap-3">
       <div
-        class="h-20 w-20 overflow-hidden rounded-full border-4 border-bg-base bg-bg-secondary"
+        class="h-20 w-20 cursor-pointer overflow-hidden rounded-full border-4 border-bg-base bg-bg-secondary"
+        (click)="openAvatarActions()"
       >
         @if (profile.avatarBase64) {
         <img [src]="profile.avatarBase64" class="h-full w-full object-cover" />
