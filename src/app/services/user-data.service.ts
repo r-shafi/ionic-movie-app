@@ -373,11 +373,15 @@ export class UserDataService {
 
   bookmarkList(list: any): void {
     const bookmarks = this.readJson<any[]>(this.BOOKMARKED_LISTS_KEY, []);
-    if (!bookmarks.some(b => b.id === list.id)) {
+    if (!bookmarks.some((b) => b.id === list.id)) {
       const coverItems = (list.items || [])
         .filter((i: any) => i.poster_path)
         .slice(0, 4)
-        .map((i: any) => ({ id: i.id, poster_path: i.poster_path, media_type: i.media_type }));
+        .map((i: any) => ({
+          id: i.id,
+          poster_path: i.poster_path,
+          media_type: i.media_type,
+        }));
       bookmarks.unshift({
         id: list.id,
         name: list.name,
@@ -385,7 +389,8 @@ export class UserDataService {
         item_count: list.item_count || 0,
         favorite_count: list.favorite_count || 0,
         poster_path: list.poster_path || null,
-        creator_username: list.created_by?.username || list.creator_username || '',
+        creator_username:
+          list.created_by?.username || list.creator_username || '',
         items: coverItems,
       });
       this.writeJson(this.BOOKMARKED_LISTS_KEY, bookmarks);
@@ -394,13 +399,13 @@ export class UserDataService {
 
   unbookmarkList(listId: number): void {
     const bookmarks = this.readJson<any[]>(this.BOOKMARKED_LISTS_KEY, []);
-    const next = bookmarks.filter(b => b.id !== listId);
+    const next = bookmarks.filter((b) => b.id !== listId);
     this.writeJson(this.BOOKMARKED_LISTS_KEY, next);
   }
 
   isListBookmarked(listId: number): boolean {
     const bookmarks = this.readJson<any[]>(this.BOOKMARKED_LISTS_KEY, []);
-    return bookmarks.some(b => b.id === listId);
+    return bookmarks.some((b) => b.id === listId);
   }
 
   getBookmarkedLists(): any[] {
@@ -409,11 +414,15 @@ export class UserDataService {
 
   recordListView(list: any): void {
     let recent = this.readJson<any[]>(this.RECENT_LISTS_KEY, []);
-    recent = recent.filter(r => r.id !== list.id);
+    recent = recent.filter((r) => r.id !== list.id);
     const coverItems = (list.items || [])
       .filter((i: any) => i.poster_path)
       .slice(0, 4)
-      .map((i: any) => ({ id: i.id, poster_path: i.poster_path, media_type: i.media_type }));
+      .map((i: any) => ({
+        id: i.id,
+        poster_path: i.poster_path,
+        media_type: i.media_type,
+      }));
     recent.unshift({
       id: list.id,
       name: list.name,
@@ -421,7 +430,8 @@ export class UserDataService {
       item_count: list.item_count || 0,
       favorite_count: list.favorite_count || 0,
       poster_path: list.poster_path || null,
-      creator_username: list.created_by?.username || list.creator_username || '',
+      creator_username:
+        list.created_by?.username || list.creator_username || '',
       items: coverItems,
     });
     if (recent.length > 10) {
@@ -432,6 +442,38 @@ export class UserDataService {
 
   getRecentlyViewedLists(): any[] {
     return this.readJson<any[]>(this.RECENT_LISTS_KEY, []);
+  }
+
+  // ── List Scroll Position ────────────────────────────────────────────────
+
+  private readonly LIST_SCROLL_KEY = 'mva_list_scroll';
+
+  saveListScrollState(
+    listId: number,
+    state: { scrollY: number; tmdbPage: number },
+  ): void {
+    const states = this.readJson<
+      Record<string, { scrollY: number; tmdbPage: number }>
+    >(this.LIST_SCROLL_KEY, {});
+    states[String(listId)] = state;
+    this.writeJson(this.LIST_SCROLL_KEY, states);
+  }
+
+  getListScrollState(
+    listId: number,
+  ): { scrollY: number; tmdbPage: number } | null {
+    const states = this.readJson<
+      Record<string, { scrollY: number; tmdbPage: number }>
+    >(this.LIST_SCROLL_KEY, {});
+    return states[String(listId)] || null;
+  }
+
+  clearListScrollState(listId: number): void {
+    const states = this.readJson<
+      Record<string, { scrollY: number; tmdbPage: number }>
+    >(this.LIST_SCROLL_KEY, {});
+    delete states[String(listId)];
+    this.writeJson(this.LIST_SCROLL_KEY, states);
   }
 
   // Analytics

@@ -7,7 +7,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content scrollEvents="true" (ionScroll)="onScroll($event)">
   @if (isLoading && !list) {
     <div class="ion-padding">
       <ion-skeleton-text animated class="mb-3 h-[200px] w-full rounded-none"></ion-skeleton-text>
@@ -68,9 +68,9 @@
     }
 
     <!-- Items grid -->
-    @if (items.length) {
+    @if (allItems.length) {
       <div class="items-grid">
-        @for (item of items; track item.id) {
+        @for (item of allItems; track item.id) {
           <app-poster-card
             [item]="item"
             [mediaType]="item.media_type || 'movie'"
@@ -79,15 +79,11 @@
       </div>
     }
 
-    @if (hasMore) {
-      <div class="load-more-wrap">
-        <ion-button fill="outline" expand="block" [disabled]="isLoading" (click)="loadMore()">
-          @if (isLoading) {
-            <ion-spinner name="crescent" slot="start"></ion-spinner>
-          }
-          {{ isLoading ? 'Loading...' : 'Load More' }}
-        </ion-button>
-      </div>
-    }
+    <ion-infinite-scroll threshold="300px" (ionInfinite)="loadMore($event)">
+      <ion-infinite-scroll-content
+        loadingSpinner="crescent"
+        loadingText="Loading more..."
+      ></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
   }
 </ion-content>
