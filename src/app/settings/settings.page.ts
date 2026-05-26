@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AlertController } from '@ionic/angular';
+import packageJson from '../../../package.json';
 import { applyPrimaryColor } from '../app.component';
 import { ToastService } from '../services/toast.service';
 import { AppSettings, UserDataService } from '../services/user-data.service';
@@ -12,8 +13,8 @@ import { AppSettings, UserDataService } from '../services/user-data.service';
   standalone: false,
 })
 export class SettingsPage {
-  readonly appVersion = '0.0.1';
-  readonly githubRepoUrl = 'https://github.com/r-shafi/ionic-movie-app';
+  readonly appVersion = packageJson?.version ?? '0.0.1';
+  readonly githubRepoUrl = 'https://github.com/r-shafi/open-movie-tracker';
 
   constructor(
     public userData: UserDataService,
