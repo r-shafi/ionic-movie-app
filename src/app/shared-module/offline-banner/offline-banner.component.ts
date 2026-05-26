@@ -1,50 +1,52 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { NetworkService } from 'src/app/services/network.service';
 
 @Component({
-    selector: 'app-offline-banner',
-    template: `
+  selector: 'app-offline-banner',
+  template: `
     @if (!isOnline) {
       <div class="offline-banner">
         <ion-icon name="cloud-offline-outline"></ion-icon>
         No internet connection
       </div>
     }
-    `,
-    styles: [
-        `
+  `,
+  styles: [
+    `
       .offline-banner {
         background: var(--ion-color-danger);
         color: #fff;
         text-align: center;
         padding: 6px 16px;
+        padding-top: calc(6px + env(safe-area-inset-top));
         font-size: 0.8rem;
         font-weight: 600;
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 6px;
+        position: sticky;
+        top: 0;
+        z-index: 9999;
       }
     `,
-    ],
-    standalone: false
+  ],
+  standalone: false,
 })
 export class OfflineBannerComponent implements OnInit, OnDestroy {
-  isOnline = navigator.onLine;
+  isOnline = true;
+  private sub = Subscription.EMPTY;
 
-  private onOnline = () => {
-    this.isOnline = true;
-  };
-  private onOffline = () => {
-    this.isOnline = false;
-  };
+  constructor(private network: NetworkService) {}
 
   ngOnInit() {
-    window.addEventListener('online', this.onOnline);
-    window.addEventListener('offline', this.onOffline);
+    this.sub = this.network.isOnline$.subscribe((isOnline) => {
+      this.isOnline = isOnline;
+    });
   }
 
   ngOnDestroy() {
-    window.removeEventListener('online', this.onOnline);
-    window.removeEventListener('offline', this.onOffline);
+    this.sub.unsubscribe();
   }
 }
