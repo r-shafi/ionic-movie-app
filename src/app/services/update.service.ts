@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { App } from '@capacitor/app';
-import { Observable, from, map, switchMap } from 'rxjs';
+import { Observable, from, map, switchMap, timeout } from 'rxjs';
 import packageJson from '../../../package.json';
 
 export interface UpdateInfo {
@@ -32,6 +32,7 @@ export class UpdateService {
             { headers },
           )
           .pipe(
+            timeout(15000),
             map((release) => {
               const latestVersion = this.normalizeVersion(
                 release?.tag_name || '',
