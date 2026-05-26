@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.9.0](https://github.com/r-shafi/open-movie-tracker/compare/v0.8.0...v0.9.0) (2026-05-26)
+
+
+### Features
+
+* Enhance version bump script to sync versionName with package.json ([5ccfcf3](https://github.com/r-shafi/open-movie-tracker/commit/5ccfcf32c8296fb4ce8283fc296f7938f98d94ed))
+* Sync android version metadata with package.json and improve versioning checks ([5997137](https://github.com/r-shafi/open-movie-tracker/commit/59971373ca40ec16ec25235fd94269b8d7ebe742))
+* Update splash and launcher images for various screen densities ([f64e11c](https://github.com/r-shafi/open-movie-tracker/commit/f64e11ce2c4b58d57044bc7e581e3c3e3f1ae8a5))
+* Update versionName to 0.7.0 in build.gradle ([f420e80](https://github.com/r-shafi/open-movie-tracker/commit/f420e8043227f12720bf3cf51b79772dcac54d8b))
+
 ## [0.8.0](https://github.com/r-shafi/open-movie-tracker/compare/v0.7.0...v0.8.0) (2026-05-26)
 
 
