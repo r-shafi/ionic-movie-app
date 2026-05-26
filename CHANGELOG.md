@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.7.0](https://github.com/r-shafi/open-movie-tracker/compare/v0.6.0...v0.7.0) (2026-05-26)
+
+
+### Features
+
+* Add @capacitor/network dependency to enhance network capabilities ([17a3e03](https://github.com/r-shafi/open-movie-tracker/commit/17a3e031f89ed01180118363ddc1d3055790fca2))
+* Add avatar fallback icons and improve image loading for cast and review sections ([7049c3d](https://github.com/r-shafi/open-movie-tracker/commit/7049c3dc70fa4f2d6df19eefe160b32fea8cc25d))
+* Add UpdateService to check for application updates from GitHub ([1f2b888](https://github.com/r-shafi/open-movie-tracker/commit/1f2b8883502cf2de2263aed27a02c0bbb6287fbf))
+* Enhance AppComponent with update checking and scroll management ([e16e9c0](https://github.com/r-shafi/open-movie-tracker/commit/e16e9c032da89668296d57484e49db66cad608e1))
+* Enhance profile image interaction with action sheets ([74cd3be](https://github.com/r-shafi/open-movie-tracker/commit/74cd3be08ea808d53ac65b17a49024c8b1a1ee15))
+* Implement caching and language filtering in TmdbService ([a200d6e](https://github.com/r-shafi/open-movie-tracker/commit/a200d6e83dd608ffb07cfad2c00e07a131d0d7f2))
+* Implement network service to manage online/offline status and enhance connectivity handling ([f0c429f](https://github.com/r-shafi/open-movie-tracker/commit/f0c429fd165ec3d820e7f0c560677f9ae1100dde))
+* Integrate network service to manage offline state and enhance loading logic ([0853a80](https://github.com/r-shafi/open-movie-tracker/commit/0853a802b7465539dd7e789658d80cf8f4bb3048))
+* Refactor OfflineBannerComponent to use NetworkService for online status management ([de8979e](https://github.com/r-shafi/open-movie-tracker/commit/de8979e3462b96730076905ad7cee4bc06af968e))
+* Update routing configuration to include scroll position restoration ([fa922c8](https://github.com/r-shafi/open-movie-tracker/commit/fa922c8a70f7c6ea5c26a0a505992f02232d6663))
+
 ## [0.6.0](https://github.com/r-shafi/open-movie-tracker/compare/v0.5.0...v0.6.0) (2026-05-26)
 
 
