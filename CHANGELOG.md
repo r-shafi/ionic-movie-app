@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.8.0](https://github.com/r-shafi/open-movie-tracker/compare/v0.7.0...v0.8.0) (2026-05-26)
+
+
+### Features
+
+* Add timeout to update check request in UpdateService ([d5d3037](https://github.com/r-shafi/open-movie-tracker/commit/d5d3037a7c10bddad4afed4e506eb9a5536da127))
+* Enhance settings page with language blocking and update checking features ([f99db27](https://github.com/r-shafi/open-movie-tracker/commit/f99db271a3dd1f02fa3a82b9fa08fd2039152a69))
+* Remove SettingsService dependency from DiscoverPage ([55e813b](https://github.com/r-shafi/open-movie-tracker/commit/55e813b1e3ada379087c82380d07e3520699f382))
+
 ## [0.7.0](https://github.com/r-shafi/open-movie-tracker/compare/v0.6.0...v0.7.0) (2026-05-26)
 
 
