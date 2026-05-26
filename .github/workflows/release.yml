@@ -4,8 +4,16 @@ on:
   push:
     tags:
       - "v*"
-    branches:
-      - main
+      - "open-movie-tracker-v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to build (e.g. open-movie-tracker-v0.1.0 or v0.1.1)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
 
 jobs:
   release-apk:
@@ -14,6 +22,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
 
       # ── Java ────────────────────────────────────────────────────────────────
       - name: Set up Java 21
@@ -54,13 +64,14 @@ jobs:
       - name: Set versionCode from tag
         id: version
         run: |
-          if [[ "$GITHUB_REF_NAME" == v* ]]; then
-            TAG="${GITHUB_REF_NAME#v}"
-          else
-            PKG_VERSION="$(node -p "require('./package.json').version")"
-            TAG="${PKG_VERSION}-$(git rev-parse --short HEAD)"
+          REF="${{ github.event.inputs.tag || github.ref_name }}"
+          TAG="${REF#open-movie-tracker-v}"
+          TAG="${TAG#v}"
+          if ! [[ "$TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+            echo "::error::Cannot determine version from ref '$REF'. For workflow_dispatch, set the 'tag' input to a valid tag (e.g. v0.1.1)."
+            exit 1
           fi
-          IFS='.' read -r MAJOR MINOR PATCH <<< "${TAG%%-*}"
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$TAG"
           VERSION_CODE=$(( MAJOR * 10000 + MINOR * 100 + PATCH ))
           echo "versionName=$TAG" >> "$GITHUB_OUTPUT"
           echo "versionCode=$VERSION_CODE" >> "$GITHUB_OUTPUT"
@@ -98,12 +109,11 @@ jobs:
           "$ANDROID_SDK_ROOT/build-tools/$BUILD_TOOLS/apksigner" verify \
             android/app/build/outputs/apk/release/open-movie-tracker-${{ steps.version.outputs.versionName }}.apk
 
-      # ── Create GitHub Release (tag builds only) ─────────────────────────────
+      # ── Create GitHub Release ─────────────────────────────────────────────────
       - name: Create GitHub Release
-        if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name }}
+          tag_name: ${{ github.event.inputs.tag || github.ref_name }}
           name: Open Movie Tracker ${{ steps.version.outputs.versionName }}
           draft: false
           prerelease: false
@@ -112,12 +122,3 @@ jobs:
             android/app/build/outputs/apk/release/open-movie-tracker-${{ steps.version.outputs.versionName }}.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # ── Upload APK as artifact (branch builds only) ───────────────────────────
-      - name: Upload APK artifact
-        if: "!startsWith(github.ref, 'refs/tags/')"
-        uses: actions/upload-artifact@v4
-        with:
-          name: open-movie-tracker-${{ steps.version.outputs.versionName }}
-          path: android/app/build/outputs/apk/release/open-movie-tracker-${{ steps.version.outputs.versionName }}.apk
-          retention-days: 7
