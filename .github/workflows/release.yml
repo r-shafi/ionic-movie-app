@@ -1,14 +1,13 @@
-name: Release
+name: Build & Release APK
 
 on:
   push:
     tags:
-      - "v*"
-      - "open-movie-tracker-v*"
+      - "v[0-9]+.[0-9]+.[0-9]+"
   workflow_dispatch:
     inputs:
       tag:
-        description: "Tag to build (e.g. open-movie-tracker-v0.1.0 or v0.1.1)"
+        description: "Tag to build (e.g. v1.2.3)"
         required: false
         default: ""
 
@@ -16,7 +15,7 @@ permissions:
   contents: write
 
 jobs:
-  release-apk:
+  build-apk:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,15 +23,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.inputs.tag || github.ref }}
+          fetch-depth: 0
 
-      # ── Java ────────────────────────────────────────────────────────────────
       - name: Set up Java 21
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "21"
 
-      # ── Node / pnpm ─────────────────────────────────────────────────────────
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -44,81 +42,60 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # ── Ionic web build ─────────────────────────────────────────────────────
-      - name: Build Ionic app (production)
+      - name: Build web assets (production)
         run: pnpm exec ng build --configuration production
 
-      # ── Capacitor sync ──────────────────────────────────────────────────────
       - name: Sync Capacitor Android platform
         run: pnpm exec cap sync android
 
-      # ── Decode signing keystore ─────────────────────────────────────────────
-      # Store your keystore as a base-64 secret: KEYSTORE_BASE64
-      # Generate with: base64 -w 0 release.keystore > keystore.b64
+      - name: Bump versionCode
+        run: node scripts/bump-version-code.js
+
       - name: Decode keystore
-        run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/release.keystore
+        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/release.keystore
 
-      # ── Bump versionCode to match the numeric part of the tag (v1.2.3 → 10203)
-      # Strategy: MAJOR*10000 + MINOR*100 + PATCH
-      - name: Set versionCode from tag
-        id: version
-        run: |
-          REF="${{ github.event.inputs.tag || github.ref_name }}"
-          TAG="${REF#open-movie-tracker-v}"
-          TAG="${TAG#v}"
-          if ! [[ "$TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+ ]]; then
-            echo "::error::Cannot determine version from ref '$REF'. For workflow_dispatch, set the 'tag' input to a valid tag (e.g. v0.1.1)."
-            exit 1
-          fi
-          IFS='.' read -r MAJOR MINOR PATCH <<< "$TAG"
-          VERSION_CODE=$(( MAJOR * 10000 + MINOR * 100 + PATCH ))
-          echo "versionName=$TAG" >> "$GITHUB_OUTPUT"
-          echo "versionCode=$VERSION_CODE" >> "$GITHUB_OUTPUT"
-
-      - name: Patch build.gradle versionName and versionCode
-        run: |
-          sed -i \
-            "s/versionCode .*/versionCode ${{ steps.version.outputs.versionCode }}/" \
-            android/app/build.gradle
-          sed -i \
-            "s/versionName .*/versionName \"${{ steps.version.outputs.versionName }}\"/" \
-            android/app/build.gradle
-
-      # ── Build release APK ────────────────────────────────────────────────────
-      - name: Build release APK (unsigned)
+      - name: Build signed APK
         working-directory: android
-        run: ./gradlew assembleRelease --no-daemon
-
-      # ── Sign with apksigner ──────────────────────────────────────────────────
-      - name: Sign APK
+        env:
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          BUILD_TOOLS="$(ls $ANDROID_SDK_ROOT/build-tools | sort -V | tail -1)"
-          "$ANDROID_SDK_ROOT/build-tools/$BUILD_TOOLS/apksigner" sign \
-            --ks android/app/release.keystore \
-            --ks-key-alias "${{ secrets.KEY_ALIAS }}" \
-            --ks-pass pass:"${{ secrets.KEYSTORE_PASSWORD }}" \
-            --key-pass pass:"${{ secrets.KEY_PASSWORD }}" \
-            --out android/app/build/outputs/apk/release/open-movie-tracker-${{ steps.version.outputs.versionName }}.apk \
-            android/app/build/outputs/apk/release/app-release-unsigned.apk
+          ./gradlew assembleRelease --no-daemon \
+            -Pandroid.injected.signing.store.file="$GITHUB_WORKSPACE/android/app/release.keystore" \
+            -Pandroid.injected.signing.store.password="$KEYSTORE_PASSWORD" \
+            -Pandroid.injected.signing.key.alias="$KEY_ALIAS" \
+            -Pandroid.injected.signing.key.password="$KEY_PASSWORD"
 
-      # ── Verify signature ─────────────────────────────────────────────────────
-      - name: Verify APK signature
+      - name: Rename APK with version tag
         run: |
-          BUILD_TOOLS="$(ls $ANDROID_SDK_ROOT/build-tools | sort -V | tail -1)"
-          "$ANDROID_SDK_ROOT/build-tools/$BUILD_TOOLS/apksigner" verify \
-            android/app/build/outputs/apk/release/open-movie-tracker-${{ steps.version.outputs.versionName }}.apk
+          TAG="${{ github.event.inputs.tag || github.ref_name }}"
+          cp android/app/build/outputs/apk/release/app-release.apk \
+             "open-movie-tracker-${TAG}.apk"
 
-      # ── Create GitHub Release ─────────────────────────────────────────────────
-      - name: Create GitHub Release
+      - name: Upload APK to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.inputs.tag || github.ref_name }}
-          name: Open Movie Tracker ${{ steps.version.outputs.versionName }}
-          draft: false
-          prerelease: false
-          generate_release_notes: true
-          files: |
-            android/app/build/outputs/apk/release/open-movie-tracker-${{ steps.version.outputs.versionName }}.apk
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          files: open-movie-tracker-${{ github.event.inputs.tag || github.ref_name }}.apk
+          generate_release_notes: false
+
+      - name: Generate F-Droid changelog
+        run: |
+          VERSION_CODE=$(grep -oP 'versionCode\s+\K\d+' android/app/build.gradle)
+          mkdir -p fastlane/metadata/android/en-US/changelogs
+            | head -20 \
+            > "fastlane/metadata/android/en-US/changelogs/${VERSION_CODE}.txt"
+          echo "Wrote F-Droid changelog for versionCode $VERSION_CODE"
+
+      - name: Commit F-Droid changelog
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add fastlane/metadata/android/en-US/changelogs/
+          git diff --staged --quiet || git commit -m "chore: add F-Droid changelog for ${{ github.event.inputs.tag || github.ref_name }}"
+          git push origin HEAD:main
+
+      - name: Clean up keystore
+        if: always()
+        run: rm -f android/app/release.keystore
