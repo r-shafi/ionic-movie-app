@@ -3,13 +3,12 @@ name: Build & Release APK
 on:
   push:
     tags:
-      - "v[0-9]+.[0-9]+.[0-9]+"
+      - "v*.*.*"
   workflow_dispatch:
     inputs:
       tag:
         description: "Tag to build (e.g. v1.2.3)"
-        required: false
-        default: ""
+        required: true
 
 permissions:
   contents: write
@@ -84,17 +83,39 @@ jobs:
       - name: Generate F-Droid changelog
         run: |
           VERSION_CODE=$(grep -oP 'versionCode\s+\K\d+' android/app/build.gradle)
+          echo "ANDROID_VERSION_CODE=$VERSION_CODE" >> "$GITHUB_ENV"
           mkdir -p fastlane/metadata/android/en-US/changelogs
+          awk 'f{if(/^## /) exit; print} /^## /{f=1; print; next}' CHANGELOG.md \
             | head -20 \
             > "fastlane/metadata/android/en-US/changelogs/${VERSION_CODE}.txt"
           echo "Wrote F-Droid changelog for versionCode $VERSION_CODE"
 
-      - name: Commit F-Droid changelog
+      - name: Persist Android version metadata to main
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add fastlane/metadata/android/en-US/changelogs/
-          git diff --staged --quiet || git commit -m "chore: add F-Droid changelog for ${{ github.event.inputs.tag || github.ref_name }}"
+          git fetch origin main
+          git checkout main
+          git pull --ff-only origin main
+
+          current_main_code=$(grep -oP 'versionCode\s+\K\d+' android/app/build.gradle)
+          target_code="${ANDROID_VERSION_CODE}"
+
+          if [[ "$target_code" -le "$current_main_code" ]]; then
+            echo "Skipping metadata persist: target versionCode $target_code <= main versionCode $current_main_code"
+            exit 0
+          fi
+
+          sed -i -E "s/versionCode[[:space:]]+[0-9]+/versionCode ${target_code}/" android/app/build.gradle
+          node scripts/bump-version-code.js --sync-only
+
+          mkdir -p fastlane/metadata/android/en-US/changelogs
+          awk 'f{if(/^## /) exit; print} /^## /{f=1; print; next}' CHANGELOG.md \
+            | head -20 \
+            > "fastlane/metadata/android/en-US/changelogs/${target_code}.txt"
+
+          git add android/app/build.gradle fastlane/metadata/android/en-US/changelogs/
+          git diff --staged --quiet || git commit -m "chore: sync android version metadata for ${{ github.event.inputs.tag || github.ref_name }}"
           git push origin HEAD:main
 
       - name: Clean up keystore

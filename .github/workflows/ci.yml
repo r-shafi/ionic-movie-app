@@ -37,6 +37,15 @@ jobs:
           echo "versionCode: $code"
           [[ "$code" =~ ^[0-9]+$ ]] || (echo "::error::versionCode is not a plain integer" && exit 1)
 
+      - name: Sync android versionName with package.json
+        run: |
+          node scripts/bump-version-code.js --sync-only
+          if ! git diff --quiet -- android/app/build.gradle; then
+            echo "::warning::android/app/build.gradle was out of sync with package.json and was auto-corrected in CI"
+          fi
+          android_version=$(grep -oP 'versionName\s+"\K[^"]+' android/app/build.gradle)
+          echo "android versionName after sync: $android_version"
+
       - name: Validate PR title (conventional commits)
         if: github.event_name == 'pull_request'
         run: |
