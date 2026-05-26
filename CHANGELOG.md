@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.12.0](https://github.com/r-shafi/open-movie-tracker/compare/v0.11.0...v0.12.0) (2026-05-26)
+
+
+### Features
+
+* add change detection trigger in ionViewWillEnter lifecycle method ([214dd0f](https://github.com/r-shafi/open-movie-tracker/commit/214dd0f21de1d0bd7e27866b55cff8e7d6cfa4b0))
+* add new asset images for various screens and phone screenshots ([dbfef30](https://github.com/r-shafi/open-movie-tracker/commit/dbfef30b30c0ec2050206ee8fc991723b10ffc5a))
+* enhance list detail retrieval and bookmark functionality ([5afb696](https://github.com/r-shafi/open-movie-tracker/commit/5afb696c497ca8bee5f11397b33fd8af5c943ed0))
+* implement infinite scroll and scroll position restoration in list detail ([53e7b67](https://github.com/r-shafi/open-movie-tracker/commit/53e7b6730e7fadc6fc248ed480a31e704482af8f))
+* update README and metadata for Open Movie Tracker v0.11.0 ([10a8fa8](https://github.com/r-shafi/open-movie-tracker/commit/10a8fa8171378a276286204cabd5a0556bd0c295))
+
 ## [0.11.0](https://github.com/r-shafi/open-movie-tracker/compare/v0.10.0...v0.11.0) (2026-05-26)
 
 
