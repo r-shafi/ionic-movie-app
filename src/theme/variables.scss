@@ -67,13 +67,13 @@
   --ion-color-dark-shade: #1d2024;
   --ion-color-dark-tint: #373d42;
 
-  // ── Medium → Muted text (text-primary at ~55% opacity, baked to solid) ────
-  --ion-color-medium: #8a9099;
-  --ion-color-medium-rgb: 138, 144, 153;
+  // ── Medium → Muted text (high-contrast subtitles on dark surfaces) ────────
+  --ion-color-medium: #bcc6cc;
+  --ion-color-medium-rgb: 188, 198, 204;
   --ion-color-medium-contrast: #212529;
   --ion-color-medium-contrast-rgb: 33, 37, 41;
-  --ion-color-medium-shade: #797f87;
-  --ion-color-medium-tint: #969ca4;
+  --ion-color-medium-shade: #a6afb4;
+  --ion-color-medium-tint: #c3ccd1;
 
   // ── Light → Background Secondary ──────────────────────────────────────────
   --ion-color-light: #343a40;
