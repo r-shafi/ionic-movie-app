@@ -1,44 +1,93 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/profile"></ion-back-button>
+      <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title>{{ list?.name || 'List' }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  @if (!list) {
+  @if (isLoading && !list) {
     <div class="ion-padding">
-      <p>List not found.</p>
+      <ion-skeleton-text animated class="mb-3 h-[200px] w-full rounded-none"></ion-skeleton-text>
+      <ion-skeleton-text animated class="mb-2 h-7 w-[60%]"></ion-skeleton-text>
+      <ion-skeleton-text animated class="mb-3 h-4 w-[40%]"></ion-skeleton-text>
     </div>
   }
 
   @if (list) {
-    <ion-list>
-      @for (item of list.items; track item) {
-        <ion-item>
-          <ion-thumbnail slot="start">
-            @if (item.poster_path) {
-              <ion-img
-                [src]="'https://image.tmdb.org/t/p/w92' + item.poster_path"
-              ></ion-img>
+    <!-- Header with cover collage -->
+    <div class="list-header">
+      <div class="cover-grid">
+        @for (url of coverPosters; track $index) {
+          <div class="cover-cell">
+            <img [src]="url" loading="lazy" />
+          </div>
+        }
+        @for (p of placeholderSlots; track $index) {
+          <div class="cover-cell cover-placeholder">
+            <ion-icon name="film-outline"></ion-icon>
+          </div>
+        }
+      </div>
+      <div class="header-gradient"></div>
+      <div class="header-content">
+        <h1 class="list-name">{{ list.name }}</h1>
+        @if (list.created_by) {
+          <div class="creator-row">
+            @if (list.created_by.avatar_path) {
+              <img
+                [src]="'https://image.tmdb.org/t/p/w45' + list.created_by.avatar_path"
+                class="creator-avatar"
+              />
             }
-          </ion-thumbnail>
-          <ion-label>
-            <h2>{{ item.title }}</h2>
-            <p>{{ item.media_type | titlecase }}</p>
-          </ion-label>
-          <ion-button
-            slot="end"
-            fill="clear"
-            color="danger"
-            (click)="removeItem(item.media_type, item.id)"
-            >
-            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
-          </ion-button>
-        </ion-item>
-      }
-    </ion-list>
+            <span class="creator-name">{{ list.created_by.username || list.created_by.name }}</span>
+          </div>
+        }
+        <div class="meta-row">
+          <span>{{ list.item_count || 0 }} {{ (list.item_count || 0) === 1 ? 'film' : 'films' }}</span>
+          <span class="meta-sep">·</span>
+          <ion-icon name="heart" class="meta-icon"></ion-icon>
+          <span>{{ formatCount(list.favorite_count || 0) }}</span>
+          <span class="meta-sep">·</span>
+          <ion-icon name="chatbubble" class="meta-icon"></ion-icon>
+          <span>0</span>
+        </div>
+      </div>
+      <button class="bookmark-btn" (click)="toggleBookmark()">
+        <ion-icon [name]="isBookmarked ? 'bookmark' : 'bookmark-outline'"></ion-icon>
+      </button>
+    </div>
+
+    <!-- Description -->
+    @if (list.description) {
+      <div class="desc-block">
+        <p>{{ list.description }}</p>
+      </div>
+    }
+
+    <!-- Items grid -->
+    @if (items.length) {
+      <div class="items-grid">
+        @for (item of items; track item.id) {
+          <app-poster-card
+            [item]="item"
+            [mediaType]="item.media_type || 'movie'"
+          ></app-poster-card>
+        }
+      </div>
+    }
+
+    @if (hasMore) {
+      <div class="load-more-wrap">
+        <ion-button fill="outline" expand="block" [disabled]="isLoading" (click)="loadMore()">
+          @if (isLoading) {
+            <ion-spinner name="crescent" slot="start"></ion-spinner>
+          }
+          {{ isLoading ? 'Loading...' : 'Load More' }}
+        </ion-button>
+      </div>
+    }
   }
 </ion-content>
