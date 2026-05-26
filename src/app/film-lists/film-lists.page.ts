@@ -10,7 +10,7 @@ import { UserDataService } from '../services/user-data.service';
   standalone: false,
 })
 export class FilmListsPage implements OnInit {
-  movieId: number = 0;
+  movieId = 0;
   lists: any[] = [];
   currentPage = 1;
   totalPages = 1;

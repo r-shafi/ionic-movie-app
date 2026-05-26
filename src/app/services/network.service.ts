@@ -27,8 +27,8 @@ export class NetworkService implements OnDestroy {
       this.onlineSubject.next(status.connected);
       const handle = await Network.addListener(
         'networkStatusChange',
-        (status) => {
-          this.onlineSubject.next(status.connected);
+        (networkStatus) => {
+          this.onlineSubject.next(networkStatus.connected);
         },
       );
       this.removeListener = () => handle.remove();

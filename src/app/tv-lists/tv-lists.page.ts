@@ -10,7 +10,7 @@ import { UserDataService } from '../services/user-data.service';
   standalone: false,
 })
 export class TvListsPage implements OnInit {
-  tvId: number = 0;
+  tvId = 0;
   lists: any[] = [];
   currentPage = 1;
   totalPages = 1;
