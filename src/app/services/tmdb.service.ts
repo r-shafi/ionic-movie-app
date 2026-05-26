@@ -1,8 +1,8 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, catchError, map, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { SettingsService } from './settings.service';
+import { UserDataService } from './user-data.service';
 
 export interface DiscoverParams {
   sort_by?: string;
@@ -21,16 +21,19 @@ export interface DiscoverParams {
 export class TmdbService {
   private readonly base = environment.tmdbBaseUrl;
   private readonly key = environment.tmdbApiKey;
+  private readonly cachePrefix = 'tmdb_cache_v2:';
+  private readonly cacheTTL = 1000 * 60 * 60 * 24 * 7;
+  private readonly maxCacheEntries = 250;
 
   constructor(
     private http: HttpClient,
-    private settings: SettingsService,
+    private userData: UserDataService,
   ) {}
 
   // ── helpers ────────────────────────────────────────────────────────────────
 
   private params(extra: Record<string, any> = {}): HttpParams {
-    const s = this.settings.settings;
+    const s = this.userData.getSettings();
     let p = new HttpParams()
       .set('api_key', this.key)
       .set('language', s.language)
@@ -44,9 +47,129 @@ export class TmdbService {
   }
 
   private get<T>(path: string, extra: Record<string, any> = {}): Observable<T> {
-    return this.http.get<T>(`${this.base}${path}`, {
-      params: this.params(extra),
+    const params = this.params(extra);
+    const cacheKey = this.cacheKey(path, params);
+    const cached = this.readCache<T>(cacheKey);
+    const request$ = this.http.get<T>(`${this.base}${path}`, { params }).pipe(
+      map((res) => this.applyBlockedLanguageFilter(res)),
+      map((res) => {
+        this.writeCache(cacheKey, res);
+        return res;
+      }),
+      catchError((err) => {
+        if (cached !== null) {
+          return [cached];
+        }
+        return throwError(() => err);
+      }),
+    );
+
+    if (!navigator.onLine && cached !== null) {
+      return new Observable<T>((subscriber) => {
+        subscriber.next(cached);
+        subscriber.complete();
+      });
+    }
+
+    return request$;
+  }
+
+  private cacheKey(path: string, params: HttpParams): string {
+    const entries = params
+      .keys()
+      .sort()
+      .map((k) => `${k}=${params.getAll(k)?.join(',') || ''}`)
+      .join('&');
+    return `${this.cachePrefix}${path}?${entries}`;
+  }
+
+  private readCache<T>(key: string): T | null {
+    const raw = localStorage.getItem(key);
+    if (!raw) {
+      return null;
+    }
+    try {
+      const parsed = JSON.parse(raw) as { timestamp: number; data: T };
+      if (!parsed || typeof parsed.timestamp !== 'number') {
+        return null;
+      }
+      if (Date.now() - parsed.timestamp > this.cacheTTL) {
+        localStorage.removeItem(key);
+        return null;
+      }
+      return parsed.data;
+    } catch {
+      return null;
+    }
+  }
+
+  private writeCache<T>(key: string, data: T): void {
+    try {
+      localStorage.setItem(
+        key,
+        JSON.stringify({ timestamp: Date.now(), data }),
+      );
+      this.pruneCache();
+    } catch {
+      // Ignore cache write failures to avoid impacting live responses.
+    }
+  }
+
+  private pruneCache(): void {
+    const items: Array<{ key: string; timestamp: number }> = [];
+    for (let i = 0; i < localStorage.length; i += 1) {
+      const key = localStorage.key(i);
+      if (!key || !key.startsWith(this.cachePrefix)) {
+        continue;
+      }
+      const raw = localStorage.getItem(key);
+      if (!raw) {
+        continue;
+      }
+      try {
+        const parsed = JSON.parse(raw) as { timestamp?: number };
+        if (typeof parsed.timestamp === 'number') {
+          items.push({ key, timestamp: parsed.timestamp });
+        }
+      } catch {
+        localStorage.removeItem(key);
+      }
+    }
+
+    if (items.length <= this.maxCacheEntries) {
+      return;
+    }
+
+    items
+      .sort((a, b) => a.timestamp - b.timestamp)
+      .slice(0, items.length - this.maxCacheEntries)
+      .forEach((entry) => localStorage.removeItem(entry.key));
+  }
+
+  private applyBlockedLanguageFilter<T>(payload: T): T {
+    if (!payload || typeof payload !== 'object') {
+      return payload;
+    }
+    const blocked = this.userData.getSettings().excludeLanguages || [];
+    if (!blocked.length) {
+      return payload;
+    }
+
+    const lowerBlocked = new Set(blocked.map((code) => code.toLowerCase()));
+    const asRecord = payload as Record<string, any>;
+    if (!Array.isArray(asRecord.results)) {
+      return payload;
+    }
+
+    const nextResults = asRecord.results.filter((item: any) => {
+      const lang = (item?.original_language || '').toLowerCase();
+      return !lang || !lowerBlocked.has(lang);
     });
+
+    return {
+      ...(payload as any),
+      results: nextResults,
+    } as T;
   }
 
   // ── Trending ───────────────────────────────────────────────────────────────
@@ -69,7 +192,10 @@ export class TmdbService {
     return this.get(`/trending/tv/${timeWindow}`, { page });
   }
 
-  getTrendingPeople(page = 1, timeWindow: 'day' | 'week' = 'day'): Observable<any> {
+  getTrendingPeople(
+    page = 1,
+    timeWindow: 'day' | 'week' = 'day',
+  ): Observable<any> {
     return this.get(`/trending/person/${timeWindow}`, { page });
   }
 
@@ -78,28 +204,28 @@ export class TmdbService {
   getPopularMovies(page = 1): Observable<any> {
     return this.get('/movie/popular', {
       page,
-      region: this.settings.settings.region,
+      region: this.userData.getSettings().region,
     });
   }
 
   getTopRatedMovies(page = 1): Observable<any> {
     return this.get('/movie/top_rated', {
       page,
-      region: this.settings.settings.region,
+      region: this.userData.getSettings().region,
     });
   }
 
   getNowPlayingMovies(page = 1): Observable<any> {
     return this.get('/movie/now_playing', {
       page,
-      region: this.settings.settings.region,
+      region: this.userData.getSettings().region,
     });
   }
 
   getUpcomingMovies(page = 1): Observable<any> {
     return this.get('/movie/upcoming', {
       page,
-      region: this.settings.settings.region,
+      region: this.userData.getSettings().region,
     });
   }
 
@@ -116,9 +242,7 @@ export class TmdbService {
   }
 
   getMovieImages(id: number | string): Observable<any> {
-    return this.http.get<any>(`${this.base}/movie/${id}/images`, {
-      params: new HttpParams().set('api_key', this.key),
-    });
+    return this.get(`/movie/${id}/images`);
   }
 
   getMovieSimilar(id: number | string, page = 1): Observable<any> {
@@ -180,9 +304,7 @@ export class TmdbService {
   }
 
   getTvImages(id: number | string): Observable<any> {
-    return this.http.get<any>(`${this.base}/tv/${id}/images`, {
-      params: new HttpParams().set('api_key', this.key),
-    });
+    return this.get(`/tv/${id}/images`);
   }
 
   getTvSimilar(id: number | string, page = 1): Observable<any> {
@@ -225,9 +347,7 @@ export class TmdbService {
   }
 
   getPersonImages(id: number | string): Observable<any> {
-    return this.http.get<any>(`${this.base}/person/${id}/images`, {
-      params: new HttpParams().set('api_key', this.key),
-    });
+    return this.get(`/person/${id}/images`);
   }
 
   // ── Search ─────────────────────────────────────────────────────────────────
